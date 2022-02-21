@@ -3,7 +3,9 @@
 *Fill this readme with useful information when necessary*
 
 ### Rules
-* Before merging code into the master branch you should have your code reviewed by at least one other team member
+* Create/Edit a (new) **branch** for every function/class.
+* Never edit the **main** branche
+* Merging code into the main branche should be reviewed.
 * Stick to the coding standards we set in the beginning
 
 
