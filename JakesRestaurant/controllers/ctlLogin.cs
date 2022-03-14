@@ -16,7 +16,7 @@ namespace Authentication
         {
             bool res = false;
 
-            List<TdoUser> users = JakesRestaurant.JsonFileReader.Read<TdoUser>(path);
+            List<TdoUser> users = JakesRestaurant.JsonFileReader.ReadList<TdoUser>(path);
 
             TdoUser myUser = users.Find(i => i.Username == aUserName);
 
