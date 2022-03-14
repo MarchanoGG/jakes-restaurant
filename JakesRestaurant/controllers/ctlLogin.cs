@@ -10,7 +10,6 @@ namespace Authentication
     class TctlLogin
     {
         string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "auth.conf.txt");
-        StreamReader
 
         public bool Login() 
         {
