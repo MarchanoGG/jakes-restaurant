@@ -6,7 +6,17 @@ namespace JakesRestaurant
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            model.controllers.TctlLogin ctlAuth = new model.controllers.TctlLogin();
+            if (ctlAuth.Login())
+            {
+
+                Console.WriteLine("Hello World!");
+
+            }
+
+            Console.WriteLine("Unable to login!");
+
+            return;
         }
     }
 }
