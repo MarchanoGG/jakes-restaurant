@@ -6,7 +6,7 @@ namespace JakesRestaurant
     {
         static void Main(string[] args)
         {
-            model.controllers.TctlLogin ctlAuth = new model.controllers.TctlLogin();
+            Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
             if (ctlAuth.Login())
             {
 
