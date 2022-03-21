@@ -28,9 +28,6 @@ namespace Authentication
                 {
                     res = true;
                     Console.WriteLine("Successfully logged in.");
-
-
-                    FileManagement.JsonFileManager.SetConfig<TdoUser>(path);
                 }
                 else
                 {
