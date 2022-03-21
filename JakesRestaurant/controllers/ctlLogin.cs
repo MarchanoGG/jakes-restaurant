@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Text.Json;
 
 namespace Authentication
 {
@@ -25,16 +21,16 @@ namespace Authentication
                 if (myUser.Password == aPassword)
                 {
                     res = true;
-                    Console.WriteLine("Successfully logged in.");
+                    Console.WriteLine("Succesvol aangemeld.");
                 }
                 else
                 {
-                    Console.WriteLine("Invalid credentials provided!");
+                    Console.WriteLine("Onjuiste inloggegevens verstrekt !");
                 }
             }
             else
             {
-                Console.WriteLine("Invalid credentials provided!");
+                Console.WriteLine("Onjuiste inloggegevens verstrekt!");
             }
 
             return res;
