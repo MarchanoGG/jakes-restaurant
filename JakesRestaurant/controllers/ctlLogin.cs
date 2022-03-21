@@ -19,7 +19,7 @@ namespace Authentication
             }
             else
             {
-                Console.WriteLine("Onjuiste inloggegevens verstrekt!");
+                Console.WriteLine("Onjuiste gegevens verstrekt!");
             }
 
             return res;

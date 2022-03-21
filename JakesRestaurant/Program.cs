@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
 
 namespace JakesRestaurant
 {
@@ -11,23 +8,27 @@ namespace JakesRestaurant
         static Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
         static void Main(string[] args)
         {
-            Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
-            if (ctlAuth.Login(InsertCredentials("username"), InsertCredentials("password")))
-            {
+            Console.WriteLine("Jakes retaurant");
+            Console.WriteLine("Wijnhaven 107, 3011 WN in Rotterdam");
+            Console.WriteLine("Thema: <To be loaded from config>");
 
-                Console.WriteLine("Hello World!");
+            Console.WriteLine("\r Druk op een knop om door te gaan naar de login");
 
-            if(Console.ReadLine() != null)
+            if (Console.ReadKey().ToString().Length > 0)
             {
                 Console.Clear();
                 if (ctlAuth.Login())
                 {
                     Console.Clear();
-                    Console.WriteLine("User: " + currentUser.Summary());
+                    if (ctlAuth.Login())
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Gebruiker: " + currentUser.Summary());
 
-                    // Main application options
+                        // Main application options
 
-                    Console.ReadKey();
+                        Console.ReadKey();
+                    }
                 }
             }
 
@@ -37,33 +38,6 @@ namespace JakesRestaurant
         static public void SetUser(Authentication.User aUser)
         {
            Program.currentUser = aUser;
-        }
-    }
-
-    public static class JsonFileReader
-    {
-        public static T Read<T>(string filePath)
-        {
-            string text = File.ReadAllText(filePath);
-
-            T res = JsonSerializer.Deserialize<T>(text);
-
-            return res;
-        }
-
-        public static List<T> ReadList<T>(string filePath)
-        {
-            List<T> res = new List<T>();
-            string text = File.ReadAllText(filePath);
-            
-            T[] arr = JsonSerializer.Deserialize<T[]>(text);
-
-            foreach (T obj in arr)
-            {
-                res.Add(obj);
-            }
-
-            return res;
         }
     }
 }
