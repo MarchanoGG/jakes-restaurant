@@ -30,31 +30,4 @@ namespace JakesRestaurant
             return res;
         }
     }
-
-    public static class JsonFileReader
-    {
-        public static T Read<T>(string filePath)
-        {
-            string text = File.ReadAllText(filePath);
-
-            T res = JsonSerializer.Deserialize<T>(text);
-
-            return res;
-        }
-
-        public static List<T> ReadList<T>(string filePath)
-        {
-            List<T> res = new List<T>();
-            string text = File.ReadAllText(filePath);
-            
-            T[] arr = JsonSerializer.Deserialize<T[]>(text);
-
-            foreach (T obj in arr)
-            {
-                res.Add(obj);
-            }
-
-            return res;
-        }
-    }
 }

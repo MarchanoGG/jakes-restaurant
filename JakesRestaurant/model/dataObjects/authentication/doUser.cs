@@ -2,7 +2,7 @@
 
 namespace Authentication
 {
-    class TdoUser: TdoBase
+    class TdoUser 
     {
         [JsonPropertyName("username")]
         public string Username { get; set; }
