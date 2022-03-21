@@ -31,11 +31,31 @@ namespace FileManagement
             return res;
         }
 
-
-        public static void WriteToFile<T>(T aObj, string aFilePath)
+        public static void Write<T>(string aPath, List<T> ls)
         {
-            string contents = aObj.ToString();
-            File.WriteAllText(aFilePath, contents);
+            string json = JsonSerializer.Serialize(ls);
+            //Console.WriteLine(json);
+            File.WriteAllText(aPath, json);
+            Console.WriteLine("write done");
         }
+
+        public static void UpdateList<T>(string aPath, T obj)
+        {
+            List<T> ls = FileManagement.JsonFileManager.ReadList<T>(aPath);
+
+            int index = ls.IndexOf(obj);
+
+            if (index != -1)
+            {
+                ls[index] = obj;
+            }
+            else
+            {
+                ls.Add(obj);
+            }
+            Write<T>(aPath, ls);
+
+        }
+
     }
 }
