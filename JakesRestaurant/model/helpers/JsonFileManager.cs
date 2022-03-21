@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace FileManagement
 {
-    public static class JsonFileReader
+    public static class JsonFileManager
     {
         public static T Read<T>(string aFilePath)
         {
