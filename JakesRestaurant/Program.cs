@@ -7,6 +7,8 @@ namespace JakesRestaurant
 {
     class Program
     {
+        private static Authentication.User currentUser;
+        static Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
         static void Main(string[] args)
         {
             Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
@@ -15,19 +17,26 @@ namespace JakesRestaurant
 
                 Console.WriteLine("Hello World!");
 
+            if(Console.ReadLine() != null)
+            {
+                Console.Clear();
+                if (ctlAuth.Login())
+                {
+                    Console.Clear();
+                    Console.WriteLine("User: " + currentUser.Summary());
+
+                    // Main application options
+
+                    Console.ReadKey();
+                }
             }
 
             return;
         }
 
-        static string InsertCredentials(string aCredential)
+        static public void SetUser(Authentication.User aUser)
         {
-            string res = "";
-
-            Console.WriteLine("Insert " + aCredential + ":");
-            res = Console.ReadLine();
-
-            return res;
+           Program.currentUser = aUser;
         }
     }
 
