@@ -11,6 +11,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="views\" />
-    <Folder Include="data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="data\auth.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
