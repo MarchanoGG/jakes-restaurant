@@ -9,12 +9,21 @@ namespace JakesRestaurant
     {
         static void Main(string[] args)
         {
-            Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
-            if (ctlAuth.Login(InsertCredentials("username"), InsertCredentials("password")))
+            Console.WriteLine("Jakes Restaurant");
+            Console.WriteLine("Wijnhaven 107, 3011 WN in Rotterdam");
+            Console.WriteLine("Thema: <Insert theme here from config or something>\n\r");
+
+            Console.WriteLine("Druk op een knop om door te gaan naar de login..");
+
+            if(Console.ReadLine() != null)
             {
-
-                Console.WriteLine("Hello World!");
-
+                Console.Clear();
+                Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
+                if (ctlAuth.Login(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
+                {
+                    Console.Clear();
+                    Console.WriteLine("Hallo wereld!");
+                }
             }
 
             return;
@@ -24,7 +33,7 @@ namespace JakesRestaurant
         {
             string res = "";
 
-            Console.WriteLine("Insert " + aCredential + ":");
+            Console.WriteLine("Voer " + aCredential + " in:");
             res = Console.ReadLine();
 
             return res;
