@@ -58,6 +58,29 @@ namespace Authentication
             return res;
         }
 
+        public bool CreateCredentials(string aUsername, string aPassword)
+        {
+            bool res = false;
+
+            List<User> existingUsers = ReadList<User>(path);
+            if (existingUsers.Find(match: i => i.Username == aUsername) == null)
+            {
+                User obj = new User
+                {
+                    Username = aUsername,
+                    Password = aPassword
+                };
+
+                existingUsers.Add(obj);
+
+                WriteList(path, existingUsers);
+
+                res = true;
+            }
+
+            return res;
+        }
+
         public static T Read<T>(string filePath)
         {
             string text = File.ReadAllText(filePath);
@@ -80,6 +103,11 @@ namespace Authentication
             }
 
             return res;
+        }
+
+        public void WriteList<T>(string filePath, List<T> aList)
+        {
+            File.WriteAllText(filePath, JsonSerializer.Serialize(aList));
         }
     }
 }

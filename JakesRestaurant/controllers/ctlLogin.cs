@@ -24,13 +24,22 @@ namespace Authentication
 
             return res;
         }
+        public bool CreateUser()
+        {
+            User user = new User();
 
-        static string InsertCredentials(string aCredential)
+            Console.WriteLine("\n\rMaak een nieuwe gebruiker");
+
+            return user.CreateCredentials(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord"));
+        }
+
+        private static string InsertCredentials(string aCredential)
         {
             Console.WriteLine("\n\r");
             Console.WriteLine("Voer " + aCredential + " in:");
 
             return Console.ReadLine();
         }
+
     }
 }

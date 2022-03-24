@@ -10,11 +10,14 @@ namespace JakesRestaurant
         {
             Console.WriteLine("Jakes retaurant");
             Console.WriteLine("Wijnhaven 107, 3011 WN in Rotterdam");
-            Console.WriteLine("Thema: <To be loaded from config>");
+            Console.WriteLine("Thema: <To be loaded from config> \r");
 
-            Console.WriteLine("\rDruk op een knop om door te gaan naar de login");
+            Console.WriteLine("\rDruk op een '1' om door te gaan naar de login");
+            Console.WriteLine("\rDruk op een '2' om een gebruiker aan te maken");
 
-            if (Console.ReadKey().ToString().Length > 0)
+            ConsoleKey key = Console.ReadKey().Key;
+
+            if (key == ConsoleKey.D1)
             {
                 Console.Clear();
                 if (ctlAuth.Login())
@@ -27,7 +30,20 @@ namespace JakesRestaurant
                     Console.ReadKey();
                 }
             }
+            if(key == ConsoleKey.D2)
+            {
+                if (ctlAuth.CreateUser())
+                {
+                    Console.WriteLine("Gebruiker is aangemaakt");
+                }
+                else
+                {
+                    Console.WriteLine("Kan de gebruiker niet aanmaken!");
+                }
+                Console.ReadKey();
+            }
 
+            Console.ReadKey();
             return;
         }
 
