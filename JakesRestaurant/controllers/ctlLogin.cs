@@ -1,39 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using System.IO;
+using System.Text.Json;
 
 namespace Authentication
 {
     class TctlLogin
     {
-        static string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "auth.conf.txt");
-
-        public bool Login(string aUserName, string aPassword) 
+        public bool Login() 
         {
             bool res = false;
 
-            List<TdoUser> users = JakesRestaurant.JsonFileReader.ReadList<TdoUser>(path);
+            User userCheck = new();
+            User user = userCheck.CheckCredentials(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord"));
 
-            TdoUser myUser = users.Find(i => i.Username == aUserName);
-
-            if (myUser != null)
+            if (user != null)
             {
-                if (myUser.Password == aPassword)
-                {
-                    res = true;
-                    Console.WriteLine("Succesvol aangemeld.");
-                }
-                else
-                {
-                    Console.WriteLine("Onjuiste inloggegevens verstrekt !");
-                }
+                res = true;
+                JakesRestaurant.Program.SetUser(user);
+                Console.WriteLine("Succesvol aangemeld.");
             }
             else
             {
-                Console.WriteLine("Onjuiste inloggegevens verstrekt!");
+                Console.WriteLine("Onjuiste gegevens verstrekt!");
             }
 
             return res;
         }
+        public bool CreateUser()
+        {
+            User user = new User();
+
+            Console.WriteLine("\n\rMaak een nieuwe gebruiker");
+
+            return user.CreateCredentials(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord"));
+        }
+
+        private static string InsertCredentials(string aCredential)
+        {
+            Console.WriteLine("\n\r");
+            Console.WriteLine("Voer " + aCredential + " in:");
+
+            return Console.ReadLine();
+        }
+
     }
 }

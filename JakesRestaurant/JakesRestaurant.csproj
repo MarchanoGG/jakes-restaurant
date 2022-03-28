@@ -5,4 +5,16 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="views\" />
+    <None Remove="data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="data\auth.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

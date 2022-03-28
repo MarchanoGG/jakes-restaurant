@@ -1,69 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
 
 namespace JakesRestaurant
 {
     class Program
     {
+        private static Authentication.User currentUser;
+        static Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
         static void Main(string[] args)
         {
-            Console.WriteLine("Jakes Restaurant");
+            Console.WriteLine("Jakes retaurant");
             Console.WriteLine("Wijnhaven 107, 3011 WN in Rotterdam");
-            Console.WriteLine("Thema: <Insert theme here from config or something>\n\r");
+            Console.WriteLine("Thema: <To be loaded from config> \r");
 
-            Console.WriteLine("Druk op een knop om door te gaan naar de login..");
+            Console.WriteLine("\rDruk op een '1' om door te gaan naar de login");
+            Console.WriteLine("\rDruk op een '2' om een gebruiker aan te maken");
 
-            if(Console.ReadLine() != null)
+            ConsoleKey key = Console.ReadKey().Key;
+
+            if (key == ConsoleKey.D1)
             {
                 Console.Clear();
-                Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
-                if (ctlAuth.Login(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
+                if (ctlAuth.Login())
                 {
                     Console.Clear();
-                    Console.WriteLine("Hallo wereld!");
+                    Console.WriteLine("Gebruiker: " + currentUser.Summary());
+
+                    // Main application options
+
+                    Console.ReadKey();
                 }
             }
+            if(key == ConsoleKey.D2)
+            {
+                if (ctlAuth.CreateUser())
+                {
+                    Console.WriteLine("Gebruiker is aangemaakt");
+                }
+                else
+                {
+                    Console.WriteLine("Kan de gebruiker niet aanmaken!");
+                }
+                Console.ReadKey();
+            }
 
+            Console.ReadKey();
             return;
         }
 
-        static string InsertCredentials(string aCredential)
+        static public void SetUser(Authentication.User aUser)
         {
-            string res = "";
-
-            Console.WriteLine("Voer " + aCredential + " in:");
-            res = Console.ReadLine();
-
-            return res;
-        }
-    }
-
-    public static class JsonFileReader
-    {
-        public static T Read<T>(string filePath)
-        {
-            string text = File.ReadAllText(filePath);
-
-            T res = JsonSerializer.Deserialize<T>(text);
-
-            return res;
-        }
-
-        public static List<T> ReadList<T>(string filePath)
-        {
-            List<T> res = new List<T>();
-            string text = File.ReadAllText(filePath);
-            
-            T[] arr = JsonSerializer.Deserialize<T[]>(text);
-
-            foreach (T obj in arr)
-            {
-                res.Add(obj);
-            }
-
-            return res;
+           Program.currentUser = aUser;
         }
     }
 }
