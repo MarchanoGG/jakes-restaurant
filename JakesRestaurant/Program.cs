@@ -23,7 +23,7 @@ namespace JakesRestaurant
                 if (ctlAuth.Login())
                 {
                     Console.Clear();
-                    Console.WriteLine("Gebruiker: " + currentUser.Summary());
+                    Console.WriteLine("Inglogd als: " + GetUser().Summary());
 
                     // Main application options
 
@@ -50,6 +50,11 @@ namespace JakesRestaurant
         static public void SetUser(Authentication.User aUser)
         {
            Program.currentUser = aUser;
+        }
+
+        static public Authentication.User GetUser()
+        {
+            return Program.currentUser; 
         }
     }
 }

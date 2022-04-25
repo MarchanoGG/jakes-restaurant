@@ -11,7 +11,7 @@ namespace Authentication
         static string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "auth.json");
 
         [JsonPropertyName("id")]
-        public string ID { get; set; }
+        public int ID { get; set; }
 
         [JsonPropertyName("username")]
         public string Username { get; set; }
@@ -32,11 +32,14 @@ namespace Authentication
         public string Phone { get; set; }
 
         [JsonPropertyName("birthdate")]
-        public int BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
+
+        [JsonPropertyName("status")]
+        public int Status { get; set; }
 
         public string Summary()
         {
-            return FirstName + " " + Surname;
+            return Username;//FirstName + " " + Surname;
         }
 
         public User CheckCredentials(string aUsername, string aPassword)
@@ -79,6 +82,31 @@ namespace Authentication
             }
 
             return res;
+        }
+
+        public bool UpdateUser(User aObject)
+        {
+            bool res = false;
+
+            List<User> existingUsers = ReadList<User>(path);
+
+            User myUser = existingUsers.Find(match: i => i.Username == aObject.Username);
+
+            if (myUser != null)
+            {
+                existingUsers[existingUsers.IndexOf(myUser)] = aObject;
+
+                WriteList(path, existingUsers);
+
+                res = true;
+            }
+
+            return res;
+        }
+
+        public bool HasPrivilege()
+        {
+            return Status == 1;
         }
 
         public static T Read<T>(string filePath)
