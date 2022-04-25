@@ -7,25 +7,39 @@ namespace FileManagement
 {
     public static class JsonFileManager
     {
+        public static bool FileExists(string aFilePath)
+        {
+            return File.Exists(aFilePath);
+        }
+
         public static T Read<T>(string aFilePath)
         {
-            string text = File.ReadAllText(aFilePath);
+            if (FileExists(aFilePath))
+            {
+                string text = File.ReadAllText(aFilePath);
+               T res = JsonSerializer.Deserialize<T>(text);
 
-            T res = JsonSerializer.Deserialize<T>(text);
+                return res;
+            }
+            return default(T);
 
-            return res;
         }
 
         public static List<T> ReadList<T>(string aFilePath)
         {
             List<T> res = new List<T>();
-            string text = File.ReadAllText(aFilePath);
 
-            T[] arr = JsonSerializer.Deserialize<T[]>(text);
-
-            foreach (T obj in arr)
+            if (FileExists(aFilePath))
             {
-                res.Add(obj);
+                string text = File.ReadAllText(aFilePath);
+
+                T[] arr = JsonSerializer.Deserialize<T[]>(text);
+
+                foreach (T obj in arr)
+                {
+                    res.Add(obj);
+                }
+
             }
 
             return res;
@@ -39,22 +53,24 @@ namespace FileManagement
             Console.WriteLine("write done");
         }
 
-        public static void UpdateList<T>(string aPath, T obj)
+        public static void UpdateList<T>(string aFilePath, T obj)
         {
-            List<T> ls = FileManagement.JsonFileManager.ReadList<T>(aPath);
-
-            int index = ls.IndexOf(obj);
-
-            if (index != -1)
+            if (FileExists(aFilePath))
             {
-                ls[index] = obj;
-            }
-            else
-            {
-                ls.Add(obj);
-            }
-            Write<T>(aPath, ls);
+                List<T> ls = FileManagement.JsonFileManager.ReadList<T>(aFilePath);
 
+                int index = ls.IndexOf(obj);
+
+                if (index != -1)
+                {
+                    ls[index] = obj;
+                }
+                else
+                {
+                    ls.Add(obj);
+                }
+                Write<T>(aFilePath, ls);
+            }
         }
 
     }

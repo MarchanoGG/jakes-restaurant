@@ -51,5 +51,10 @@ namespace JakesRestaurant
         {
            Program.currentUser = aUser;
         }
+
+        static public Authentication.User GetCurrentUser()
+        {
+            return Program.currentUser;
+        }
     }
 }

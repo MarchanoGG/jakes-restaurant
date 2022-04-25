@@ -34,6 +34,10 @@ namespace Authentication
         [JsonPropertyName("birthdate")]
         public int BirthDate { get; set; }
 
+
+        [JsonPropertyName("status")]
+        public int status { get; set; }
+
         public string Summary()
         {
             return FirstName + " " + Surname;
@@ -58,27 +62,9 @@ namespace Authentication
             return res;
         }
 
-        public bool CreateCredentials(string aUsername, string aPassword)
+        public bool HasPrivilege()
         {
-            bool res = false;
-
-            List<User> existingUsers = ReadList<User>(path);
-            if (existingUsers.Find(match: i => i.Username == aUsername) == null)
-            {
-                User obj = new User
-                {
-                    Username = aUsername,
-                    Password = aPassword
-                };
-
-                existingUsers.Add(obj);
-
-                WriteList(path, existingUsers);
-
-                res = true;
-            }
-
-            return res;
+            return status == 1;
         }
 
         public static T Read<T>(string filePath)
@@ -103,11 +89,6 @@ namespace Authentication
             }
 
             return res;
-        }
-
-        public void WriteList<T>(string filePath, List<T> aList)
-        {
-            File.WriteAllText(filePath, JsonSerializer.Serialize(aList));
         }
     }
 }
