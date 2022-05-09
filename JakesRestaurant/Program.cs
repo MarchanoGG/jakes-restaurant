@@ -1,4 +1,5 @@
 ﻿using System;
+using JakesRestaurant.controllers;
 
 namespace JakesRestaurant
 {
@@ -26,6 +27,8 @@ namespace JakesRestaurant
                     Console.WriteLine("Gebruiker: " + currentUser.Summary());
 
                     // Main application options
+                    ctlMain mainmenu = new ctlMain();
+                    mainmenu.Navigation();
 
                     Console.ReadKey();
                 }
