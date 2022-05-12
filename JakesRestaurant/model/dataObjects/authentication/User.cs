@@ -11,7 +11,7 @@ namespace Authentication
         static string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "auth.json");
 
         [JsonPropertyName("id")]
-        public string ID { get; set; }
+        public int ID { get; set; }
 
         [JsonPropertyName("username")]
         public string Username { get; set; }
@@ -32,11 +32,14 @@ namespace Authentication
         public string Phone { get; set; }
 
         [JsonPropertyName("birthdate")]
-        public int BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
+
+        [JsonPropertyName("status")]
+        public int Status { get; set; }
 
         public string Summary()
         {
-            return FirstName + " " + Surname;
+            return Username;//FirstName + " " + Surname;
         }
 
         public User CheckCredentials(string aUsername, string aPassword)
@@ -49,7 +52,7 @@ namespace Authentication
 
             if (myUser != null)
             {
-                if (myUser.Password == aPassword)
+                if (myUser.Password == HashString(aPassword))
                 {
                     res = myUser;
                 }
@@ -65,10 +68,18 @@ namespace Authentication
             List<User> existingUsers = ReadList<User>(path);
             if (existingUsers.Find(match: i => i.Username == aUsername) == null)
             {
+                int newID = 1;
+
+                if (existingUsers.Count > 1)
+                {
+                    newID = existingUsers[existingUsers.Count - 1].ID + 1;
+                }
+
                 User obj = new User
                 {
                     Username = aUsername,
-                    Password = aPassword
+                    Password = HashString(aPassword),
+                    ID = newID
                 };
 
                 existingUsers.Add(obj);
@@ -79,6 +90,31 @@ namespace Authentication
             }
 
             return res;
+        }
+
+        public bool UpdateUser(User aObject)
+        {
+            bool res = false;
+
+            List<User> existingUsers = ReadList<User>(path);
+
+            User myUser = existingUsers.Find(match: i => i.Username == aObject.Username);
+
+            if (myUser != null)
+            {
+                existingUsers[existingUsers.IndexOf(myUser)] = aObject;
+
+                WriteList(path, existingUsers);
+
+                res = true;
+            }
+
+            return res;
+        }
+
+        public bool HasPrivilege()
+        {
+            return Status == 1;
         }
 
         public static T Read<T>(string filePath)
@@ -108,6 +144,29 @@ namespace Authentication
         public void WriteList<T>(string filePath, List<T> aList)
         {
             File.WriteAllText(filePath, JsonSerializer.Serialize(aList));
+        }
+
+        static string HashString(string text, string salt = "")
+        {
+            if (String.IsNullOrEmpty(text))
+            {
+                return String.Empty;
+            }
+
+            // Uses SHA256 to create the hash
+            using (var sha = new System.Security.Cryptography.SHA256Managed())
+            {
+                // Convert the string to a byte array first, to be processed
+                byte[] textBytes = System.Text.Encoding.UTF8.GetBytes(text + salt);
+                byte[] hashBytes = sha.ComputeHash(textBytes);
+
+                // Convert back to a string, removing the '-' that BitConverter adds
+                string hash = BitConverter
+                    .ToString(hashBytes)
+                    .Replace("-", String.Empty);
+
+                return hash;
+            }
         }
     }
 }
