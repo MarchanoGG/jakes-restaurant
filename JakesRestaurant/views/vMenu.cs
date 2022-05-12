@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JakesRestaurant.controllers
+namespace JakesRestaurant.views
 {
-    internal class ctlMenu
+    internal class vMenu
     {
         public List<Option> options { get; set; }
-        public ctlMenu(List<Option> options)
+        public vMenu(List<Option> options)
         {
             // Set the default index of the selected item to be the first
             int index = 0;
