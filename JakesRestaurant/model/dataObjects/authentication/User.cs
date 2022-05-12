@@ -68,12 +68,18 @@ namespace Authentication
             List<User> existingUsers = ReadList<User>(path);
             if (existingUsers.Find(match: i => i.Username == aUsername) == null)
             {
-                
+                int newID = 1;
+
+                if (existingUsers.Count > 1)
+                {
+                    newID = existingUsers[existingUsers.Count - 1].ID + 1;
+                }
+
                 User obj = new User
                 {
                     Username = aUsername,
                     Password = HashString(aPassword),
-                    ID = existingUsers[existingUsers.Count - 1].ID + 1
+                    ID = newID
                 };
 
                 existingUsers.Add(obj);
