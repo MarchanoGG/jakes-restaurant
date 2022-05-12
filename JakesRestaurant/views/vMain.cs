@@ -24,6 +24,7 @@ namespace JakesRestaurant.views
             {
                 new Option("Products", productscontroller.Navigation),
                 new Option("Users", userscontroller.Navigation),
+                new Option("Pas gebruiker aan", loginView.UpdateProfile),
                 new Option("Terug naar login", loginView.BackToLogin),
                 new Option("Exit", () => Environment.Exit(0)),
             };

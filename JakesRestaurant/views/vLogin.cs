@@ -43,6 +43,18 @@ namespace JakesRestaurant.views
             };
             this.menu = new vMenu(options);
         }
+        public void UpdateProfile()
+        {
+            vMain mainmenu = new vMain();
+            
+            options = new List<Option>
+            {
+                new Option("Voornaam:       " + vLogin.currentUser.FirstName, this.InsertFirstName),
+                new Option("Achternaam:     " + vLogin.currentUser.Surname, this.InsertSurname),
+                new Option("Terug", () => mainmenu.Navigation()),
+            };
+            this.menu = new vMenu(options);
+        }
         public void Create()
         {
             if (ctlAuth.CreateUser(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
@@ -64,6 +76,28 @@ namespace JakesRestaurant.views
         static public Authentication.User GetUser()
         {
             return vLogin.currentUser;
+        }
+
+        private void InsertFirstName()
+        {
+            Console.WriteLine("Voer nieuwe voornaam in:");
+            string newVal = Console.ReadLine();
+            vLogin.currentUser.FirstName = newVal;
+
+            vLogin.currentUser.UpdateUser(vLogin.currentUser);
+
+            UpdateProfile();
+        }
+
+        private void InsertSurname()
+        {
+            Console.WriteLine("Voer nieuwe achternaam in:");
+            string newVal = Console.ReadLine();
+            vLogin.currentUser.Surname = newVal;
+
+            vLogin.currentUser.UpdateUser(vLogin.currentUser);
+
+            UpdateProfile();
         }
 
         private static string InsertCredentials(string aCredential)

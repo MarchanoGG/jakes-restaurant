@@ -12,8 +12,8 @@ namespace Authentication
         {
             bool res = false;
 
-            User userCheck = new User();
-            User user = userCheck.CheckCredentials(aUsername, aPassword);
+            User userObj = new User();
+            User user = userObj.CheckCredentials(aUsername, aPassword);
 
             if (user != null)
             {
