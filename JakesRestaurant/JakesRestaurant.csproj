@@ -10,9 +10,6 @@
     <None Remove="data\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="views\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="data\auth.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

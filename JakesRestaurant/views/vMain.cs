@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JakesRestaurant.controllers
+namespace JakesRestaurant.views
 {
-    internal class ctlMain
+    internal class vMain
     {
         public static List<Option> options;
-        public ctlMenu menu { get; set; }
-        public ctlExampleProducts productscontroller { get; set; }
-        public ctlExampleUsers userscontroller { get; set; }
-        public List<ctlMenu> breadcrumbs{ get; set; }
+        public vMenu menu { get; set; }
+        public vExampleProducts productscontroller { get; set; }
+        public vExampleUsers userscontroller { get; set; }
+        public List<vMenu> breadcrumbs{ get; set; }
         public List<string> test{ get; set; }
-        public ctlMain()
+        public vMain()
         {
-            productscontroller = new ctlExampleProducts();
-            userscontroller = new ctlExampleUsers();
+            productscontroller = new vExampleProducts();
+            userscontroller = new vExampleUsers();
             options = new List<Option>
             {
                 new Option("Products", productscontroller.Navigation),
@@ -27,7 +27,7 @@ namespace JakesRestaurant.controllers
         }
         public void Navigation()
         {
-            menu = new ctlMenu(options);
+            menu = new vMenu(options);
             //breadcrumbs.Add(menu);
             //productscontroller.breadcrumbs = breadcrumbs;
             userscontroller.test = new List<string>();

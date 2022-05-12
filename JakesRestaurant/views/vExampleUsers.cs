@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JakesRestaurant.controllers
+namespace JakesRestaurant.views
 {
-    internal class ctlExampleUsers
+    internal class vExampleUsers
     {
         public static List<Option> options;
-        public ctlMenu menu { get; set; }
-        public List<ctlMenu> breadcrumbs { get; set; }
+        public vMenu menu { get; set; }
+        public List<vMenu> breadcrumbs { get; set; }
         public List<string> test { get; set; }
-        public ctlExampleUsers()
+        public vExampleUsers()
         {
             Console.WriteLine("Users");
             options = new List<Option>
@@ -27,7 +27,7 @@ namespace JakesRestaurant.controllers
         }
         public void Navigation()
         {
-            this.menu = new ctlMenu(options);
+            this.menu = new vMenu(options);
         }
 
         public void ListTest()

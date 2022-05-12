@@ -1,5 +1,5 @@
 ﻿using System;
-using JakesRestaurant.controllers;
+using JakesRestaurant.views;
 
 namespace JakesRestaurant
 {
@@ -27,7 +27,7 @@ namespace JakesRestaurant
                     Console.WriteLine("Inglogd als: " + GetUser().Summary());
 
                     // Main application options
-                    ctlMain mainmenu = new ctlMain();
+                    vMain mainmenu = new vMain();
                     mainmenu.Navigation();
 
                     Console.ReadKey();
