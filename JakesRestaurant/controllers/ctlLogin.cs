@@ -18,7 +18,7 @@ namespace Authentication
             if (user != null)
             {
                 res = true;
-                JakesRestaurant.Program.SetUser(user);
+                JakesRestaurant.views.vLogin.SetUser(user);
                 Console.WriteLine("Succesvol aangemeld.");
             }
             else
