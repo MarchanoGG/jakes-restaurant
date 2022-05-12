@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Text.Json;
 
 namespace Authentication
 {
-    class TctlLogin
+    public class TctlLogin
     {
-        public bool Login() 
+        public bool Login(string aUsername, string aPassword) 
         {
             bool res = false;
 
-            User userCheck = new();
-            User user = userCheck.CheckCredentials(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord"));
+            User userCheck = new User();
+            User user = userCheck.CheckCredentials(aUsername, aPassword);
 
             if (user != null)
             {
@@ -24,22 +28,13 @@ namespace Authentication
 
             return res;
         }
-        public bool CreateUser()
+        public bool CreateUser(string aUsername, string aPassword)
         {
             User user = new User();
 
             Console.WriteLine("\n\rMaak een nieuwe gebruiker");
 
-            return user.CreateCredentials(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord"));
+            return user.CreateCredentials(aUsername, aPassword);
         }
-
-        private static string InsertCredentials(string aCredential)
-        {
-            Console.WriteLine("\n\r");
-            Console.WriteLine("Voer " + aCredential + " in:");
-
-            return Console.ReadLine();
-        }
-
     }
 }
