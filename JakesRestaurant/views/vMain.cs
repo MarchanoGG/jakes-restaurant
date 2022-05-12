@@ -12,16 +12,19 @@ namespace JakesRestaurant.views
         public vMenu menu { get; set; }
         public vExampleProducts productscontroller { get; set; }
         public vExampleUsers userscontroller { get; set; }
+        public vLogin loginView { get; set; }
         public List<vMenu> breadcrumbs{ get; set; }
         public List<string> test{ get; set; }
         public vMain()
         {
             productscontroller = new vExampleProducts();
             userscontroller = new vExampleUsers();
+            loginView = new vLogin();
             options = new List<Option>
             {
                 new Option("Products", productscontroller.Navigation),
                 new Option("Users", userscontroller.Navigation),
+                new Option("Terug naar login", loginView.BackToLogin),
                 new Option("Exit", () => Environment.Exit(0)),
             };
         }

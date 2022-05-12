@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JakesRestaurant.controllers;
 
 namespace JakesRestaurant.views
 {
@@ -10,11 +9,10 @@ namespace JakesRestaurant.views
         static Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
 
         public static List<Option> options;
-        public ctlMenu menu { get; set; }
-        public List<ctlMenu> breadcrumbs { get; set; }
+        public vMenu menu { get; set; }
+        public List<vMenu> breadcrumbs { get; set; }
         public vLogin()
         {
-            Console.WriteLine("Login");
             options = new List<Option>
             {
                 new Option("Inloggen", this.Login),
@@ -24,15 +22,26 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new ctlMenu(options);
+            this.menu = new vMenu(options);
         }
         public void Login()
         {
             if (ctlAuth.Login(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
             {
-                ctlMain mainmenu = new ctlMain();
+                vMain mainmenu = new vMain();
                 mainmenu.Navigation();
             }
+        }
+        public void BackToLogin()
+        {
+            vLogin.currentUser = null;
+            options = new List<Option>
+            {
+                new Option("Inloggen", this.Login),
+                new Option("Aanmelden", this.Create),
+                new Option("Afsluiten", () => Environment.Exit(0)),
+            };
+            this.menu = new vMenu(options);
         }
         public void Create()
         {
@@ -44,7 +53,7 @@ namespace JakesRestaurant.views
             {
                 Console.WriteLine("Kan de gebruiker niet aanmaken!");
             }
-            this.menu = new ctlMenu(options);
+            this.menu = new vMenu(options);
         }
 
         static public void SetUser(Authentication.User aUser)
