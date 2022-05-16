@@ -7,9 +7,12 @@ namespace JakesRestaurant
     {
         static void Main(string[] args)
         {
-            vLogin loginView = new vLogin();
 
-            loginView.Navigation();
+            //vLogin loginView = new vLogin();
+
+           // loginView.Navigation();
+
+            vProducts productView = new vProducts();
         }
     }
 }

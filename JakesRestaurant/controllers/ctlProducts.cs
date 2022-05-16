@@ -71,15 +71,15 @@ namespace controllers
 
         }
 
-        public Product getId(int id)
+        public Product GetID(int id)
         {
             return d_products.Find(i => i.ID == id);
         }
 
         public int IncrementID()
         {
-            if (d_products.Any())
-                return d_products.Last().ID + 1;
+            if (d_products.Any())           
+               return d_products.Last().ID + 1;           
             else
                 return 1;
         }

@@ -34,7 +34,7 @@ namespace Authentication
 
             Console.WriteLine("\n\rMaak een nieuwe gebruiker");
 
-            return user.CreateCredentials(aUsername, aPassword);
+            return true;// user.CreateCredentials(aUsername, aPassword);
         }
     }
 }
