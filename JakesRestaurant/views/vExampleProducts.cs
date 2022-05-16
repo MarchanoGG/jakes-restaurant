@@ -18,13 +18,18 @@ namespace JakesRestaurant.views
             {
                 new Option("Add", this.Add),
                 new Option("View", this.View),
-                new Option("Back to menu", this.View),
+                new Option("Back to menu", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
         }
         public void Navigation()
         {
             this.menu = new vMenu(options);
+        }
+        public void BackToMain()
+        {
+            vMain main = new vMain();
+            main.Navigation();
         }
         public void Add()
         {
