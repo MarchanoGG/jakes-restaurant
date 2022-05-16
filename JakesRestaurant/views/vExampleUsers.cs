@@ -19,8 +19,7 @@ namespace JakesRestaurant.views
             {
                 new Option("Add", this.Add),
                 new Option("View", this.View),
-                new Option("Test", this.ListTest),
-                new Option("Back to menu", this.View),
+                new Option("Back to menu", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
             test = new List<string>();
@@ -30,13 +29,10 @@ namespace JakesRestaurant.views
             this.menu = new vMenu(options);
         }
 
-        public void ListTest()
+        public void BackToMain()
         {
-            test.Add("fooba2");
-            foreach (var x in test)
-            {
-                Console.WriteLine(x);
-            }
+            vMain main = new vMain();
+            main.Navigation();
         }
         public void Add()
         {
