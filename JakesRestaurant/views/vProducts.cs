@@ -2,6 +2,7 @@
 using controllers;
 using management;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace JakesRestaurant.views
 {
@@ -57,7 +58,7 @@ namespace JakesRestaurant.views
         }
         public void Edit()
         {
-            int aID = 4; // Get from parameter
+            int aID = 2; // Get from parameter
             Product p = d_prodCtrl.GetID(aID);
 
             FillFromInput(ref p);
@@ -71,9 +72,40 @@ namespace JakesRestaurant.views
         }
 
         public void FillFromInput(ref Product p)
-        { 
+        {
+            List<string> allergens = new List<string>();
+            List<string> ingredients = new List<string>();
+
             Console.WriteLine("Naam:");
             p.Name = Console.ReadLine();
+
+            Console.WriteLine("Prijs:");
+            p.Price = double.Parse(Console.ReadLine());
+
+            Console.WriteLine("Allergiën: (Gebruik ; na ieder item)");
+          
+            allergens = Console.ReadLine().Split(';').ToList();
+            p.Allergens = allergens;
+
+            Console.WriteLine("Ingrediënten: (Gebruik ; na ieder item)");
+       
+            ingredients = Console.ReadLine().Split(';').ToList();
+            p.Ingredients = ingredients;
+
+            Console.WriteLine("Zit er alcohol in?");
+
+            Console.WriteLine("1) Ja");
+            Console.WriteLine("2) Nee");
+
+
+            int choice = int.Parse(Console.ReadLine());
+
+            if (choice == 1)
+                p.Alcohol = true;
+            else
+                p.Alcohol = false;
+
+
         }
     }
 }
