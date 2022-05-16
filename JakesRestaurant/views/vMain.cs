@@ -27,11 +27,11 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            menu = new vMenu(options);
+            this.menu = new vMenu(options);
             //breadcrumbs.Add(menu);
             //productscontroller.breadcrumbs = breadcrumbs;
-            userscontroller.test = new List<string>();
-            userscontroller.test.Add("fooba");
+            //userscontroller.test = new List<string>();
+            //userscontroller.test.Add("fooba");
         }
     }
 }
