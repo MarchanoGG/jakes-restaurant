@@ -10,13 +10,13 @@ namespace JakesRestaurant.views
     {
         public static List<Option> options;
         public vMenu menu { get; set; }
-        public vExampleProducts productscontroller { get; set; }
+        public vProducts productscontroller { get; set; }
         public vExampleUsers userscontroller { get; set; }
         public List<vMenu> breadcrumbs{ get; set; }
         public List<string> test{ get; set; }
         public vMain()
         {
-            productscontroller = new vExampleProducts();
+            productscontroller = new vProducts();
             userscontroller = new vExampleUsers();
             options = new List<Option>
             {

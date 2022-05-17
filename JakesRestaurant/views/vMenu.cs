@@ -97,11 +97,18 @@ namespace JakesRestaurant.views
     {
         public string Name { get; }
         public Action Selected { get; }
+        public object V { get; }
 
         public Option(string name, Action selected)
         {
             Name = name;
             Selected = selected;
+        }
+
+        public Option(string name, object v)
+        {
+            Name = name;
+            V = v;
         }
     }
 }
