@@ -49,8 +49,11 @@ namespace JakesRestaurant.views
             
             options = new List<Option>
             {
-                new Option("Voornaam:       " + vLogin.currentUser.FirstName, this.InsertFirstName),
-                new Option("Achternaam:     " + vLogin.currentUser.Surname, this.InsertSurname),
+                new Option("Voornaam:           " + vLogin.currentUser.FirstName, this.InsertValue, 1),
+                new Option("Achternaam:         " + vLogin.currentUser.Surname, this.InsertValue, 2),
+                new Option("Email:              " + vLogin.currentUser.Email, this.InsertValue, 3),
+                new Option("Telefoon nummer:    " + vLogin.currentUser.Phone, this.InsertValue, 4),
+                new Option("Geboorte datum:     " + vLogin.currentUser.BirthDate, this.InsertValue, 5),
                 new Option("Terug", () => mainmenu.Navigation()),
             };
             this.menu = new vMenu(options);
@@ -78,24 +81,57 @@ namespace JakesRestaurant.views
             return vLogin.currentUser;
         }
 
-        private void InsertFirstName()
+        private void InsertValue(int idx)
         {
-            Console.WriteLine("Voer nieuwe voornaam in:");
-            string newVal = Console.ReadLine();
-            vLogin.currentUser.FirstName = newVal;
 
-            vLogin.currentUser.UpdateUser(vLogin.currentUser);
+            switch (idx)
+            {
+                case 1:
+                    Console.WriteLine("Voer nieuwe voornaam in:");
+                    string FirstName = Console.ReadLine();
+                    vLogin.currentUser.FirstName = FirstName;
 
-            UpdateProfile();
-        }
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                case 2:
+                    Console.WriteLine("Voer nieuwe achternaam in:");
+                    string Surname = Console.ReadLine();
+                    vLogin.currentUser.Surname = Surname;
 
-        private void InsertSurname()
-        {
-            Console.WriteLine("Voer nieuwe achternaam in:");
-            string newVal = Console.ReadLine();
-            vLogin.currentUser.Surname = newVal;
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                case 3:
+                    Console.WriteLine("Voer nieuwe email in:");
+                    string Email = Console.ReadLine();
+                    vLogin.currentUser.Email = Email;
 
-            vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                case 4:
+                    Console.WriteLine("Voer nieuwe telefoon nummer in:");
+                    string Phone = Console.ReadLine();
+                    vLogin.currentUser.Phone = Phone;
+
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                case 5:
+                    Console.WriteLine("Voer uw geboorte datum in:");
+
+                    string line = Console.ReadLine();
+                    DateTime dt;
+                    while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
+                    {
+                        Console.WriteLine("Invalid date, please retry");
+                        line = Console.ReadLine();
+                    }
+
+                    vLogin.currentUser.BirthDate = dt;
+
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                default:
+                    break;
+            }
 
             UpdateProfile();
         }

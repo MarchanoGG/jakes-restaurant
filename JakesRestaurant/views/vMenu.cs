@@ -44,7 +44,11 @@ namespace JakesRestaurant.views
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-                    options[index].Selected();
+                    if(options[index].ID != 0)
+                        options[index].Selected(options[index].ID);
+                    else
+                        options[index].VoidSelected();
+
                     Console.ReadKey();
                     index = 0;
                     WriteMenu(options, options[index]);
@@ -77,12 +81,21 @@ namespace JakesRestaurant.views
     public class Option
     {
         public string Name { get; }
-        public Action Selected { get; }
+        public Action VoidSelected { get; }
+        public Action<int> Selected { get; }
+        public int ID { get; set; }
 
         public Option(string name, Action selected)
         {
             Name = name;
+            VoidSelected = selected;
+        }
+
+        public Option(string name, Action<int> selected, int id = 0) 
+        {
+            Name = name;
             Selected = selected;
+            ID = id;
         }
     }
 }
