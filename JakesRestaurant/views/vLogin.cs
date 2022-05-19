@@ -13,7 +13,6 @@ namespace JakesRestaurant.views
         public List<vMenu> breadcrumbs { get; set; }
         public vLogin()
         {
-            Console.WriteLine("Login");
             options = new List<Option>
             {
                 new Option("Inloggen", this.Login),
@@ -32,6 +31,32 @@ namespace JakesRestaurant.views
                 vMain mainmenu = new vMain();
                 mainmenu.Navigation();
             }
+        }
+        public void BackToLogin()
+        {
+            vLogin.currentUser = null;
+            options = new List<Option>
+            {
+                new Option("Inloggen", this.Login),
+                new Option("Aanmelden", this.Create),
+                new Option("Afsluiten", () => Environment.Exit(0)),
+            };
+            this.menu = new vMenu(options);
+        }
+        public void UpdateProfile()
+        {
+            vMain mainmenu = new vMain();
+            
+            options = new List<Option>
+            {
+                new Option("Voornaam:           " + vLogin.currentUser.FirstName, this.InsertValue, 1),
+                new Option("Achternaam:         " + vLogin.currentUser.Surname, this.InsertValue, 2),
+                new Option("Email:              " + vLogin.currentUser.Email, this.InsertValue, 3),
+                new Option("Telefoon nummer:    " + vLogin.currentUser.Phone, this.InsertValue, 4),
+                new Option("Geboorte datum:     " + vLogin.currentUser.BirthDate, this.InsertValue, 5),
+                new Option("Terug", () => mainmenu.Navigation()),
+            };
+            this.menu = new vMenu(options);
         }
         public void Create()
         {
@@ -54,6 +79,61 @@ namespace JakesRestaurant.views
         static public Authentication.User GetUser()
         {
             return vLogin.currentUser;
+        }
+
+        private void InsertValue(int idx)
+        {
+
+            switch (idx)
+            {
+                case 1:
+                    Console.WriteLine("Voer nieuwe voornaam in:");
+                    string FirstName = Console.ReadLine();
+                    vLogin.currentUser.FirstName = FirstName;
+
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                case 2:
+                    Console.WriteLine("Voer nieuwe achternaam in:");
+                    string Surname = Console.ReadLine();
+                    vLogin.currentUser.Surname = Surname;
+
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                case 3:
+                    Console.WriteLine("Voer nieuwe email in:");
+                    string Email = Console.ReadLine();
+                    vLogin.currentUser.Email = Email;
+
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                case 4:
+                    Console.WriteLine("Voer nieuwe telefoon nummer in:");
+                    string Phone = Console.ReadLine();
+                    vLogin.currentUser.Phone = Phone;
+
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                case 5:
+                    Console.WriteLine("Voer uw geboorte datum in:");
+
+                    string line = Console.ReadLine();
+                    DateTime dt;
+                    while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
+                    {
+                        Console.WriteLine("Invalid date, please retry");
+                        line = Console.ReadLine();
+                    }
+
+                    vLogin.currentUser.BirthDate = dt;
+
+                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    break;
+                default:
+                    break;
+            }
+
+            UpdateProfile();
         }
 
         private static string InsertCredentials(string aCredential)
