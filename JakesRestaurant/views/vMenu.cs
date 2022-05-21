@@ -117,10 +117,10 @@ namespace JakesRestaurant.views
             ID = id;
         }
 
-        public Option(string name, object v)
-        {
-            Name = name;
-            V = v;
-        }
+        //public Option(string name, object v)
+        //{
+        //    Name = name;
+        //    V = v;
+        //}
     }
 }

@@ -16,20 +16,16 @@ namespace JakesRestaurant.views
         public vDiningtable()
         {
             d_DiningTableCtrl = new ctlDiningTable();
-            DefaultMenu();
-        }
-        void DefaultMenu()
-        {
             Console.WriteLine("Zit plaatsen");
             options = new List<Option>
             {
                 new Option("Voeg toe", this.Add),
                 new Option("Lijst", this.View),
+                new Option("Back to menu", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
-
-            Navigation();
         }
+
         public void Navigation()
         {
             this.menu = new vMenu(options);
@@ -46,20 +42,21 @@ namespace JakesRestaurant.views
         }
         public void View()
         {
-            options = new List<Option>();
+            List<Option> listoptions = new List<Option>();
 
-            options.Add(new Option("Terug", DefaultMenu));
+            listoptions.Add(new Option("Terug", Navigation));
 
             foreach (var l in d_DiningTableCtrl.GetList())
             {
-                options.Add(new Option(l.Id, Edit,));
+                var label = $"Tafel voor {l.Places}";
+                listoptions.Add(new Option(label, Edit, l.ID));
             }
 
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(listoptions);
         }
-        public void Edit()
+        public void Edit(int aID)
         {
-            int aID = 2; // Get from parameter
+            // Get from parameter
             DiningTable p = d_DiningTableCtrl.GetID(aID);
 
             FillFromInput(ref p);
@@ -69,7 +66,6 @@ namespace JakesRestaurant.views
 
             // Go back to View navigation
             View();
-
         }
 
         public void FillFromInput(ref DiningTable p)
@@ -79,6 +75,12 @@ namespace JakesRestaurant.views
 
             Console.WriteLine("Omschrijving:");
             p.Description = Console.ReadLine();
+        }
+
+        public void BackToMain()
+        {
+            vMain main = new vMain();
+            main.Navigation();
         }
     }
 }
