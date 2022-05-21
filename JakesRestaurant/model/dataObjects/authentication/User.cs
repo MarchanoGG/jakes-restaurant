@@ -36,6 +36,19 @@ namespace Authentication
 
         [JsonPropertyName("status")]
         public int Status { get; set; }
+        public User() { 
+        }
+        public User(User obj) {
+            this.ID = obj.ID;
+            this.Username = obj.Username;
+            this.Password = obj.Password;
+            this.FirstName = obj.FirstName;
+            this.Surname = obj.Surname;
+            this.Email = obj.Email;
+            this.Phone = obj.Phone;
+            this.BirthDate = obj.BirthDate;
+            this.Status = obj.Status;
+        }
 
         public string Summary()
         {
@@ -61,6 +74,13 @@ namespace Authentication
             return res;
         }
 
+        public List<User> GetUsers()
+        {
+            List<User> existingUsers = ReadList<User>(path);
+
+            return existingUsers;
+        }
+
         public bool CreateCredentials(string aUsername, string aPassword)
         {
             bool res = false;
@@ -70,7 +90,7 @@ namespace Authentication
             {
                 int newID = 1;
 
-                if (existingUsers.Count > 1)
+                if (existingUsers.Count >= 1)
                 {
                     newID = existingUsers[existingUsers.Count - 1].ID + 1;
                 }

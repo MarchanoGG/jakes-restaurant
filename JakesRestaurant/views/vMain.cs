@@ -18,16 +18,31 @@ namespace JakesRestaurant.views
         public vMain()
         {
             productscontroller = new vExampleProducts();
-            userscontroller = new vExampleUsers();
             loginView = new vLogin();
-            options = new List<Option>
+
+            if (loginView.GetUser().HasPrivilege() == true)
             {
-                new Option("Products", productscontroller.Navigation),
-                new Option("Users", userscontroller.Navigation),
-                new Option("Pas gebruiker aan", loginView.UpdateProfile),
-                new Option("Terug naar login", loginView.BackToLogin),
-                new Option("Exit", () => Environment.Exit(0)),
-            };
+                options = new List<Option>
+                {
+                    new Option("Thema's", loginView.CheckRes),
+                    new Option("Producten", productscontroller.Navigation),
+                    new Option("Gebruikers", loginView.UsersList),
+                    new Option("Pas profiel aan", loginView.UpdateProfile),
+                    new Option("Terug naar login", loginView.BackToLogin),
+                    new Option("Afsluiten", () => Environment.Exit(0)),
+                };
+            } else
+            {
+                options = new List<Option>
+                {
+                    new Option("Reserveer een tafel", loginView.CheckRes),
+                    new Option("Bekijk uw reserveringen", loginView.CheckRes),
+                    new Option("Producten", productscontroller.Navigation),
+                    new Option("Pas profiel aan", loginView.UpdateProfile),
+                    new Option("Terug naar login", loginView.BackToLogin),
+                    new Option("Afsluiten", () => Environment.Exit(0)),
+                };
+            }
         }
         public void Navigation()
         {

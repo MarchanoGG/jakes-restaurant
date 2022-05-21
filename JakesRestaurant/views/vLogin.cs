@@ -6,6 +6,8 @@ namespace JakesRestaurant.views
     internal class vLogin
     {
         private static Authentication.User currentUser;
+        private Authentication.User ThisUser { get { return currentUser; } set { currentUser = value; } }
+
         static Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
 
         public static List<Option> options;
@@ -34,7 +36,7 @@ namespace JakesRestaurant.views
         }
         public void BackToLogin()
         {
-            vLogin.currentUser = null;
+            this.ThisUser = null;
             options = new List<Option>
             {
                 new Option("Inloggen", this.Login),
@@ -49,11 +51,11 @@ namespace JakesRestaurant.views
             
             options = new List<Option>
             {
-                new Option("Voornaam:           " + vLogin.currentUser.FirstName, this.InsertValue, 1),
-                new Option("Achternaam:         " + vLogin.currentUser.Surname, this.InsertValue, 2),
-                new Option("Email:              " + vLogin.currentUser.Email, this.InsertValue, 3),
-                new Option("Telefoon nummer:    " + vLogin.currentUser.Phone, this.InsertValue, 4),
-                new Option("Geboorte datum:     " + vLogin.currentUser.BirthDate, this.InsertValue, 5),
+                new Option("Voornaam:           " + this.ThisUser.FirstName, this.InsertValue, 1),
+                new Option("Achternaam:         " + this.ThisUser.Surname, this.InsertValue, 2),
+                new Option("Email:              " + this.ThisUser.Email, this.InsertValue, 3),
+                new Option("Telefoon nummer:    " + this.ThisUser.Phone, this.InsertValue, 4),
+                new Option("Geboorte datum:     " + this.ThisUser.BirthDate, this.InsertValue, 5),
                 new Option("Terug", () => mainmenu.Navigation()),
             };
             this.menu = new vMenu(options);
@@ -70,15 +72,41 @@ namespace JakesRestaurant.views
             }
             this.menu = new vMenu(options);
         }
+        public void UsersList()
+        {
+            vMain mainmenu = new vMain();
+
+            options = new List<Option> {};
+
+            Authentication.User usr = new Authentication.User();
+
+            foreach (Authentication.User obj in usr.GetUsers())
+            {
+                options.Add(new Option(obj.ID + ". " + obj.FirstName + " " + obj.Surname, CheckRes));
+            }
+
+            options.Add(new Option("Terug", () => mainmenu.Navigation()));
+            this.menu = new vMenu(options);
+        }
+        public void CheckRes()
+        {
+            vMain mainmenu = new vMain();
+
+            options = new List<Option>
+            {
+                new Option("Wordt nog aan gewerkt, kies deze optie om terug te gaan naar het menu!", () => mainmenu.Navigation()),
+            };
+            this.menu = new vMenu(options);
+        }
 
         static public void SetUser(Authentication.User aUser)
         {
             vLogin.currentUser = aUser;
         }
 
-        static public Authentication.User GetUser()
+        public Authentication.User GetUser()
         {
-            return vLogin.currentUser;
+            return this.ThisUser;
         }
 
         private void InsertValue(int idx)
@@ -89,30 +117,30 @@ namespace JakesRestaurant.views
                 case 1:
                     Console.WriteLine("Voer nieuwe voornaam in:");
                     string FirstName = Console.ReadLine();
-                    vLogin.currentUser.FirstName = FirstName;
+                    this.ThisUser.FirstName = FirstName;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    this.ThisUser.UpdateUser(this.ThisUser);
                     break;
                 case 2:
                     Console.WriteLine("Voer nieuwe achternaam in:");
                     string Surname = Console.ReadLine();
-                    vLogin.currentUser.Surname = Surname;
+                    this.ThisUser.Surname = Surname;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    this.ThisUser.UpdateUser(this.ThisUser);
                     break;
                 case 3:
                     Console.WriteLine("Voer nieuwe email in:");
                     string Email = Console.ReadLine();
-                    vLogin.currentUser.Email = Email;
+                    this.ThisUser.Email = Email;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    this.ThisUser.UpdateUser(this.ThisUser);
                     break;
                 case 4:
                     Console.WriteLine("Voer nieuwe telefoon nummer in:");
                     string Phone = Console.ReadLine();
-                    vLogin.currentUser.Phone = Phone;
+                    this.ThisUser.Phone = Phone;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    this.ThisUser.UpdateUser(this.ThisUser);
                     break;
                 case 5:
                     Console.WriteLine("Voer uw geboorte datum in:");
@@ -125,9 +153,9 @@ namespace JakesRestaurant.views
                         line = Console.ReadLine();
                     }
 
-                    vLogin.currentUser.BirthDate = dt;
+                    this.ThisUser.BirthDate = dt;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    this.ThisUser.UpdateUser(this.ThisUser);
                     break;
                 default:
                     break;
