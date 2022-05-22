@@ -21,6 +21,7 @@ namespace JakesRestaurant.views
             {
                 new Option("Voeg toe", this.Add),
                 new Option("Lijst", this.View),
+                new Option("Delete", this.ViewDelete),
                 new Option("Back to menu", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
@@ -54,6 +55,23 @@ namespace JakesRestaurant.views
 
             this.menu = new vMenu(listoptions);
         }
+
+        public void ViewDelete()
+        {
+            List<Option> listoptions = new List<Option>();
+
+            listoptions.Add(new Option("Terug", Navigation));
+
+            foreach (var l in d_DiningTableCtrl.GetList())
+            {
+                var label = $"Tafel voor {l.Places}";
+                listoptions.Add(new Option(label, Delete, l.ID));
+            }
+
+            this.menu = new vMenu(listoptions);
+            Navigation();
+        }
+
         public void Edit(int aID)
         {
             // Get from parameter
@@ -66,6 +84,16 @@ namespace JakesRestaurant.views
 
             // Go back to View navigation
             View();
+        }
+        public void Delete(int aID)
+        {
+            // Get from parameter
+            DiningTable p = d_DiningTableCtrl.GetID(aID);
+
+            // If success than update product
+            d_DiningTableCtrl.DeleteById(p);
+
+            // Go back to View navigation
         }
 
         public void FillFromInput(ref DiningTable p)

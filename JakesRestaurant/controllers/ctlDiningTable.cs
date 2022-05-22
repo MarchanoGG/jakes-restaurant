@@ -45,13 +45,6 @@ namespace controllers
             else
                 return null;
         }
-        public List<DiningTable> GetProducts()
-        {
-            if (diningTables != null)
-                return diningTables;
-            else
-                return null;
-        }
 
         public void Write()
         {
@@ -75,6 +68,17 @@ namespace controllers
 
             Write();
 
+        }
+        public void DeleteById(DiningTable p)
+        {
+            int index = diningTables.FindIndex(s => s.ID == p.ID);
+
+            if (index != -1)
+            {
+                diningTables.Remove(p);
+            }
+
+            Write();
         }
 
         public DiningTable GetID(int id)
