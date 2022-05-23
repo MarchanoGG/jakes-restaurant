@@ -184,13 +184,13 @@ namespace JakesRestaurant.views
         public void UserSelect(int aId)
         {
             ctl.currentitem.User = ctlU.FindById(aId);
-            Console.WriteLine($"Gebruiker: {ctl.currentitem.User.Username}");
+            Console.WriteLine($"Geselecteerd: {ctl.currentitem.User.Username}");
         }
 
         public void ProductSelect(int aId)
         {
             Product Product = ctlP.GetID(aId);
-            Console.WriteLine(Product.Name);
+            Console.WriteLine($"Geselecteerd: {Product.Name}");
             ctl.currentitem.ListProducts.Add(Product);
             //Console.WriteLine($"Gebruiker: {ctl.currentitem.ListProducts.Count}");
         }
