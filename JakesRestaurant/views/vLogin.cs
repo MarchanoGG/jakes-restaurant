@@ -7,7 +7,7 @@ namespace JakesRestaurant.views
     {
         private static Authentication.User currentUser;
         static Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
-
+        public string title = "=== Log in ===";
         public static List<Option> options;
         public vMenu menu { get; set; }
         public List<vMenu> breadcrumbs { get; set; }
@@ -22,7 +22,7 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, title);
         }
         public void Login()
         {
