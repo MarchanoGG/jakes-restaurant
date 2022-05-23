@@ -50,13 +50,16 @@ namespace JakesRestaurant.views
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-                    if(options[index].ID != 0)
-                        options[index].Selected(options[index].ID);
-                    else
-                        options[index].VoidSelected();
+                    if (options[index].ActionIsSet)
+                    {
+                        if (options[index].ID != 0)
+                            options[index].Selected(options[index].ID);
+                        else
+                            options[index].VoidSelected();
 
-                    Console.ReadKey();
-                    index = 0;
+                        Console.ReadKey();
+                        index = 0;
+                    }
                     WriteMenu(options, options[index]);
                 }
             }
@@ -100,14 +103,22 @@ namespace JakesRestaurant.views
     public class Option
     {
         public string Name { get; }
+        public bool ActionIsSet { get; }
         public Action VoidSelected { get; }
         public Action<int> Selected { get; }
         public int ID { get; set; }
+
+        public Option(string name)
+        {
+            Name = name;
+            ActionIsSet = false;
+        }
 
         public Option(string name, Action selected)
         {
             Name = name;
             VoidSelected = selected;
+            ActionIsSet = true;
         }
 
         public Option(string name, Action<int> selected, int id = 0) 
@@ -115,6 +126,7 @@ namespace JakesRestaurant.views
             Name = name;
             Selected = selected;
             ID = id;
+            ActionIsSet = true;
         }
     }
 }

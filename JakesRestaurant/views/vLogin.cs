@@ -82,7 +82,7 @@ namespace JakesRestaurant.views
 
             foreach (Authentication.User obj in usr.GetUsers())
             {
-                options.Add(new Option(obj.ID + ". " + obj.FirstName + " " + obj.Surname, CheckRes));
+                options.Add(new Option(obj.ID + ". " + obj.FirstName + " " + obj.Surname, GetUserDetails, obj.ID));
             }
 
             options.Add(new Option("Terug", () => mainmenu.Navigation()));
@@ -96,6 +96,35 @@ namespace JakesRestaurant.views
             {
                 new Option("Wordt nog aan gewerkt, kies deze optie om terug te gaan naar het menu!", () => mainmenu.Navigation()),
             };
+            this.menu = new vMenu(options);
+        }
+        public void GetUserDetails(int ID)
+        {
+            vMain mainmenu = new vMain();
+
+            Authentication.User usr = new Authentication.User();
+            Authentication.User foundUser = null;
+
+            foreach (Authentication.User obj in usr.GetUsers())
+            {
+                if (obj.ID == ID) 
+                {
+                    foundUser = obj;
+                }
+            }
+
+            if (foundUser != null)
+            {
+                options = new List<Option>
+                {
+                    new Option("Voornaam:           " + foundUser.FirstName),
+                    new Option("Achternaam:         " + foundUser.Surname),
+                    new Option("Email:              " + foundUser.Email),
+                    new Option("Telefoon nummer:    " + foundUser.Phone),
+                    new Option("Geboorte datum:     " + foundUser.BirthDate)
+                };
+            }
+            options.Add(new Option("Terug naar gebruikers lijst", UsersList));
             this.menu = new vMenu(options);
         }
 
