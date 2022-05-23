@@ -25,8 +25,8 @@ namespace reservation
         [JsonPropertyName("products")]
         public List<Product> ListProducts { get; set; }
 
-        //[JsonPropertyName("diningtableid")]
-        //public int DiningTableId { get; set; }
+        [JsonPropertyName("numberguests")]
+        public int NumberGuests { get; set; }
 
         [JsonPropertyName("diningtable")]
         public DiningTable DiningTable { get; set; }

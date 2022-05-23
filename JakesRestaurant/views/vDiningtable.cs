@@ -37,6 +37,7 @@ namespace JakesRestaurant.views
             DiningTable p = new DiningTable();
             FillFromInput(ref p);
             p.ID = ctl.IncrementID();
+            p.Status = "Vrij";
             ctl.UpdateList(p);
 
             Navigation();
@@ -49,14 +50,12 @@ namespace JakesRestaurant.views
 
             foreach (var l in ctl.GetList())
             {
-                var label = $"Tafel voor {l.Places}";
+                var label = $"Tafel voor {l.Places}; Beschikbaarheid: {l.Status}";
                 listoptions.Add(new Option(label, Edit, l.ID));
             }
 
             this.menu = new vMenu(listoptions);
         }
-
-
 
         public void ViewDelete()
         {

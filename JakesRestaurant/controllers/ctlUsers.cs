@@ -42,5 +42,33 @@ namespace controllers
             }
 
         }
+        public void UpdateList(User p)
+        {
+            int index = users.FindIndex(s => s.ID == p.ID);
+
+            if (index != -1)
+            {
+                users[index] = p;
+            }
+            else
+            {
+                users.Add(p);
+            }
+
+            Write();
+        }
+        public void Write()
+        {
+            string json = JsonSerializer.Serialize(users);
+            File.WriteAllText(path, json);
+            Console.WriteLine("write done");
+        }
+        public int IncrementID()
+        {
+            if (users.Any())
+                return users.Last().ID + 1;
+            else
+                return 1;
+        }
     }
 }

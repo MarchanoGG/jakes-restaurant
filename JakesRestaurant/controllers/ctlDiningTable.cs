@@ -7,11 +7,12 @@ using reservation;
 
 namespace controllers
 {
-	internal class ctlDiningTable
+
+    internal class ctlDiningTable
 	{
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "diningtable.json");
 
-        private List<DiningTable> diningTables;
+        public List<DiningTable> diningTables;
 
         public DiningTable selecteditem { get; set; }
 		public ctlDiningTable()

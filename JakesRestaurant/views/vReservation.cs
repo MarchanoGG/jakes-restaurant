@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using controllers;
 using reservation;
 using Authentication;
+using management;
 
 namespace JakesRestaurant.views
 {
@@ -14,19 +15,16 @@ namespace JakesRestaurant.views
         private ctlReservation ctl;
         private ctlDiningTable ctlDT;
         private ctlUsers ctlU;
+        private TctlProducts ctlP;
         public static List<Option> options;
         public vMenu menu { get; set; }
 
         public vReservation()
         {
             ctl = new ctlReservation();
-            ctlDT = new ctlDiningTable();
-            ctlU = new ctlUsers();
-            foreach (var option in ctlU.users)
-            {
-                Console.WriteLine(option.FirstName);
-            }
-            Console.WriteLine("Reserveringen");
+            ctlDT = ctl.ctlDT;
+            ctlU = ctl.ctlU;
+            ctlP = ctl.ctlP;
             options = new List<Option>
             {
                 new Option("Voeg toe", this.Add),
@@ -35,23 +33,22 @@ namespace JakesRestaurant.views
                 new Option("Back to menu", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
-
         }
 
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Reserveringen");
         }
 
         public void Add()
         {
             ctl.currentitem = new Reservations();
+            ctl.currentitem.ListProducts = new List<Product>();
             Reservations p = ctl.currentitem;
             Form(ref p);
             p.ID = ctl.IncrementID();
             p.CreateDateTime = DateTime.Now;
             ctl.UpdateList(p);
-
             Navigation();
         }
         public void View()
@@ -62,6 +59,7 @@ namespace JakesRestaurant.views
             listoptions.Add(new Option("Terug", Navigation));
 
             string header = $" + - ID - Gast - Tafel - Datum";
+            Console.WriteLine(header);
             foreach (var l in ctl.GetList())
             {
                 string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
@@ -115,6 +113,19 @@ namespace JakesRestaurant.views
 
         public void Form(ref Reservations p)
         {
+            Console.WriteLine("Aantal personen:");
+            while (p.DiningTable == null)
+            {
+                int persons = int.Parse(Console.ReadLine());
+                p.DiningTable = ctl.FindByPersons(persons);
+                if (p.DiningTable == null)
+                {
+                    Console.WriteLine("Geen tafel/zitplek beschikbaar");
+                    Navigation();
+                }
+            }
+
+            Console.WriteLine("Boeking datum:");
             string line = Console.ReadLine();
             DateTime dt;
             while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
@@ -124,10 +135,22 @@ namespace JakesRestaurant.views
             }
             p.DueDateTime = dt;
 
-            ViewDiningTableSelect();
+            ViewProductsSelect();
             ViewUserSelect();
         }
 
+        public void ViewProductsSelect()
+        {
+            List<Option> listoptions = new List<Option>();
+
+            foreach (var l in ctlP.GetProducts())
+            {
+                var label = $"ID:{l.ID}; Naam gerecht:{l.Name}; Prijs: {l.Price}";
+                listoptions.Add(new Option(label, ProductSelect, l.ID));
+            }
+
+            new vMenu(listoptions);
+        }
         public void ViewDiningTableSelect()
         {
             List<Option> listoptions = new List<Option>();
@@ -138,7 +161,7 @@ namespace JakesRestaurant.views
                 listoptions.Add(new Option(label, DiningTableSelect, l.ID));
             }
 
-            this.menu = new vMenu(listoptions);
+            new vMenu(listoptions);
         }
         public void ViewUserSelect()
         {
@@ -150,7 +173,7 @@ namespace JakesRestaurant.views
                 listoptions.Add(new Option(label, UserSelect, l.ID));
             }
 
-            this.menu = new vMenu(listoptions);
+            new vMenu(listoptions);
         }
 
         public void DiningTableSelect(int aId)
@@ -161,6 +184,15 @@ namespace JakesRestaurant.views
         public void UserSelect(int aId)
         {
             ctl.currentitem.User = ctlU.FindById(aId);
+            Console.WriteLine($"Gebruiker: {ctl.currentitem.User.Username}");
+        }
+
+        public void ProductSelect(int aId)
+        {
+            Product Product = ctlP.GetID(aId);
+            Console.WriteLine(Product.Name);
+            ctl.currentitem.ListProducts.Add(Product);
+            //Console.WriteLine($"Gebruiker: {ctl.currentitem.ListProducts.Count}");
         }
         public void BackToMain()
         {

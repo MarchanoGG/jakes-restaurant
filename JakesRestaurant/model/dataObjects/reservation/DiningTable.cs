@@ -19,5 +19,8 @@ namespace reservation
 
         [JsonPropertyName("description")]
         public string Description { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
     }
 }

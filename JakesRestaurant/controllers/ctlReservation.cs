@@ -11,11 +11,17 @@ namespace controllers
 	{
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "reservation.json");
 
-        private List<Reservations> reservations;
+        public List<Reservations> reservations;
+        public ctlDiningTable ctlDT { get; set; }
+        public ctlUsers ctlU { get; set; }
+        public TctlProducts ctlP { get; set; }
 
         public Reservations currentitem { get; set; }
         public ctlReservation()
 		{
+            this.ctlDT = new ctlDiningTable();
+            this.ctlU = new ctlUsers();
+            this.ctlP = new TctlProducts();
             Load();
         }
 
@@ -60,6 +66,9 @@ namespace controllers
             if (index != -1)
             {
                 reservations[index] = p;
+                DiningTable dt = ctlDT.GetID(p.DiningTable.ID);
+                dt.Status = "Bezet";
+                ctlDT.UpdateList(dt);
             }
             else
             {
@@ -92,6 +101,21 @@ namespace controllers
                return reservations.Last().ID + 1;           
             else
                 return 1;
+        }
+
+        public DiningTable FindByPersons(int persons)
+        {
+            DiningTable result = null;
+
+            foreach (var item in ctlDT.diningTables)
+            {
+                if (persons < item.Places && item.Status == "Vrij")
+                {
+                    result = item;
+                    break;
+                }
+            }
+            return result;
         }
     }
 }
