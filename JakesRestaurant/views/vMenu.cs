@@ -9,19 +9,21 @@ namespace JakesRestaurant.views
     internal class vMenu
     {
         public List<Option> options { get; set; }
+        public string title { get; set; }
         protected int origRow { get; set; }
         protected int origCol { get; set; }
-        public vMenu(List<Option> options)
+        public vMenu(List<Option> options, string title = "")
         {
             // Set the default index of the selected item to be the first
             int index = 0;
             origRow = 0;
             origCol = 0;
             this.options = options;
+            this.title = title;
 
             // Write the menu out
             WriteMenu(options, options[index]);
-            
+
 
             // Store key info in here
             ConsoleKeyInfo keyinfo;
@@ -50,14 +52,13 @@ namespace JakesRestaurant.views
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-                    if(options[index].ID != 0)
+                    if (options[index].ID != 0)
                         options[index].Selected(options[index].ID);
                     else
                         options[index].VoidSelected();
-
-                    Console.ReadKey();
-                    index = 0;
-                    WriteMenu(options, options[index]);
+                    break;
+                    //index = 0;
+                    //WriteMenu(options, options[index]);
                 }
             }
             while (keyinfo.Key != ConsoleKey.X);
@@ -81,7 +82,11 @@ namespace JakesRestaurant.views
         public void WriteMenu(List<Option> options, Option selectedOption)
         {
             Console.Clear();
-
+            if (title.Length > 0)
+            {
+                Console.WriteLine(title);
+                ++this.origRow;
+            }
             foreach (Option option in options)
             {
                 if (option == selectedOption)
@@ -110,11 +115,17 @@ namespace JakesRestaurant.views
             VoidSelected = selected;
         }
 
-        public Option(string name, Action<int> selected, int id = 0) 
+        public Option(string name, Action<int> selected, int id = 0)
         {
             Name = name;
             Selected = selected;
             ID = id;
         }
+
+        //public Option(string name, object v)
+        //{
+        //    Name = name;
+        //    V = v;
+        //}
     }
 }
