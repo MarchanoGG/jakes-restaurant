@@ -16,8 +16,8 @@ namespace reservation
         [JsonPropertyName("id")]
         public int ID { get; set; }
 
-        [JsonPropertyName("userid")]
-        public int UserId { get; set; }
+        //[JsonPropertyName("userid")]
+        //public int UserId { get; set; }
 
         [JsonPropertyName("user")]
         public User User { get; set; }
@@ -25,8 +25,11 @@ namespace reservation
         [JsonPropertyName("products")]
         public List<Product> ListProducts { get; set; }
 
-        [JsonPropertyName("tableid")]
-        public int TableId { get; set; }
+        //[JsonPropertyName("diningtableid")]
+        //public int DiningTableId { get; set; }
+
+        [JsonPropertyName("diningtable")]
+        public DiningTable DiningTable { get; set; }
 
         [JsonPropertyName("createdatetime")]
         public DateTime CreateDateTime { get; set; }

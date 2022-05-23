@@ -10,12 +10,12 @@ namespace JakesRestaurant.views
 {
     internal class vDiningtable
     {
-        private ctlDiningTable d_DiningTableCtrl;
+        public ctlDiningTable ctl { get; set; }
         public static List<Option> options;
         public vMenu menu { get; set; }
         public vDiningtable()
         {
-            d_DiningTableCtrl = new ctlDiningTable();
+            ctl = new ctlDiningTable();
             Console.WriteLine("Zit plaatsen");
             options = new List<Option>
             {
@@ -36,8 +36,8 @@ namespace JakesRestaurant.views
         {
             DiningTable p = new DiningTable();
             FillFromInput(ref p);
-            p.ID = d_DiningTableCtrl.IncrementID();
-            d_DiningTableCtrl.UpdateList(p);
+            p.ID = ctl.IncrementID();
+            ctl.UpdateList(p);
 
             Navigation();
         }
@@ -47,7 +47,7 @@ namespace JakesRestaurant.views
 
             listoptions.Add(new Option("Terug", Navigation));
 
-            foreach (var l in d_DiningTableCtrl.GetList())
+            foreach (var l in ctl.GetList())
             {
                 var label = $"Tafel voor {l.Places}";
                 listoptions.Add(new Option(label, Edit, l.ID));
@@ -56,13 +56,15 @@ namespace JakesRestaurant.views
             this.menu = new vMenu(listoptions);
         }
 
+
+
         public void ViewDelete()
         {
             List<Option> listoptions = new List<Option>();
 
             listoptions.Add(new Option("Terug", Navigation));
 
-            foreach (var l in d_DiningTableCtrl.GetList())
+            foreach (var l in ctl.GetList())
             {
                 var label = $"Tafel voor {l.Places}";
                 listoptions.Add(new Option(label, Delete, l.ID));
@@ -75,12 +77,12 @@ namespace JakesRestaurant.views
         public void Edit(int aID)
         {
             // Get from parameter
-            DiningTable p = d_DiningTableCtrl.GetID(aID);
+            DiningTable p = ctl.GetID(aID);
 
             FillFromInput(ref p);
 
             // If success than update product
-            d_DiningTableCtrl.UpdateList(p);
+            ctl.UpdateList(p);
 
             // Go back to View navigation
             View();
@@ -88,10 +90,10 @@ namespace JakesRestaurant.views
         public void Delete(int aID)
         {
             // Get from parameter
-            DiningTable p = d_DiningTableCtrl.GetID(aID);
+            DiningTable p = ctl.GetID(aID);
 
             // If success than update product
-            d_DiningTableCtrl.DeleteById(p);
+            ctl.DeleteById(p);
 
             // Go back to View navigation
         }

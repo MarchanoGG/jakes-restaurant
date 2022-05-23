@@ -13,6 +13,7 @@ namespace controllers
 
         private List<DiningTable> diningTables;
 
+        public DiningTable selecteditem { get; set; }
 		public ctlDiningTable()
 		{
             Load();

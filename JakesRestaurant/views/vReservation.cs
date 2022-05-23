@@ -5,17 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using controllers;
 using reservation;
+using Authentication;
 
 namespace JakesRestaurant.views
 {
     internal class vReservation
     {
         private ctlReservation ctl;
+        private ctlDiningTable ctlDT;
+        private ctlUsers ctlU;
         public static List<Option> options;
         public vMenu menu { get; set; }
+
         public vReservation()
         {
             ctl = new ctlReservation();
+            ctlDT = new ctlDiningTable();
+            ctlU = new ctlUsers();
+            foreach (var option in ctlU.users)
+            {
+                Console.WriteLine(option.FirstName);
+            }
             Console.WriteLine("Reserveringen");
             options = new List<Option>
             {
@@ -25,6 +35,7 @@ namespace JakesRestaurant.views
                 new Option("Back to menu", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
+
         }
 
         public void Navigation()
@@ -34,7 +45,8 @@ namespace JakesRestaurant.views
 
         public void Add()
         {
-            Reservations p = new Reservations();
+            ctl.currentitem = new Reservations();
+            Reservations p = ctl.currentitem;
             Form(ref p);
             p.ID = ctl.IncrementID();
             p.CreateDateTime = DateTime.Now;
@@ -49,11 +61,11 @@ namespace JakesRestaurant.views
 
             listoptions.Add(new Option("Terug", Navigation));
 
+            string header = $" + - ID - Gast - Tafel - Datum";
             foreach (var l in ctl.GetList())
             {
-                string createdt = l.CreateDateTime.ToString("dd/MM/yyyy");
                 string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                string label = $" - {l.ID} - {l.UserId} - {l.TableId} - {createdt} - {duedt}";
+                string label = $" - {l.ID} - {l.User.FirstName} - {l.DiningTable.Places} - {duedt}";
                 listoptions.Add(new Option(label, Edit, l.ID));
             }
 
@@ -68,9 +80,8 @@ namespace JakesRestaurant.views
 
             foreach (var l in ctl.GetList())
             {
-                string createdt = l.CreateDateTime.ToString("dd/MM/yyyy");
                 string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                string label = $" - {l.ID} - {l.UserId} - {l.TableId} - {createdt} - {duedt}";
+                string label = $" - {l.ID} - {l.User.FirstName} - {l.DiningTable.Places} - {duedt}";
                 listoptions.Add(new Option(label, Delete, l.ID));
             }
 
@@ -104,12 +115,6 @@ namespace JakesRestaurant.views
 
         public void Form(ref Reservations p)
         {
-            Console.WriteLine("user id:");
-            p.UserId = int.Parse(Console.ReadLine());
-
-            Console.WriteLine("tabel id:");
-            p.TableId = int.Parse(Console.ReadLine());
-
             string line = Console.ReadLine();
             DateTime dt;
             while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
@@ -118,8 +123,45 @@ namespace JakesRestaurant.views
                 line = Console.ReadLine();
             }
             p.DueDateTime = dt;
+
+            ViewDiningTableSelect();
+            ViewUserSelect();
         }
 
+        public void ViewDiningTableSelect()
+        {
+            List<Option> listoptions = new List<Option>();
+
+            foreach (var l in ctlDT.GetList())
+            {
+                var label = $"Tafel voor {l.Places}";
+                listoptions.Add(new Option(label, DiningTableSelect, l.ID));
+            }
+
+            this.menu = new vMenu(listoptions);
+        }
+        public void ViewUserSelect()
+        {
+            List<Option> listoptions = new List<Option>();
+
+            foreach (var l in ctlU.users)
+            {
+                var label = $"{l.FirstName}";
+                listoptions.Add(new Option(label, UserSelect, l.ID));
+            }
+
+            this.menu = new vMenu(listoptions);
+        }
+
+        public void DiningTableSelect(int aId)
+        {
+            ctl.currentitem.DiningTable = ctlDT.GetID(aId);
+        }
+
+        public void UserSelect(int aId)
+        {
+            ctl.currentitem.User = ctlU.FindById(aId);
+        }
         public void BackToMain()
         {
             vMain main = new vMain();

@@ -13,7 +13,8 @@ namespace controllers
 
         private List<Reservations> reservations;
 
-		public ctlReservation()
+        public Reservations currentitem { get; set; }
+        public ctlReservation()
 		{
             Load();
         }

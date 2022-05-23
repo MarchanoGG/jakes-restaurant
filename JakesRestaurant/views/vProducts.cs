@@ -28,7 +28,7 @@ namespace JakesRestaurant.views
                 new Option("Exit", () => Environment.Exit(0)),
             };
 
-            Navigation();
+            //Navigation();
         }
         public void Navigation()
         {

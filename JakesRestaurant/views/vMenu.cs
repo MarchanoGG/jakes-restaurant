@@ -54,10 +54,9 @@ namespace JakesRestaurant.views
                         options[index].Selected(options[index].ID);
                     else
                         options[index].VoidSelected();
-
-                    Console.ReadKey();
-                    index = 0;
-                    WriteMenu(options, options[index]);
+                    break;
+                    //index = 0;
+                    //WriteMenu(options, options[index]);
                 }
             }
             while (keyinfo.Key != ConsoleKey.X);
