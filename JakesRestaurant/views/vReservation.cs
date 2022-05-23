@@ -58,12 +58,12 @@ namespace JakesRestaurant.views
 
             listoptions.Add(new Option("Terug", Navigation));
 
-            string header = $" + - ID - Gast - Tafel - Datum";
+            string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen";
             Console.WriteLine(header);
             foreach (var l in ctl.GetList())
             {
                 string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
+                string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt} - {l.ListProducts.Count}";
                 listoptions.Add(new Option(label, Edit, l.ID));
             }
 
