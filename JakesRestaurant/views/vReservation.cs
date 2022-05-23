@@ -65,7 +65,7 @@ namespace JakesRestaurant.views
             foreach (var l in ctl.GetList())
             {
                 string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                string label = $" - {l.ID} - {l.User.FirstName} - {l.DiningTable.Places} - {duedt}";
+                string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
                 listoptions.Add(new Option(label, Edit, l.ID));
             }
 
@@ -81,7 +81,7 @@ namespace JakesRestaurant.views
             foreach (var l in ctl.GetList())
             {
                 string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                string label = $" - {l.ID} - {l.User.FirstName} - {l.DiningTable.Places} - {duedt}";
+                string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
                 listoptions.Add(new Option(label, Delete, l.ID));
             }
 
@@ -146,7 +146,7 @@ namespace JakesRestaurant.views
 
             foreach (var l in ctlU.users)
             {
-                var label = $"{l.FirstName}";
+                var label = $"{l.Username}";
                 listoptions.Add(new Option(label, UserSelect, l.ID));
             }
 

@@ -25,6 +25,7 @@ namespace JakesRestaurant.views
             {
                 new Option("Voeg toe", this.Add),
                 new Option("Lijst", this.View),
+                new Option("Back to menu", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
 
@@ -45,16 +46,16 @@ namespace JakesRestaurant.views
         }
         public void View()
         {
-            options = new List<Option>();
+            List<Option> rows = new List<Option>();
 
-            options.Add(new Option("Terug", DefaultMenu));
+            rows.Add(new Option("Terug", Navigation));
          
             foreach (var l in d_prodCtrl.GetProducts())
             {
-                options.Add(new Option(l.Name, Edit));
+                rows.Add(new Option(l.Name, Edit));
             }
 
-            this.menu = new vMenu(options);
+            new vMenu(rows);
         }
         public void Edit()
         {
@@ -69,6 +70,11 @@ namespace JakesRestaurant.views
             // Go back to View navigation
             View();
 
+        }
+        public void BackToMain()
+        {
+            vMain main = new vMain();
+            main.Navigation();
         }
 
         public void FillFromInput(ref Product p)
