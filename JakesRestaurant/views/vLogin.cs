@@ -5,7 +5,6 @@ namespace JakesRestaurant.views
 {
     internal class vLogin
     {
-
         static Authentication.ctlLogin ctlAuth = new Authentication.ctlLogin();
         static Authentication.ctlUsers ctlUsers = new Authentication.ctlUsers();
 
@@ -23,7 +22,7 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, title);
         }
         public void Login()
         {
