@@ -9,7 +9,7 @@ namespace Authentication
     class doUser
     {
         [JsonPropertyName("id")]
-        public int ID { get; }
+        public int ID { get; set; }
 
         [JsonPropertyName("username")]
         public string Username { get; set; }
@@ -33,7 +33,7 @@ namespace Authentication
         public DateTime BirthDate { get; set; }
 
         [JsonPropertyName("status")]
-        public int Status { get; }
+        public int Status { get; set; }
 
         public doUser() {
             Status = 0;

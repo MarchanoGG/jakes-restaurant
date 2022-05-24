@@ -109,7 +109,6 @@ namespace Authentication
             return res;
         }
 
-
         public static T Read<T>(string filePath)
         {
             string text = File.ReadAllText(filePath);

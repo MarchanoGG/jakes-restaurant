@@ -13,17 +13,20 @@ namespace JakesRestaurant.views
         public vExampleProducts productscontroller { get; set; }
         public vExampleUsers userscontroller { get; set; }
         public vLogin loginView { get; set; }
+        public vOpeningTimes openingTimesView { get; set; }
         public List<vMenu> breadcrumbs{ get; set; }
         public List<string> test{ get; set; }
         public vMain()
         {
             productscontroller = new vExampleProducts();
             loginView = new vLogin();
+            openingTimesView = new vOpeningTimes();
 
             if (Program.MyUser.HasPrivilege() == true)
             {
                 options = new List<Option>
                 {
+                    new Option("Openingstijden", openingTimesView.Navigation),
                     new Option("Thema's", loginView.CheckRes),
                     new Option("Producten", productscontroller.Navigation),
                     new Option("Gebruikers", loginView.UsersList),
@@ -31,10 +34,12 @@ namespace JakesRestaurant.views
                     new Option("Terug naar login", loginView.BackToLogin),
                     new Option("Afsluiten", () => Environment.Exit(0)),
                 };
-            } else
+            }
+            else
             {
                 options = new List<Option>
                 {
+                    new Option("Openingstijden", openingTimesView.Navigation),
                     new Option("Reserveer een tafel", loginView.CheckRes),
                     new Option("Bekijk uw reserveringen", loginView.CheckRes),
                     new Option("Producten", productscontroller.Navigation),
@@ -44,6 +49,7 @@ namespace JakesRestaurant.views
                 };
             }
         }
+
         public void Navigation()
         {
             this.menu = new vMenu(options);
