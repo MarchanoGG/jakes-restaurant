@@ -20,7 +20,7 @@ namespace JakesRestaurant.views
             productscontroller = new vExampleProducts();
             loginView = new vLogin();
 
-            if (loginView.GetUser().HasPrivilege() == true)
+            if (Program.MyUser.HasPrivilege() == true)
             {
                 options = new List<Option>
                 {

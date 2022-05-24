@@ -6,19 +6,19 @@ using System.Text.Json;
 
 namespace Authentication
 {
-    public class TctlLogin
+    public class ctlLogin
     {
+        private ctlUsers controller = new ctlUsers();
         public bool Login(string aUsername, string aPassword) 
         {
             bool res = false;
 
-            User userObj = new User();
-            User user = userObj.CheckCredentials(aUsername, aPassword);
+            doUser user = controller.CheckCredentials(aUsername, aPassword);
 
             if (user != null)
             {
                 res = true;
-                JakesRestaurant.views.vLogin.SetUser(user);
+                JakesRestaurant.Program.MyUser = user;
                 Console.WriteLine("Succesvol aangemeld.");
             }
             else
@@ -27,14 +27,6 @@ namespace Authentication
             }
 
             return res;
-        }
-        public bool CreateUser(string aUsername, string aPassword)
-        {
-            User user = new User();
-
-            Console.WriteLine("\n\rMaak een nieuwe gebruiker");
-
-            return user.CreateCredentials(aUsername, aPassword);
         }
     }
 }

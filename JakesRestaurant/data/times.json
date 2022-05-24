@@ -1,0 +1,58 @@
+[
+  {
+    "day": "Maandag",
+    "opened": false,
+    "startingHours": 0,
+    "startingMinutes": 0,
+    "closingHours": 0,
+    "closingMinutes": 0
+  },
+  {
+    "day": "Dinsdag",
+    "opened": false,
+    "startingHours": 0,
+    "startingMinutes": 0,
+    "closingHours": 0,
+    "closingMinutes": 0
+  },
+  {
+    "day": "Woensdag",
+    "opened": false,
+    "startingHours": 0,
+    "startingMinutes": 0,
+    "closingHours": 0,
+    "closingMinutes": 0
+  },
+  {
+    "day": "Donderdag",
+    "opened": false,
+    "startingHours": 0,
+    "startingMinutes": 0,
+    "closingHours": 0,
+    "closingMinutes": 0
+  },
+  {
+    "day": "Vrijdag",
+    "opened": false,
+    "startingHours": 0,
+    "startingMinutes": 0,
+    "closingHours": 0,
+    "closingMinutes": 0
+  },
+  {
+    "day": "Zaterdag",
+    "opened": false,
+    "startingHours": 0,
+    "startingMinutes": 0,
+    "closingHours": 0,
+    "closingMinutes": 0
+  },
+  {
+    "day": "Zondag",
+    "opened": false,
+    "startingHours": 0,
+    "startingMinutes": 0,
+    "closingHours": 0,
+    "closingMinutes": 0
+  }
+]

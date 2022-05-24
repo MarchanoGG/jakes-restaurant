@@ -5,10 +5,9 @@ namespace JakesRestaurant.views
 {
     internal class vLogin
     {
-        private static Authentication.User currentUser;
-        private Authentication.User ThisUser { get { return currentUser; } set { currentUser = value; } }
 
-        static Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
+        static Authentication.ctlLogin ctlAuth = new Authentication.ctlLogin();
+        static Authentication.ctlUsers ctlUsers = new Authentication.ctlUsers();
 
         public static List<Option> options;
         public vMenu menu { get; set; }
@@ -36,7 +35,7 @@ namespace JakesRestaurant.views
         }
         public void BackToLogin()
         {
-            this.ThisUser = null;
+            Program.MyUser = null;
             options = new List<Option>
             {
                 new Option("Inloggen", this.Login),
@@ -51,24 +50,26 @@ namespace JakesRestaurant.views
             
             options = new List<Option>
             {
-                new Option("Voornaam:           " + this.ThisUser.FirstName, this.InsertValue, 1),
-                new Option("Achternaam:         " + this.ThisUser.Surname, this.InsertValue, 2),
-                new Option("Email:              " + this.ThisUser.Email, this.InsertValue, 3),
-                new Option("Telefoon nummer:    " + this.ThisUser.Phone, this.InsertValue, 4),
-                new Option("Geboorte datum:     " + this.ThisUser.BirthDate, this.InsertValue, 5),
+                new Option("Voornaam:           " + Program.MyUser.FirstName, this.InsertValue, 1),
+                new Option("Achternaam:         " + Program.MyUser.Surname, this.InsertValue, 2),
+                new Option("Email:              " + Program.MyUser.Email, this.InsertValue, 3),
+                new Option("Telefoon nummer:    " + Program.MyUser.Phone, this.InsertValue, 4),
+                new Option("Geboorte datum:     " + Program.MyUser.BirthDate, this.InsertValue, 5),
                 new Option("Terug", () => mainmenu.Navigation()),
             };
             this.menu = new vMenu(options);
         }
         public void Create()
         {
-            if (ctlAuth.CreateUser(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
+            if (ctlUsers.CreateCredentials(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
             {
                 Console.WriteLine("Gebruiker is aangemaakt");
+                Console.ReadLine();
             }
             else
             {
                 Console.WriteLine("Kan de gebruiker niet aanmaken!");
+                Console.ReadLine();
             }
             this.menu = new vMenu(options);
         }
@@ -78,9 +79,9 @@ namespace JakesRestaurant.views
 
             options = new List<Option> {};
 
-            Authentication.User usr = new Authentication.User();
+            Authentication.doUser usr = new Authentication.doUser();
 
-            foreach (Authentication.User obj in usr.GetUsers())
+            foreach (Authentication.doUser obj in ctlUsers.GetUsers())
             {
                 options.Add(new Option(obj.ID + ". " + obj.FirstName + " " + obj.Surname, GetUserDetails, obj.ID));
             }
@@ -102,10 +103,10 @@ namespace JakesRestaurant.views
         {
             vMain mainmenu = new vMain();
 
-            Authentication.User usr = new Authentication.User();
-            Authentication.User foundUser = null;
+            Authentication.doUser usr = new Authentication.doUser();
+            Authentication.doUser foundUser = null;
 
-            foreach (Authentication.User obj in usr.GetUsers())
+            foreach (Authentication.doUser obj in ctlUsers.GetUsers())
             {
                 if (obj.ID == ID) 
                 {
@@ -128,16 +129,6 @@ namespace JakesRestaurant.views
             this.menu = new vMenu(options);
         }
 
-        static public void SetUser(Authentication.User aUser)
-        {
-            vLogin.currentUser = aUser;
-        }
-
-        public Authentication.User GetUser()
-        {
-            return this.ThisUser;
-        }
-
         private void InsertValue(int idx)
         {
 
@@ -146,30 +137,30 @@ namespace JakesRestaurant.views
                 case 1:
                     Console.WriteLine("Voer nieuwe voornaam in:");
                     string FirstName = Console.ReadLine();
-                    this.ThisUser.FirstName = FirstName;
+                    Program.MyUser.FirstName = FirstName;
 
-                    this.ThisUser.UpdateUser(this.ThisUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 2:
                     Console.WriteLine("Voer nieuwe achternaam in:");
                     string Surname = Console.ReadLine();
-                    this.ThisUser.Surname = Surname;
+                    Program.MyUser.Surname = Surname;
 
-                    this.ThisUser.UpdateUser(this.ThisUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 3:
                     Console.WriteLine("Voer nieuwe email in:");
                     string Email = Console.ReadLine();
-                    this.ThisUser.Email = Email;
+                    Program.MyUser.Email = Email;
 
-                    this.ThisUser.UpdateUser(this.ThisUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 4:
                     Console.WriteLine("Voer nieuwe telefoon nummer in:");
                     string Phone = Console.ReadLine();
-                    this.ThisUser.Phone = Phone;
+                    Program.MyUser.Phone = Phone;
 
-                    this.ThisUser.UpdateUser(this.ThisUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 5:
                     Console.WriteLine("Voer uw geboorte datum in:");
@@ -182,9 +173,9 @@ namespace JakesRestaurant.views
                         line = Console.ReadLine();
                     }
 
-                    this.ThisUser.BirthDate = dt;
+                    Program.MyUser.BirthDate = dt;
 
-                    this.ThisUser.UpdateUser(this.ThisUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 default:
                     break;
