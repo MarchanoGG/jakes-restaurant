@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Linq;
 using reservation;
+using JakesRestaurant.views;
 
 namespace controllers
 {
@@ -12,16 +13,10 @@ namespace controllers
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "reservation.json");
 
         public List<Reservations> reservations;
-        public ctlDiningTable ctlDT { get; set; }
-        public ctlUsers ctlU { get; set; }
-        public TctlProducts ctlP { get; set; }
-
         public Reservations currentitem { get; set; }
         public ctlReservation()
 		{
-            this.ctlDT = new ctlDiningTable();
-            this.ctlU = new ctlUsers();
-            this.ctlP = new TctlProducts();
+            //this.ctlDT = new ctlDiningTable();
             Load();
         }
 
@@ -44,13 +39,6 @@ namespace controllers
             }
             
         }
-        public List<Reservations> GetList()
-        {
-            if (reservations != null)
-                return reservations;
-            else
-                return null;
-        }
 
         public void Write()
         {
@@ -66,9 +54,9 @@ namespace controllers
             if (index != -1)
             {
                 reservations[index] = p;
-                DiningTable dt = ctlDT.GetID(p.DiningTable.ID);
+                DiningTable dt = ctlMain.diningtable.GetID(p.DiningTable.ID);
                 dt.Status = "Bezet";
-                ctlDT.UpdateList(dt);
+                ctlMain.diningtable.UpdateList(dt);
             }
             else
             {
@@ -107,7 +95,7 @@ namespace controllers
         {
             DiningTable result = null;
 
-            foreach (var item in ctlDT.diningTables)
+            foreach (var item in ctlMain.diningtable.diningTables)
             {
                 if (persons < item.Places && item.Status == "Vrij")
                 {
