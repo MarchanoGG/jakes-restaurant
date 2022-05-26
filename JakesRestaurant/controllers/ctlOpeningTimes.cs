@@ -17,6 +17,26 @@ namespace Restaurant
             return existingUsers;
         }
 
+        public bool UpdateTime(doOpeningTimes aTime)
+        {
+            bool res = false;
+
+            List<doOpeningTimes> existingUsers = ReadList<doOpeningTimes>(path);
+
+            doOpeningTimes myTime = existingUsers.Find(match: i => i.ID == aTime.ID);
+
+            if (myTime != null)
+            {
+                existingUsers[existingUsers.IndexOf(myTime)] = aTime;
+
+                WriteList(path, existingUsers);
+
+                res = true;
+            }
+
+            return res;
+        }
+
         public static T Read<T>(string filePath)
         {
             string text = File.ReadAllText(filePath);

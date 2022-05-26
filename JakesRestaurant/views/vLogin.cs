@@ -55,6 +55,7 @@ namespace JakesRestaurant.views
                 new Option("Email:              " + Program.MyUser.Email, this.InsertValue, 3),
                 new Option("Telefoon nummer:    " + Program.MyUser.Phone, this.InsertValue, 4),
                 new Option("Geboorte datum:     " + Program.MyUser.BirthDate, this.InsertValue, 5),
+                new Option("Nieuw wachtwoord invullen", this.InsertValue, 6),
                 new Option("Terug", () => mainmenu.Navigation()),
             };
             this.menu = new vMenu(options);
@@ -163,17 +164,31 @@ namespace JakesRestaurant.views
                     ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 5:
-                    Console.WriteLine("Voer uw geboorte datum in:");
+                    Console.WriteLine("Voer uw geboorte datum in (dd/MM/yyyy):");
 
                     string line = Console.ReadLine();
                     DateTime dt;
                     while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
                     {
-                        Console.WriteLine("Invalid date, please retry");
+                        Console.WriteLine("Invalide datum, let op het formaat moet zijn: dd/MM/yyyy!");
                         line = Console.ReadLine();
                     }
 
                     Program.MyUser.BirthDate = dt;
+
+                    ctlUsers.UpdateUser(Program.MyUser);
+                    break;
+                case 6:
+                    string NewPassword = InsertCredentials("wachtwoord");
+                    string ConfirmNewPassword = InsertCredentials("wachtwoord opnieuw");
+
+                    while (NewPassword != ConfirmNewPassword)
+                    {
+                        NewPassword = InsertCredentials("wachtwoord");
+                        ConfirmNewPassword = InsertCredentials("wachtwoord opnieuw");
+                    }
+
+                    Program.MyUser.Password = ctlUsers.HashString(NewPassword);
 
                     ctlUsers.UpdateUser(Program.MyUser);
                     break;
@@ -197,7 +212,7 @@ namespace JakesRestaurant.views
                 var keyInfo = Console.ReadKey(intercept: true);
                 key = keyInfo.Key;
 
-                if (aCredential == "wachtwoord")
+                if (aCredential == "wachtwoord" || aCredential == "wachtwoord opnieuw")
                 {
                     if (key == ConsoleKey.Backspace && credentials.Length > 0)
                     {

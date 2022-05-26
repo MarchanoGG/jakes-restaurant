@@ -8,6 +8,9 @@ namespace Restaurant
 {
     class doOpeningTimes
     {
+        [JsonPropertyName("id")]
+        public int ID { get; set; }
+
         [JsonPropertyName("day")]
         public string Day { get; set; }
 
@@ -29,9 +32,9 @@ namespace Restaurant
         public string Summary()
         {
             if (Opened)
-                return "Opened on " + Day + " from: " + new TimeSpan(StartingHours, StartingMinutes, 0) + " to: " + new TimeSpan(ClosingHours, ClosingMinutes, 0);
+                return "Open op " + Day + " vanaf: " + new TimeSpan(StartingHours, StartingMinutes, 0) + " tot: " + new TimeSpan(ClosingHours, ClosingMinutes, 0);
             else
-                return "Closed on " + Day;
+                return "Gesloten op " + Day;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Authentication
     {
         static string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "auth.json");
 
-        static string HashString(string text, string salt = "")
+        public string HashString(string text, string salt = "")
         {
             if (String.IsNullOrEmpty(text))
             {
