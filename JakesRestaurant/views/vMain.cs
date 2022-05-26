@@ -10,15 +10,20 @@ namespace JakesRestaurant.views
     {
         public static List<Option> options;
         public vMenu menu { get; set; }
-        public vExampleProducts productscontroller { get; set; }
-        public vExampleUsers userscontroller { get; set; }
+        public vProducts productscontroller { get; set; }
+        public vUsers vusers { get; set; }
+        public vDiningtable diningtablecontroller { get; set; }
+        public vReservation vreservations { get; set; }
         public vLogin loginView { get; set; }
         public vOpeningTimes openingTimesView { get; set; }
         public List<vMenu> breadcrumbs{ get; set; }
         public List<string> test{ get; set; }
         public vMain()
         {
-            productscontroller = new vExampleProducts();
+            productscontroller = new vProducts();
+            vusers = new vUsers();
+            diningtablecontroller = new vDiningtable();
+            vreservations = new vReservation();
             loginView = new vLogin();
             openingTimesView = new vOpeningTimes();
 
@@ -40,9 +45,9 @@ namespace JakesRestaurant.views
                 options = new List<Option>
                 {
                     new Option("Openingstijden", openingTimesView.Navigation),
-                    new Option("Reserveer een tafel", loginView.CheckRes),
-                    new Option("Bekijk uw reserveringen", loginView.CheckRes),
                     new Option("Producten", productscontroller.Navigation),
+                    new Option("Reserveer een tafel", diningtablecontroller.Navigation),
+                    new Option("Bekijk uw reserveringen", vreservations.Navigation),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
                     new Option("Terug naar login", loginView.BackToLogin),
                     new Option("Afsluiten", () => Environment.Exit(0)),
