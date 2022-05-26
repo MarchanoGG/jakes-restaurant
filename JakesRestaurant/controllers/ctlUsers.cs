@@ -1,74 +1,141 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using Authentication;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace controllers
+namespace Authentication
 {
-    internal class ctlUsers
+    class ctlUsers
     {
         static string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "auth.json");
-        public List<User> users;
 
-        public ctlUsers()
+        public string HashString(string text, string salt = "")
         {
-            Load();
-        }
-        public User FindById(int id)
-        {
-            return users.Find(i => i.ID == id);
-        }
-        public void Load()
-        {
-            if (!File.Exists(path))
+            if (String.IsNullOrEmpty(text))
             {
-                var myFile = File.Create(path);
-                myFile.Close();
+                return String.Empty;
             }
 
-            string json = File.ReadAllText(path);
-            if (json != "")
+            // Uses SHA256 to create the hash
+            using (var sha = new System.Security.Cryptography.SHA256Managed())
             {
-                users = JsonSerializer.Deserialize<List<User>>(json);
+                // Convert the string to a byte array first, to be processed
+                byte[] textBytes = System.Text.Encoding.UTF8.GetBytes(text + salt);
+                byte[] hashBytes = sha.ComputeHash(textBytes);
+
+                // Convert back to a string, removing the '-' that BitConverter adds
+                string hash = BitConverter
+                    .ToString(hashBytes)
+                    .Replace("-", String.Empty);
+
+                return hash;
             }
-            else
+        }
+
+        public List<doUser> GetUsers()
+        {
+            List<doUser> existingUsers = ReadList<doUser>(path);
+
+            return existingUsers;
+        }
+
+        public doUser CheckCredentials(string aUsername, string aPassword)
+        {
+            doUser res = null;
+
+            List<doUser> users = ReadList<doUser>(path);
+
+            doUser myUser = users.Find(match: i => i.Username == aUsername);
+
+            if (myUser != null)
             {
-                users = new List<User>();
+                if (myUser.Password == HashString(aPassword))
+                {
+                    res = myUser;
+                }
             }
 
+            return res;
         }
-        public void UpdateList(User p)
-        {
-            int index = users.FindIndex(s => s.ID == p.ID);
 
-            if (index != -1)
+        public bool CreateCredentials(string aUsername, string aPassword)
+        {
+            bool res = false;
+
+            List<doUser> existingUsers = ReadList<doUser>(path);
+            if (existingUsers.Find(match: i => i.Username == aUsername) == null)
             {
-                users[index] = p;
-            }
-            else
-            {
-                users.Add(p);
+                int newID = 1;
+
+                if (existingUsers.Count >= 1)
+                {
+                    newID = existingUsers[existingUsers.Count - 1].ID + 1;
+                }
+
+                doUser obj = new doUser
+                {
+                    Username = aUsername,
+                    Password = HashString(aPassword)
+                };
+
+                existingUsers.Add(obj);
+
+                WriteList(path, existingUsers);
+
+                res = true;
             }
 
-            Write();
+            return res;
         }
-        public void Write()
+
+        public bool UpdateUser(doUser aUser)
         {
-            string json = JsonSerializer.Serialize(users);
-            File.WriteAllText(path, json);
-            Console.WriteLine("write done");
+            bool res = false;
+
+            List<doUser> existingUsers = ReadList<doUser>(path);
+
+            doUser myUser = existingUsers.Find(match: i => i.Username == aUser.Username);
+
+            if (myUser != null)
+            {
+                existingUsers[existingUsers.IndexOf(myUser)] = aUser;
+
+                WriteList(path, existingUsers);
+
+                res = true;
+            }
+
+            return res;
         }
-        public int IncrementID()
+
+        public static T Read<T>(string filePath)
         {
-            if (users.Any())
-                return users.Last().ID + 1;
-            else
-                return 1;
+            string text = File.ReadAllText(filePath);
+
+            T res = JsonSerializer.Deserialize<T>(text);
+
+            return res;
+        }
+
+        public static List<T> ReadList<T>(string filePath)
+        {
+            List<T> res = new List<T>();
+            string text = File.ReadAllText(filePath);
+
+            T[] arr = JsonSerializer.Deserialize<T[]>(text);
+
+            foreach (T obj in arr)
+            {
+                res.Add(obj);
+            }
+
+            return res;
+        }
+
+        public void WriteList<T>(string filePath, List<T> aList)
+        {
+            File.WriteAllText(filePath, JsonSerializer.Serialize(aList));
         }
     }
 }

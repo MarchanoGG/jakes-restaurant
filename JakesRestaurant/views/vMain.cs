@@ -15,6 +15,7 @@ namespace JakesRestaurant.views
         public vDiningtable diningtablecontroller { get; set; }
         public vReservation vreservations { get; set; }
         public vLogin loginView { get; set; }
+        public vOpeningTimes openingTimesView { get; set; }
         public List<vMenu> breadcrumbs{ get; set; }
         public List<string> test{ get; set; }
         public vMain()
@@ -24,17 +25,36 @@ namespace JakesRestaurant.views
             diningtablecontroller = new vDiningtable();
             vreservations = new vReservation();
             loginView = new vLogin();
-            options = new List<Option>
+            openingTimesView = new vOpeningTimes();
+
+            if (Program.MyUser.HasPrivilege() == true)
             {
-                new Option("Products", productscontroller.Navigation),
-                new Option("Tafels", diningtablecontroller.Navigation),
-                new Option("Reserveringen", vreservations.Navigation),
-                new Option("Users", vusers.Navigation),
-                new Option("Pas gebruiker aan", loginView.UpdateProfile),
-                new Option("Terug naar login", loginView.BackToLogin),
-                new Option("Exit", () => Environment.Exit(0)),
-            };
+                options = new List<Option>
+                {
+                    new Option("Openingstijden", openingTimesView.Navigation),
+                    new Option("Thema's", loginView.CheckRes),
+                    new Option("Producten", productscontroller.Navigation),
+                    new Option("Gebruikers", loginView.UsersList),
+                    new Option("Pas profiel aan", loginView.UpdateProfile),
+                    new Option("Terug naar login", loginView.BackToLogin),
+                    new Option("Afsluiten", () => Environment.Exit(0)),
+                };
+            }
+            else
+            {
+                options = new List<Option>
+                {
+                    new Option("Openingstijden", openingTimesView.Navigation),
+                    new Option("Producten", productscontroller.Navigation),
+                    new Option("Reserveer een tafel", diningtablecontroller.Navigation),
+                    new Option("Bekijk uw reserveringen", vreservations.Navigation),
+                    new Option("Pas profiel aan", loginView.UpdateProfile),
+                    new Option("Terug naar login", loginView.BackToLogin),
+                    new Option("Afsluiten", () => Environment.Exit(0)),
+                };
+            }
         }
+
         public void Navigation()
         {
             this.menu = new vMenu(options);
