@@ -20,22 +20,12 @@ namespace JakesRestaurant.views
             vMain mainmenu = new vMain();
             if (Program.MyUser.HasPrivilege() == true)
             {
-                options = new List<Option>
-                {
-                    new Option("Openingstijden bekijken", this.ShowTimes),
-                    new Option("Openingstijden aanpassen", this.UpdateTimes),
-                    new Option("Terug", () => mainmenu.Navigation())
-                };
+                UpdateTimes();
             }
             else
             {
-                options = new List<Option>
-                {
-                    new Option("Openingstijden bekijken", this.ShowTimes),
-                    new Option("Terug", () => mainmenu.Navigation())
-                };
+                ShowTimes();
             }
-            this.menu = new vMenu(options);
         }
 
         private void ShowTimes()
@@ -50,7 +40,7 @@ namespace JakesRestaurant.views
             }
 
             options.Add(new Option("Terug", () => mainmenu.Navigation()));
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Openingstijden");
         }
 
         private void UpdateTimes()
@@ -65,7 +55,7 @@ namespace JakesRestaurant.views
             }
 
             options.Add(new Option("Terug", () => mainmenu.Navigation()));
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Openingstijden");
         }
 
         public void UpdateTime(int ID) {
@@ -91,7 +81,7 @@ namespace JakesRestaurant.views
             }
 
             options.Add(new Option("Terug", this.UpdateTimes));
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Wijzig de openingstijden van " + this.chosenTime.Summary());
         }
 
         private void InsertValue(int idx)

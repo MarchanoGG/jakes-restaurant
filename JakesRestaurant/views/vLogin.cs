@@ -24,7 +24,7 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Jake's restaurant");
         }
         public void Login()
         {
@@ -43,7 +43,7 @@ namespace JakesRestaurant.views
                 new Option("Aanmelden", this.Create),
                 new Option("Afsluiten", () => Environment.Exit(0)),
             };
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Jake's restaurant");
         }
         public void UpdateProfile()
         {
@@ -59,7 +59,7 @@ namespace JakesRestaurant.views
                 new Option("Nieuw wachtwoord invullen", this.InsertValue, 6),
                 new Option("Terug", () => mainmenu.Navigation()),
             };
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Bewerk uw profiel");
         }
         public void Create()
         {
@@ -89,7 +89,7 @@ namespace JakesRestaurant.views
             }
 
             options.Add(new Option("Terug", () => mainmenu.Navigation()));
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Gebruikers lijst");
         }
         public void CheckRes()
         {
@@ -97,9 +97,9 @@ namespace JakesRestaurant.views
 
             options = new List<Option>
             {
-                new Option("Wordt nog aan gewerkt, kies deze optie om terug te gaan naar het menu!", () => mainmenu.Navigation()),
+                new Option("Terug naar het menu!", () => mainmenu.Navigation()),
             };
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Wordt nog aan gewerkt");
         }
         public void GetUserDetails(int ID)
         {
@@ -128,7 +128,7 @@ namespace JakesRestaurant.views
                 };
             }
             options.Add(new Option("Terug naar gebruikers lijst", UsersList));
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Details van gebruiker " + foundUser.Summary());
         }
 
         private void InsertValue(int idx)
