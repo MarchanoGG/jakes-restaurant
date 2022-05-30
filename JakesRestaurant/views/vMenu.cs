@@ -23,7 +23,7 @@ namespace JakesRestaurant.views
 
             // Write the menu out
             WriteMenu(options, options[index]);
-            
+
 
             // Store key info in here
             ConsoleKeyInfo keyinfo;
@@ -52,13 +52,17 @@ namespace JakesRestaurant.views
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-                    if(options[index].ID != 0)
-                        options[index].Selected(options[index].ID);
-                    else
-                        options[index].VoidSelected();
-                    break;
-                    //index = 0;
-                    //WriteMenu(options, options[index]);
+                    if (options[index].ActionIsSet)
+                    {
+                        if (options[index].ID != 0)
+                            options[index].Selected(options[index].ID);
+                        else
+                            options[index].VoidSelected();
+
+                        Console.ReadKey();
+                        index = 0;
+                    }
+                    WriteMenu(options, options[index]);
                 }
             }
             while (keyinfo.Key != ConsoleKey.X);
@@ -105,21 +109,30 @@ namespace JakesRestaurant.views
     public class Option
     {
         public string Name { get; }
+        public bool ActionIsSet { get; }
         public Action VoidSelected { get; }
         public Action<int> Selected { get; }
         public int ID { get; set; }
+
+        public Option(string name)
+        {
+            Name = name;
+            ActionIsSet = false;
+        }
 
         public Option(string name, Action selected)
         {
             Name = name;
             VoidSelected = selected;
+            ActionIsSet = true;
         }
 
-        public Option(string name, Action<int> selected, int id = 0) 
+        public Option(string name, Action<int> selected, int id = 0)
         {
             Name = name;
             Selected = selected;
             ID = id;
+            ActionIsSet = true;
         }
 
         //public Option(string name, object v)

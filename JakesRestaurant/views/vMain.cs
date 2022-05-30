@@ -16,6 +16,7 @@ namespace JakesRestaurant.views
         public vDiningtable vDiningtable { get; set; }
         public vReservation vReservation { get; set; }
         public vLogin loginView { get; set; }
+        public vOpeningTimes openingTimesView { get; set; }
         public List<vMenu> breadcrumbs{ get; set; }
         public vMain()
         {
@@ -24,17 +25,36 @@ namespace JakesRestaurant.views
             vDiningtable = new vDiningtable();
             vReservation = new vReservation();
             loginView = new vLogin();
-            options = new List<Option>
+            openingTimesView = new vOpeningTimes();
+
+            if (Program.MyUser.HasPrivilege() == true)
             {
-                new Option("Products", vProducts.Navigation),
-                new Option("Tafels", vDiningtable.Navigation),
-                new Option("Reserveringen", vReservation.Navigation),
-                new Option("Users", vusers.Navigation),
-                new Option("Pas gebruiker aan", loginView.UpdateProfile),
-                new Option("Terug naar login", loginView.BackToLogin),
-                new Option("Exit", () => Environment.Exit(0)),
-            };
+                options = new List<Option>
+                {
+                    new Option("Openingstijden", openingTimesView.Navigation),
+                    new Option("Thema's", loginView.CheckRes),
+                    new Option("Producten", vProducts.Navigation),
+                    new Option("Gebruikers", loginView.UsersList),
+                    new Option("Pas profiel aan", loginView.UpdateProfile),
+                    new Option("Terug naar login", loginView.BackToLogin),
+                    new Option("Afsluiten", () => Environment.Exit(0)),
+                };
+            }
+            else
+            {
+                options = new List<Option>
+                {
+                    new Option("Openingstijden", openingTimesView.Navigation),
+                    new Option("Producten", vProducts.Navigation),
+                    new Option("Reserveer een tafel", vDiningtable.Navigation),
+                    new Option("Bekijk uw reserveringen", vReservation.Navigation),
+                    new Option("Pas profiel aan", loginView.UpdateProfile),
+                    new Option("Terug naar login", loginView.BackToLogin),
+                    new Option("Afsluiten", () => Environment.Exit(0)),
+                };
+            }
         }
+
         public void Navigation()
         {
             this.menu = new vMenu(options);

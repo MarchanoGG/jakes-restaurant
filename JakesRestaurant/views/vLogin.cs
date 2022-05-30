@@ -5,8 +5,8 @@ namespace JakesRestaurant.views
 {
     internal class vLogin
     {
-        private static Authentication.User currentUser;
-        static Authentication.TctlLogin ctlAuth = new Authentication.TctlLogin();
+        static Authentication.ctlLogin ctlAuth = new Authentication.ctlLogin();
+        static Authentication.ctlUsers ctlUsers = new Authentication.ctlUsers();
 
         public static List<Option> options;
         public vMenu menu { get; set; }
@@ -22,7 +22,7 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, title);
         }
         public void Login()
         {
@@ -34,7 +34,7 @@ namespace JakesRestaurant.views
         }
         public void BackToLogin()
         {
-            vLogin.currentUser = null;
+            Program.MyUser = null;
             options = new List<Option>
             {
                 new Option("Inloggen", this.Login),
@@ -49,36 +49,84 @@ namespace JakesRestaurant.views
             
             options = new List<Option>
             {
-                new Option("Voornaam:           " + vLogin.currentUser.FirstName, this.InsertValue, 1),
-                new Option("Achternaam:         " + vLogin.currentUser.Surname, this.InsertValue, 2),
-                new Option("Email:              " + vLogin.currentUser.Email, this.InsertValue, 3),
-                new Option("Telefoon nummer:    " + vLogin.currentUser.Phone, this.InsertValue, 4),
-                new Option("Geboorte datum:     " + vLogin.currentUser.BirthDate, this.InsertValue, 5),
+                new Option("Voornaam:           " + Program.MyUser.FirstName, this.InsertValue, 1),
+                new Option("Achternaam:         " + Program.MyUser.Surname, this.InsertValue, 2),
+                new Option("Email:              " + Program.MyUser.Email, this.InsertValue, 3),
+                new Option("Telefoon nummer:    " + Program.MyUser.Phone, this.InsertValue, 4),
+                new Option("Geboorte datum:     " + Program.MyUser.BirthDate, this.InsertValue, 5),
+                new Option("Nieuw wachtwoord invullen", this.InsertValue, 6),
                 new Option("Terug", () => mainmenu.Navigation()),
             };
             this.menu = new vMenu(options);
         }
         public void Create()
         {
-            if (ctlAuth.CreateUser(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
+            if (ctlUsers.CreateCredentials(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
             {
                 Console.WriteLine("Gebruiker is aangemaakt");
+                Console.ReadLine();
             }
             else
             {
                 Console.WriteLine("Kan de gebruiker niet aanmaken!");
+                Console.ReadLine();
             }
             this.menu = new vMenu(options);
         }
-
-        static public void SetUser(Authentication.User aUser)
+        public void UsersList()
         {
-            vLogin.currentUser = aUser;
+            vMain mainmenu = new vMain();
+
+            options = new List<Option> {};
+
+            Authentication.doUser usr = new Authentication.doUser();
+
+            foreach (Authentication.doUser obj in ctlUsers.GetUsers())
+            {
+                options.Add(new Option(obj.ID + ". " + obj.FirstName + " " + obj.Surname, GetUserDetails, obj.ID));
+            }
+
+            options.Add(new Option("Terug", () => mainmenu.Navigation()));
+            this.menu = new vMenu(options);
         }
-
-        static public Authentication.User GetUser()
+        public void CheckRes()
         {
-            return vLogin.currentUser;
+            vMain mainmenu = new vMain();
+
+            options = new List<Option>
+            {
+                new Option("Wordt nog aan gewerkt, kies deze optie om terug te gaan naar het menu!", () => mainmenu.Navigation()),
+            };
+            this.menu = new vMenu(options);
+        }
+        public void GetUserDetails(int ID)
+        {
+            vMain mainmenu = new vMain();
+
+            Authentication.doUser usr = new Authentication.doUser();
+            Authentication.doUser foundUser = null;
+
+            foreach (Authentication.doUser obj in ctlUsers.GetUsers())
+            {
+                if (obj.ID == ID) 
+                {
+                    foundUser = obj;
+                }
+            }
+
+            if (foundUser != null)
+            {
+                options = new List<Option>
+                {
+                    new Option("Voornaam:           " + foundUser.FirstName),
+                    new Option("Achternaam:         " + foundUser.Surname),
+                    new Option("Email:              " + foundUser.Email),
+                    new Option("Telefoon nummer:    " + foundUser.Phone),
+                    new Option("Geboorte datum:     " + foundUser.BirthDate)
+                };
+            }
+            options.Add(new Option("Terug naar gebruikers lijst", UsersList));
+            this.menu = new vMenu(options);
         }
 
         private void InsertValue(int idx)
@@ -89,45 +137,59 @@ namespace JakesRestaurant.views
                 case 1:
                     Console.WriteLine("Voer nieuwe voornaam in:");
                     string FirstName = Console.ReadLine();
-                    vLogin.currentUser.FirstName = FirstName;
+                    Program.MyUser.FirstName = FirstName;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 2:
                     Console.WriteLine("Voer nieuwe achternaam in:");
                     string Surname = Console.ReadLine();
-                    vLogin.currentUser.Surname = Surname;
+                    Program.MyUser.Surname = Surname;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 3:
                     Console.WriteLine("Voer nieuwe email in:");
                     string Email = Console.ReadLine();
-                    vLogin.currentUser.Email = Email;
+                    Program.MyUser.Email = Email;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 4:
                     Console.WriteLine("Voer nieuwe telefoon nummer in:");
                     string Phone = Console.ReadLine();
-                    vLogin.currentUser.Phone = Phone;
+                    Program.MyUser.Phone = Phone;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 case 5:
-                    Console.WriteLine("Voer uw geboorte datum in:");
+                    Console.WriteLine("Voer uw geboorte datum in (dd/MM/yyyy):");
 
                     string line = Console.ReadLine();
                     DateTime dt;
                     while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
                     {
-                        Console.WriteLine("Invalid date, please retry");
+                        Console.WriteLine("Invalide datum, let op het formaat moet zijn: dd/MM/yyyy!");
                         line = Console.ReadLine();
                     }
 
-                    vLogin.currentUser.BirthDate = dt;
+                    Program.MyUser.BirthDate = dt;
 
-                    vLogin.currentUser.UpdateUser(vLogin.currentUser);
+                    ctlUsers.UpdateUser(Program.MyUser);
+                    break;
+                case 6:
+                    string NewPassword = InsertCredentials("wachtwoord");
+                    string ConfirmNewPassword = InsertCredentials("wachtwoord opnieuw");
+
+                    while (NewPassword != ConfirmNewPassword)
+                    {
+                        NewPassword = InsertCredentials("wachtwoord");
+                        ConfirmNewPassword = InsertCredentials("wachtwoord opnieuw");
+                    }
+
+                    Program.MyUser.Password = ctlUsers.HashString(NewPassword);
+
+                    ctlUsers.UpdateUser(Program.MyUser);
                     break;
                 default:
                     break;
@@ -149,7 +211,7 @@ namespace JakesRestaurant.views
                 var keyInfo = Console.ReadKey(intercept: true);
                 key = keyInfo.Key;
 
-                if (aCredential == "wachtwoord")
+                if (aCredential == "wachtwoord" || aCredential == "wachtwoord opnieuw")
                 {
                     if (key == ConsoleKey.Backspace && credentials.Length > 0)
                     {
