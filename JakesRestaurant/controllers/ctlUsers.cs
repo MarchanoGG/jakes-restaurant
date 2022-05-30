@@ -107,7 +107,8 @@ namespace controllers
                 doUser obj = new doUser
                 {
                     Username = aUsername,
-                    Password = HashString(aPassword)
+                    Password = HashString(aPassword),
+                    ID = newID
                 };
 
                 existingUsers.Add(obj);
