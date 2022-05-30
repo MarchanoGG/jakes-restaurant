@@ -11,7 +11,12 @@ namespace controllers
 	{
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "products.json");
 
-        private List<Product> d_products;
+        private List<Thema> d_thema;
+
+        public List<Product> GetProducts(int aID)
+        {
+            return d_thema.Find(i => i.ID == aID).Products;
+        }
 
 		public TctlProducts()
 		{
@@ -30,56 +35,65 @@ namespace controllers
             string json = File.ReadAllText(path);
             if (json != "")
             {
-                d_products = JsonSerializer.Deserialize<List<Product>>(json);
+                d_thema = JsonSerializer.Deserialize<List<Thema>>(json);
             }
             else
             {
-                d_products = new List<Product>();
+                d_thema = new List<Thema>();
             }
             
         }
 
-        public List<Product> GetProducts()
+        public List<Thema> GetTheme()
         {
-            if (d_products != null)
-                return d_products;
+            if (d_thema != null)
+                return d_thema;
             else
                 return null;
         }
 
         public void Write()
         {
-            string json = JsonSerializer.Serialize(d_products);
+            string json = JsonSerializer.Serialize(d_thema);
             File.WriteAllText(path, json);
             Console.WriteLine("write done");
         }
 
-        public void UpdateList(Product p)
+        public void UpdateList(Thema thema)
         {
-            int index = d_products.FindIndex(s => s.ID == p.ID);
+            int index = d_thema.FindIndex(s => s.ID == thema.ID);
+               
 
             if (index != -1)
             {
-                d_products[index] = p;
+                d_thema[index] = thema;
             }
             else
             {
-                d_products.Add(p);
+                d_thema.Add(thema);
             }
 
             Write();
 
         }
 
-        public Product GetID(int id)
+        public Thema GetID(int id)
         {
-            return d_products.Find(i => i.ID == id);
+            return d_thema.Find(i => i.ID == id);
         }
 
-        public int IncrementID()
+        public int IncrementID() // Leave for now but we don't want to increment based of theme but from product and theme
         {
-            if (d_products.Any())           
-               return d_products.Last().ID + 1;           
+            if (d_thema.Any())           
+               return d_thema.Last().ID + 1;           
+            else
+                return 1;
+        }
+
+        public int IncrementProductID(Thema aTheme) // Leave for now but we don't want to increment based of theme but from product and theme
+        {
+            if (aTheme.Products.Any())
+                return aTheme.Products.Last().ID + 1;
             else
                 return 1;
         }

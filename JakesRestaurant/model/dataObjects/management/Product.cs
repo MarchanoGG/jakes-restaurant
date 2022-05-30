@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace management
 {
-    class Product
+   public class Product
     {
         [JsonPropertyName("id")]
         public int ID { get; set; }

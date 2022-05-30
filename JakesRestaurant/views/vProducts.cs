@@ -23,7 +23,7 @@ namespace JakesRestaurant.views
             Console.WriteLine("Products");
             options = new List<Option>
             {
-                new Option("Voeg toe", this.Add),
+                new Option("Voeg producten toe", this.SelectTheme),
                 new Option("Lijst", this.View),
                 new Option("Exit", () => Environment.Exit(0)),
             };
@@ -34,47 +34,52 @@ namespace JakesRestaurant.views
         {
             this.menu = new vMenu(options);
         }
-        public void Add()
-        {
-            Product p  = new Product(); 
-            FillFromInput(ref p);
-            p.ID = d_prodCtrl.IncrementID();
-            d_prodCtrl.UpdateList(p);
-
-            Navigation();
-        }
-        public void View()
+        public void SelectTheme()
         {
             options = new List<Option>();
 
-            options.Add(new Option("Terug", DefaultMenu));
-         
-            foreach (var l in d_prodCtrl.GetProducts())
+            if (d_prodCtrl.GetTheme().Count > 0)
             {
-                options.Add(new Option(l.Name, Edit));
+                Console.WriteLine("Selecteer een thema om producten toe te voegen:");
             }
+
+            foreach (Thema el in d_prodCtrl.GetTheme())
+             {
+                options.Add(new Option(el.Name, AddProduct)); 
+             }
+
+            options.Add(new Option("Voeg thema toe!", AddTheme));
+            options.Add(new Option("Terug", DefaultMenu));
+
 
             this.menu = new vMenu(options);
         }
-        public void Edit()
+
+        public void ThemeAction()
         {
-            int aID = 2; // Get from parameter
-            Product p = d_prodCtrl.GetID(aID);
+            options = new List<Option>
+            {
+                new Option("Wijzig", this.Edit),
+                new Option("Voeg product toe", this.AddProduct),
+                new Option("Terug", this.SelectTheme)
+              };
 
-            FillFromInput(ref p);
-
-            // If success than update product
-            d_prodCtrl.UpdateList(p);
-
-            // Go back to View navigation
-            View();
-
+            this.menu = new vMenu(options);
         }
 
-        public void FillFromInput(ref Product p)
+        public void AddProduct()
         {
+            // Get thema from id
+            Thema theme = d_prodCtrl.GetID(1);
+
+            // Some how add the id of the current Theme selected
             List<string> allergens = new List<string>();
             List<string> ingredients = new List<string>();
+            List<Product> products = new List<Product>();
+
+            products = d_prodCtrl.GetProducts(1);
+
+            Product p = new Product();
 
             Console.WriteLine("Naam:");
             p.Name = Console.ReadLine();
@@ -83,12 +88,12 @@ namespace JakesRestaurant.views
             p.Price = double.Parse(Console.ReadLine());
 
             Console.WriteLine("Allergiën: (Gebruik ; na ieder item)");
-          
+
             allergens = Console.ReadLine().Split(';').ToList();
             p.Allergens = allergens;
 
             Console.WriteLine("Ingrediënten: (Gebruik ; na ieder item)");
-       
+
             ingredients = Console.ReadLine().Split(';').ToList();
             p.Ingredients = ingredients;
 
@@ -105,7 +110,72 @@ namespace JakesRestaurant.views
             else
                 p.Alcohol = false;
 
+            products.Add(p);
 
+            theme.Products = products;
+
+            p.ID = d_prodCtrl.IncrementProductID(theme);
+            d_prodCtrl.UpdateList(theme);
+
+            ThemeAction();
         }
+
+
+        public void AddTheme()
+        {
+            Thema thema = new Thema();
+
+            Console.WriteLine("Thema naam:");
+            thema.Name = Console.ReadLine();
+
+            Console.WriteLine("Start datum:");
+            thema.StartDate = DateTime.Parse(Console.ReadLine()); 
+
+            Console.WriteLine("Eind datum:");
+            thema.EndDate = DateTime.Parse(Console.ReadLine());
+
+            thema.ID = d_prodCtrl.IncrementID();
+            d_prodCtrl.UpdateList(thema);
+
+
+            SelectTheme();
+        }
+
+        public void View()
+        {
+            options = new List<Option>();
+
+            options.Add(new Option("Terug", DefaultMenu));
+         
+            foreach (var l in d_prodCtrl.GetTheme())
+            {
+                options.Add(new Option(l.Name, Edit));
+            }
+
+            this.menu = new vMenu(options);
+        }
+        public void Edit()
+        {
+            int aID = 1; // Get from parameter
+            Thema theme = d_prodCtrl.GetID(aID);
+
+            options = new List<Option>();
+
+            options.Add(new Option(theme.Name, this.Edit));
+            options.Add(new Option(theme.StartDate.ToString(), this.Edit));
+            options.Add(new Option(theme.EndDate.ToString(), this.Edit));
+
+            Console.WriteLine("Producten:");
+            foreach (var el in d_prodCtrl.GetProducts(theme.ID))
+            {
+                options.Add(new Option(el.Name, this.Edit));
+            }
+
+            options.Add(new Option("Terug", this.DefaultMenu));
+
+            this.menu = new vMenu(options);
+        }
+
+     
     }
 }
