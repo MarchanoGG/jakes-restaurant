@@ -225,8 +225,8 @@ namespace JakesRestaurant.views
             options = new List<Option>
             {
                 new Option("Nieuwe reservering", this.Add),
-                new Option("Alle reserveringen", this.View),
-                new Option("Verwijder alle reserveringen", DeleteAll),
+                new Option("Alle reserveringen", this.View), 
+                //new Option("Verwijder alle reserveringen", DeleteAll),
                 new Option("Terug", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
