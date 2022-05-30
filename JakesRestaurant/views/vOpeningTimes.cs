@@ -73,8 +73,6 @@ namespace JakesRestaurant.views
 
             options = new List<Option> { };
 
-            Restaurant.doOpeningTimes chosenTime = null;
-
             foreach (Restaurant.doOpeningTimes obj in controller.GetOpeningTimes())
             {
                 if (obj.ID == ID) {

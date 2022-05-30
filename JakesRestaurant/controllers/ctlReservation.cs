@@ -13,14 +13,14 @@ namespace controllers
 
         public List<Reservations> reservations;
         public ctlDiningTable ctlDT { get; set; }
-        public ctlUsers ctlU { get; set; }
+        public Authentication.ctlUsers ctlU { get; set; }
         public TctlProducts ctlP { get; set; }
 
         public Reservations currentitem { get; set; }
         public ctlReservation()
 		{
             this.ctlDT = new ctlDiningTable();
-            this.ctlU = new ctlUsers();
+            this.ctlU = new Authentication.ctlUsers();
             this.ctlP = new TctlProducts();
             Load();
         }
