@@ -15,21 +15,30 @@ namespace JakesRestaurant.views
         public vMenu menu { get; set; }
         public vDiningtable()
         {
-            ctl = new ctlDiningTable();
-            Console.WriteLine("Zit plaatsen");
-            options = new List<Option>
-            {
-                new Option("Voeg toe", this.Add),
-                new Option("Lijst", this.View),
-                new Option("Delete", this.ViewDelete),
-                new Option("Back to menu", this.BackToMain),
-                new Option("Exit", () => Environment.Exit(0)),
-            };
         }
 
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            ctl = new ctlDiningTable();
+
+            if (Program.MyUser.HasPrivilege() == true)
+            {
+                vMain mainmenu = new vMain();
+
+                options = new List<Option>
+                {
+                    new Option("Lijst weergeven", this.View),
+                    new Option("Nieuwe tafel toevoegen", this.Add),
+                    new Option("Bestaande tafel verwijderen", this.ViewDelete),
+                    new Option("Terug", () => mainmenu.Navigation())
+                };
+            }
+            else
+            {
+                this.View();
+            }
+
+            this.menu = new vMenu(options, "Zitplaatsen");
         }
 
         public void Add()
@@ -44,24 +53,30 @@ namespace JakesRestaurant.views
         }
         public void View()
         {
+            vMain mainmenu = new vMain();
             List<Option> listoptions = new List<Option>();
-
-            listoptions.Add(new Option("Terug", Navigation));
 
             foreach (var l in ctl.GetList())
             {
-                var label = $"Tafel voor {l.Places}; Beschikbaarheid: {l.Status}";
-                listoptions.Add(new Option(label, Edit, l.ID));
+                listoptions.Add(new Option(l.Summary(), Edit, l.ID));
             }
 
-            this.menu = new vMenu(listoptions);
+            if (Program.MyUser.HasPrivilege() == true)
+            {
+                listoptions.Add(new Option("Terug", Navigation));
+            }
+            else
+            {
+                listoptions.Add(new Option("Terug", () => mainmenu.Navigation()));
+            }
+
+            this.menu = new vMenu(listoptions, "Lijst van de tafels");
         }
 
         public void ViewDelete()
         {
+            vMain mainmenu = new vMain();
             List<Option> listoptions = new List<Option>();
-
-            listoptions.Add(new Option("Terug", Navigation));
 
             foreach (var l in ctl.GetList())
             {
@@ -69,7 +84,7 @@ namespace JakesRestaurant.views
                 listoptions.Add(new Option(label, Delete, l.ID));
             }
 
-            this.menu = new vMenu(listoptions);
+            this.menu = new vMenu(listoptions, "Tafels verwijderen");
             Navigation();
         }
 
@@ -95,6 +110,7 @@ namespace JakesRestaurant.views
             ctl.DeleteById(p);
 
             // Go back to View navigation
+            View();
         }
 
         public void FillFromInput(ref DiningTable p)
