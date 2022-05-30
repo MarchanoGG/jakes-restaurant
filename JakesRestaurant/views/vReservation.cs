@@ -167,7 +167,7 @@ namespace JakesRestaurant.views
         {
             List<Option> listoptions = new List<Option>();
 
-            foreach (var l in ctlU.users)
+            foreach (var l in ctlU.GetUsers())
             {
                 var label = $"{l.Username}";
                 listoptions.Add(new Option(label, UserSelect, l.ID));

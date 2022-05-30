@@ -22,7 +22,7 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options, title);
+            this.menu = new vMenu(options);//, title);
         }
         public void Login()
         {

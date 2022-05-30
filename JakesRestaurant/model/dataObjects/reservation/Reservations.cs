@@ -20,7 +20,7 @@ namespace reservation
         //public int UserId { get; set; }
 
         [JsonPropertyName("user")]
-        public User User { get; set; }
+        public doUser User { get; set; }
 
         [JsonPropertyName("products")]
         public List<Product> ListProducts { get; set; }

@@ -36,7 +36,7 @@ namespace JakesRestaurant.views
             listoptions.Add(new Option("Terug", Navigation));
 
             string header = $" + - ID - Naam";
-            foreach (var l in ctlU.users)
+            foreach (var l in ctlU.GetUsers())
             {
                 string label = $" - {l.ID} - {l.Username} - ";
                 listoptions.Add(new Option(label, Edit, l.ID));
@@ -47,12 +47,12 @@ namespace JakesRestaurant.views
         public void Edit(int aID)
         {
             // Get from parameter
-            User p = ctlU.FindById(aID);
+            doUser p = ctlU.FindById(aID);
 
             //Form(ref p);
 
             // If success than update product
-            ctlU.UpdateList(p);
+            // ctlU.UpdateList(p);
 
             // Go back to View navigation
             View();
