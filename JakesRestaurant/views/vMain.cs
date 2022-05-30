@@ -48,8 +48,9 @@ namespace JakesRestaurant.views
                 options = new List<Option>
                 {
                     new Option("Openingstijden", openingTimesView.Navigation),
-                    new Option("Producten", vProducts.Navigation),
-                    new Option("Bekijk uw reserveringen", vReservation.Navigation),
+                    new Option("Producten", vProducts.View),
+                    new Option("Maak een reservering", vReservation.Add),
+                    new Option("Mijn reserveringen", vReservation.View),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
                     new Option("Terug naar login", loginView.BackToLogin),
                     new Option("Afsluiten", () => Environment.Exit(0)),

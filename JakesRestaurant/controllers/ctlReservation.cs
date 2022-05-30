@@ -85,6 +85,24 @@ namespace controllers
         {
             return reservations.Find(i => i.ID == id);
         }
+        public string GenerateResCode()
+        {
+            string code;
+            int RanNum;
+            do
+            {
+                Random rand = new Random();
+                RanNum = rand.Next(0, 9999);
+                code = String.Format("{0,4}", RanNum.ToString("D4"));
+            }
+            while (FindByCode(code) != null);
+            return code;
+        }
+
+        public Reservations FindByCode(string code)
+        {
+            return reservations.Find(i => i.ReserveCode == code);
+        } 
 
         public int IncrementID()
         {
