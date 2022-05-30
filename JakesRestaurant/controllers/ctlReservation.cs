@@ -16,7 +16,6 @@ namespace controllers
         public Reservations currentitem { get; set; }
         public ctlReservation()
 		{
-            //this.ctlDT = new ctlDiningTable();
             Load();
         }
 

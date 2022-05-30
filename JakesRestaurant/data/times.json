@@ -1,11 +1,11 @@
 [
   {
-    "id":  1,
+    "id": 1,
     "day": "Maandag",
-    "opened": false,
-    "startingHours": 0,
+    "opened": true,
+    "startingHours": 17,
     "startingMinutes": 0,
-    "closingHours": 0,
+    "closingHours": 23,
     "closingMinutes": 0
   },
   {
@@ -20,46 +20,46 @@
   {
     "id": 3,
     "day": "Woensdag",
-    "opened": false,
-    "startingHours": 0,
+    "opened": true,
+    "startingHours": 17,
     "startingMinutes": 0,
-    "closingHours": 0,
+    "closingHours": 23,
     "closingMinutes": 0
   },
   {
     "id": 4,
     "day": "Donderdag",
-    "opened": false,
-    "startingHours": 0,
+    "opened": true,
+    "startingHours": 17,
     "startingMinutes": 0,
-    "closingHours": 0,
+    "closingHours": 23,
     "closingMinutes": 0
   },
   {
     "id": 5,
     "day": "Vrijdag",
-    "opened": false,
-    "startingHours": 0,
+    "opened": true,
+    "startingHours": 17,
     "startingMinutes": 0,
-    "closingHours": 0,
+    "closingHours": 23,
     "closingMinutes": 0
   },
   {
     "id": 6,
     "day": "Zaterdag",
-    "opened": false,
-    "startingHours": 0,
+    "opened": true,
+    "startingHours": 17,
     "startingMinutes": 0,
-    "closingHours": 0,
+    "closingHours": 23,
     "closingMinutes": 0
   },
   {
     "id": 7,
     "day": "Zondag",
-    "opened": false,
-    "startingHours": 0,
+    "opened": true,
+    "startingHours": 17,
     "startingMinutes": 0,
-    "closingHours": 0,
+    "closingHours": 23,
     "closingMinutes": 0
   }
 ]

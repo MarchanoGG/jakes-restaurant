@@ -31,6 +31,10 @@ namespace JakesRestaurant.views
                 vReservation = new vAdminReservation();
                 options = new List<Option>
                 {
+                    new Option("Jake's restaurant"),
+                    new Option("Thema: <To be implemented>"),
+                    new Option("Locatie: Wijnhaven 107, 3011 WN in Rotterdam"),
+                    new Option(""),
                     new Option("Openingstijden", openingTimesView.Navigation),
                     new Option("Thema's", loginView.CheckRes),
                     new Option("Producten", vProducts.Navigation),
@@ -47,6 +51,10 @@ namespace JakesRestaurant.views
                 vReservation = new vReservation();
                 options = new List<Option>
                 {
+                    new Option("Jake's restaurant"),
+                    new Option("Thema: <To be implemented>"),
+                    new Option("Locatie: Wijnhaven 107, 3011 WN in Rotterdam"),
+                    new Option(""),
                     new Option("Openingstijden", openingTimesView.Navigation),
                     new Option("Producten", vProducts.Navigation),
                     new Option("Bekijk uw reserveringen", vReservation.Navigation),
