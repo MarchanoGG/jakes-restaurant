@@ -23,7 +23,7 @@ namespace JakesRestaurant.views
                 new Option("Exit", () => Environment.Exit(0)),
             };
         }
-        public void Navigation()
+        public virtual void Navigation()
         {
             //new vMenu(options, "Reserveringen");
             BackToMain();
@@ -230,6 +230,10 @@ namespace JakesRestaurant.views
                 new Option("Terug", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
+        }
+        public override void Navigation()
+        {
+            new vMenu(options, "Reserveringen");
         }
         public override void Add()
         {

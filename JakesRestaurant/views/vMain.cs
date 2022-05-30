@@ -55,8 +55,6 @@ namespace JakesRestaurant.views
                     new Option("Thema: <To be implemented>"),
                     new Option("Locatie: Wijnhaven 107, 3011 WN in Rotterdam"),
                     new Option(""),
-                    new Option("Openingstijden", openingTimesView.Navigation),
-                    new Option("Producten", vProducts.View),
                     new Option("Maak een reservering", vReservation.Add),
                     new Option("Mijn reserveringen", vReservation.View),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
