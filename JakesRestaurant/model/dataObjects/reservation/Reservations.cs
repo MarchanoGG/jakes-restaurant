@@ -38,9 +38,12 @@ namespace reservation
         public string Comment { get; set; }
         
         [JsonPropertyName("totalcosts")]
-        public double totalCosts { get; set; }
+        public double TotalCosts { get; set; }
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
+
+        [JsonPropertyName("reservecode")]
+        public string ReserveCode { get; set; }
     }
 }

@@ -35,10 +35,15 @@ namespace JakesRestaurant.views
             SelectedItem.Status = "Actief";
             SelectedItem.ListProducts = new List<Product>();
             SelectedItem.User = Program.MyUser;
+            FieldReserveCode();
             FieldPersons();
             FieldDueDate();
             FieldComment();
             FieldListProducts();
+        }
+        public void FieldReserveCode()
+        {
+            SelectedItem.ReserveCode = ctlMain.reservation.GenerateResCode();
         }
         public virtual void View()
         {
@@ -49,12 +54,12 @@ namespace JakesRestaurant.views
 
             if (ctlMain.reservation.reservations != null)
             {
-                string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen";
+                string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen - #Code";
                 Console.WriteLine(header);
                 foreach (var l in ctlMain.reservation.reservations)
                 {
                     string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                    string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
+                    string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt} - {l.ListProducts.Count} - {l.ReserveCode}";
                     listoptions.Add(new Option(label, EditItem, l.ID));
                 }
                 new vMenu(listoptions);
@@ -231,6 +236,7 @@ namespace JakesRestaurant.views
             SelectedItem.CreateDateTime = DateTime.Now;
             SelectedItem.Status = "Actief";
             SelectedItem.ListProducts = new List<Product>();
+            FieldReserveCode();
             FieldPersons();
             FieldDueDate();
             FieldComment();
@@ -246,12 +252,12 @@ namespace JakesRestaurant.views
 
             if (ctlMain.reservation.reservations != null)
             {
-                string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen";
+                string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen - #Code";
                 Console.WriteLine(header);
                 foreach (var l in ctlMain.reservation.reservations)
                 {
                     string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                    string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
+                    string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt} - {l.ReserveCode}";
                     listoptions.Add(new Option(label, EditItem, l.ID));
                 }
                 new vMenu(listoptions);
