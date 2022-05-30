@@ -99,7 +99,7 @@ namespace JakesRestaurant.views
             }
             if(SelectedItem.DueDateTime < DateTime.Now) {
                 IsValid = false;
-                Console.WriteLine("Datum is niet ingevuld");
+                Console.WriteLine("Datum is in het verleden");
             }
             if (!IsValid)
             {
