@@ -94,7 +94,6 @@ namespace controllers
                 Random rand = new Random();
                 RanNum = rand.Next(0, 9999);
                 code = String.Format("{0,4}", RanNum.ToString("D4"));
-                Console.WriteLine(code);
             }
             while (FindByCode(code) != null);
             return code;

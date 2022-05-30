@@ -25,7 +25,8 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            new vMenu(options, "Reserveringen");
+            //new vMenu(options, "Reserveringen");
+            BackToMain();
         }
         public virtual void Add()
         {
@@ -208,6 +209,7 @@ namespace JakesRestaurant.views
             Product Product = ctlMain.products.GetID(aId);
             Console.WriteLine($"Geselecteerd: {Product.Name}");
             SelectedItem.ListProducts.Add(Product);
+            FieldListProducts();
         }
 
         public void BackToMain()
@@ -241,7 +243,6 @@ namespace JakesRestaurant.views
             FieldDueDate();
             FieldComment();
             FieldUserSelect();
-            FieldListProducts();
         }
         public override void View()
         {
@@ -309,6 +310,7 @@ namespace JakesRestaurant.views
         {
             SelectedItem.User = ctlMain.users.FindById(aId);
             Console.WriteLine($"Geselecteerd: {SelectedItem.User.Username}");
+            FieldListProducts();
         }
     }
 }
