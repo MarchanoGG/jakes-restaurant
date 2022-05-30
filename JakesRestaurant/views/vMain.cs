@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using controllers;
 
 namespace JakesRestaurant.views
 {
@@ -10,25 +11,24 @@ namespace JakesRestaurant.views
     {
         public static List<Option> options;
         public vMenu menu { get; set; }
-        public vProducts productscontroller { get; set; }
+        public vProducts vProducts { get; set; }
         public vUsers vusers { get; set; }
-        public vDiningtable diningtablecontroller { get; set; }
-        public vReservation vreservations { get; set; }
+        public vDiningtable vDiningtable { get; set; }
+        public vReservation vReservation { get; set; }
         public vLogin loginView { get; set; }
         public vOpeningTimes openingTimesView { get; set; }
         public List<vMenu> breadcrumbs{ get; set; }
-        public List<string> test{ get; set; }
         public vMain()
         {
-            productscontroller = new vProducts();
+            vProducts = new vProducts();
             vusers = new vUsers();
-            diningtablecontroller = new vDiningtable();
-            vreservations = new vReservation();
+            vDiningtable = new vDiningtable();
             loginView = new vLogin();
             openingTimesView = new vOpeningTimes();
 
             if (Program.MyUser.HasPrivilege() == true)
             {
+                vReservation = new vAdminReservation();
                 options = new List<Option>
                 {
                     new Option("Jake's restaurant"),
@@ -37,8 +37,10 @@ namespace JakesRestaurant.views
                     new Option(""),
                     new Option("Openingstijden", openingTimesView.Navigation),
                     new Option("Thema's", loginView.CheckRes),
-                    new Option("Producten", productscontroller.Navigation),
+                    new Option("Producten", vProducts.Navigation),
                     new Option("Gebruikers", loginView.UsersList),
+                    new Option("Tafels", vDiningtable.Navigation),
+                    new Option("Reserveringen", vReservation.Navigation),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
                     new Option("Terug naar login", loginView.BackToLogin),
                     new Option("Afsluiten", () => Environment.Exit(0)),
@@ -46,6 +48,7 @@ namespace JakesRestaurant.views
             }
             else
             {
+                vReservation = new vReservation();
                 options = new List<Option>
                 {
                     new Option("Jake's restaurant"),
@@ -53,9 +56,8 @@ namespace JakesRestaurant.views
                     new Option("Locatie: Wijnhaven 107, 3011 WN in Rotterdam"),
                     new Option(""),
                     new Option("Openingstijden", openingTimesView.Navigation),
-                    new Option("Producten", productscontroller.Navigation),
-                    new Option("Reserveer een tafel", diningtablecontroller.Navigation),
-                    new Option("Bekijk uw reserveringen", vreservations.Navigation),
+                    new Option("Producten", vProducts.Navigation),
+                    new Option("Bekijk uw reserveringen", vReservation.Navigation),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
                     new Option("Terug naar login", loginView.BackToLogin),
                     new Option("Afsluiten", () => Environment.Exit(0)),

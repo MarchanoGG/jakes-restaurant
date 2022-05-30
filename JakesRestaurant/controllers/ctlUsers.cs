@@ -1,15 +1,46 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Authentication;
 
-namespace Authentication
+namespace controllers
 {
     class ctlUsers
     {
         static string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "auth.json");
+        public List<doUser> users;
+        public ctlUsers()
+        {
+            Load();
+        }
+        public doUser FindById(int id)
+        {
+            return users.Find(i => i.ID == id);
+        }
+        public void Load()
+        {
+            if (!File.Exists(path))
+            {
+                var myFile = File.Create(path);
+                myFile.Close();
+            }
 
+            string json = File.ReadAllText(path);
+            if (json != "")
+            {
+                users = JsonSerializer.Deserialize<List<doUser>>(json);
+            }
+            else
+            {
+                users = new List<doUser>();
+            }
+
+        }
         public string HashString(string text, string salt = "")
         {
             if (String.IsNullOrEmpty(text))
@@ -91,7 +122,8 @@ namespace Authentication
                 doUser obj = new doUser
                 {
                     Username = aUsername,
-                    Password = HashString(aPassword)
+                    Password = HashString(aPassword),
+                    ID = newID
                 };
 
                 existingUsers.Add(obj);
@@ -151,6 +183,34 @@ namespace Authentication
         public void WriteList<T>(string filePath, List<T> aList)
         {
             File.WriteAllText(filePath, JsonSerializer.Serialize(aList));
+        }
+        public void UpdateList(doUser p)
+        {
+            int index = users.FindIndex(s => s.ID == p.ID);
+
+            if (index != -1)
+            {
+                users[index] = p;
+            }
+            else
+            {
+                users.Add(p);
+            }
+
+            Write();
+        }
+        public void Write()
+        {
+            string json = JsonSerializer.Serialize(users);
+            File.WriteAllText(path, json);
+            Console.WriteLine("write done");
+        }
+        public int IncrementID()
+        {
+            if (users.Any())
+                return users.Last().ID + 1;
+            else
+                return 1;
         }
     }
 }

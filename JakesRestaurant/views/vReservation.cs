@@ -12,120 +12,129 @@ namespace JakesRestaurant.views
 {
     internal class vReservation
     {
-        private ctlReservation ctl;
-        private ctlDiningTable ctlDT;
-        private ctlUsers ctlU;
-        private TctlProducts ctlP;
         public static List<Option> options;
-        public vMenu menu { get; set; }
-
+        public static Reservations SelectedItem { get; set; }
         public vReservation()
         {
-            ctl = new ctlReservation();
-            ctlDT = ctl.ctlDT;
-            ctlU = ctl.ctlU;
-            ctlP = ctl.ctlP;
             options = new List<Option>
             {
-                new Option("Voeg toe", this.Add),
-                new Option("Lijst", this.View),
-                new Option("Delete", this.ViewDelete),
-                new Option("Back to menu", this.BackToMain),
+                new Option("Maak een reservering", Add),
+                new Option("Mijn reserveringen", View),
                 new Option("Exit", () => Environment.Exit(0)),
             };
         }
-
         public void Navigation()
         {
-            this.menu = new vMenu(options, "Reserveringen");
+            new vMenu(options, "Reserveringen");
         }
-
-        public void Add()
+        public virtual void Add()
         {
-            ctl.currentitem = new Reservations();
-            ctl.currentitem.ListProducts = new List<Product>();
-            Reservations p = ctl.currentitem;
-            Form(ref p);
-            p.ID = ctl.IncrementID();
-            p.CreateDateTime = DateTime.Now;
-            ctl.UpdateList(p);
-            Navigation();
+            SelectedItem = new Reservations();
+            SelectedItem.ID = ctlMain.reservation.IncrementID();
+            SelectedItem.CreateDateTime = DateTime.Now;
+            SelectedItem.Status = "Actief";
+            SelectedItem.ListProducts = new List<Product>();
+            SelectedItem.User = Program.MyUser;
+            FieldPersons();
+            FieldDueDate();
+            FieldComment();
+            FieldListProducts();
         }
-        public void View()
+        public virtual void View()
         {
             Console.WriteLine("Reserveringen.");
             List<Option> listoptions = new List<Option>();
 
             listoptions.Add(new Option("Terug", Navigation));
 
-            string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen";
-            Console.WriteLine(header);
-            foreach (var l in ctl.GetList())
+            if (ctlMain.reservation.reservations != null)
             {
-                string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt} - {l.ListProducts.Count}";
-                listoptions.Add(new Option(label, Edit, l.ID));
+                string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen";
+                Console.WriteLine(header);
+                foreach (var l in ctlMain.reservation.reservations)
+                {
+                    string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
+                    string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
+                    listoptions.Add(new Option(label, EditItem, l.ID));
+                }
+                new vMenu(listoptions);
             }
-
-            this.menu = new vMenu(listoptions);
-        }
-
-        public void ViewDelete()
-        {
-            List<Option> listoptions = new List<Option>();
-
-            listoptions.Add(new Option("Terug", Navigation));
-
-            foreach (var l in ctl.GetList())
+            else
             {
-                string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
-                listoptions.Add(new Option(label, Delete, l.ID));
+                Console.WriteLine("Geen");
             }
-
-            this.menu = new vMenu(listoptions);
-            Navigation();
         }
-
-        public void Edit(int aID)
+        public virtual void EditItem(int aID)
         {
-            // Get from parameter
-            Reservations p = ctl.GetID(aID);
-
-            Form(ref p);
-
-            // If success than update product
-            ctl.UpdateList(p);
-
-            // Go back to View navigation
+            SelectedItem = ctlMain.reservation.FindById(aID);
+            Edit();
+        }
+        public virtual void Edit()
+        {
+            Console.WriteLine("Reserveringen.");
+            List<Option> listoptions = new List<Option>()
+            {
+                new Option("Terug", Navigation),
+                new Option("Aantal personen: "+SelectedItem.NumberGuests, FieldPersons),
+                new Option("Reseringsdatum: "+SelectedItem.DueDateTime.ToString("dd/MM/yyyy"), FieldDueDate),
+                new Option("Producten", FieldListProducts),
+                new Option("Opmerking: "+SelectedItem.Comment, FieldComment),
+                new Option("Opzeggen? ", FieldComment),
+                new Option("Opslaan? ", SaveConfirm),
+            };
+            new vMenu(listoptions);
+        }
+        public void CheckSelectedItem()
+        {
+            bool IsValid = true;
+            if (SelectedItem.NumberGuests <= 0) {
+                IsValid = false;
+                Console.WriteLine("Aantal personen is niet ingevuld");
+            }
+            if(SelectedItem.DueDateTime < DateTime.Now) {
+                IsValid = false;
+                Console.WriteLine("Datum is niet ingevuld");
+            }
+            if (!IsValid)
+            {
+                Console.ReadKey();
+                Navigation();
+            }
+        }
+        public void SaveConfirm()
+        {
+            CheckSelectedItem();
+            List<Option> listoptions = new List<Option>()
+            {
+                new Option("Ja", SaveItem),
+                new Option("Nee", Navigation),
+            };
+            new vMenu(listoptions);
+        }
+        public void SaveItem()
+        {
+            ctlMain.reservation.UpdateList(SelectedItem);
+            SelectedItem = null;
             View();
         }
-        public void Delete(int aID)
-        {
-            // Get from parameter
-            Reservations p = ctl.GetID(aID);
-
-            // If success than update product
-            ctl.DeleteById(p);
-
-            // Go back to View navigation
-        }
-
-        public void Form(ref Reservations p)
+        public void FieldPersons()
         {
             Console.WriteLine("Aantal personen:");
-            while (p.DiningTable == null)
+            while (SelectedItem.DiningTable == null)
             {
                 int persons = int.Parse(Console.ReadLine());
-                p.DiningTable = ctl.FindByPersons(persons);
-                if (p.DiningTable == null)
+                SelectedItem.NumberGuests = persons;
+                SelectedItem.DiningTable = ctlMain.reservation.FindByPerson(persons);
+                if (SelectedItem.DiningTable == null)
                 {
                     Console.WriteLine("Geen tafel/zitplek beschikbaar");
                     Navigation();
                 }
             }
-
-            Console.WriteLine("Boeking datum:");
+        }
+        public void FieldDueDate()
+        {
+            Console.WriteLine("Reseringsdatum:");
             string line = Console.ReadLine();
             DateTime dt;
             while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
@@ -133,71 +142,167 @@ namespace JakesRestaurant.views
                 Console.WriteLine("Invalid date, please retry");
                 line = Console.ReadLine();
             }
-            p.DueDateTime = dt;
-
-            ViewProductsSelect();
-            ViewUserSelect();
+            SelectedItem.DueDateTime = dt;
         }
-
-        public void ViewProductsSelect()
+        public void FieldStatus()
+        {
+            Console.WriteLine("Reservering annuleren?");
+            List<Option> listoptions = new List<Option>()
+            {
+                new Option("Ja", ItemCancel),
+                new Option("Nee", Edit),
+            };
+            new vMenu(listoptions);
+            SelectedItem.Comment = Console.ReadLine();
+        }
+        public void ItemCancel()
+        {
+            SelectedItem.Status = "Geannuleerd";
+            SaveConfirm();
+        }
+        public void FieldComment()
+        {
+            Console.WriteLine("Opmerking (Optioneel):");
+            SelectedItem.Comment = Console.ReadLine();
+        }
+        public void FieldListProducts()
         {
             List<Option> listoptions = new List<Option>();
-
-            foreach (var l in ctlP.GetProducts())
+            foreach (var l in SelectedItem.ListProducts)
             {
                 var label = $"ID:{l.ID}; Naam gerecht:{l.Name}; Prijs: {l.Price}";
+                listoptions.Add(new Option(label, FieldListProductsRemove, l.ID));
+            }
+            listoptions.Add(new Option("Voeg een artikel toe", FieldListProductsAdd));
+            listoptions.Add(new Option("Opslaan?", SaveConfirm));
+            new vMenu(listoptions);
+        }
+        public void FieldListProductsAdd()
+        {
+            List<Option> listoptions = new List<Option>();
+            listoptions.Add(new Option("Terug", FieldListProducts));
+            foreach (var l in ctlMain.products.GetProducts())
+            {
+                var label = $"Naam gerecht:{l.Name}; Prijs: {l.Price}";
                 listoptions.Add(new Option(label, ProductSelect, l.ID));
             }
-
             new vMenu(listoptions);
         }
-        public void ViewDiningTableSelect()
+        public void FieldListProductsRemove(int aId)
         {
-            List<Option> listoptions = new List<Option>();
-
-            foreach (var l in ctlDT.GetList())
+            Product Product = SelectedItem.ListProducts.Find(s => s.ID == aId);
+            if (Product != null)
             {
-                var label = $"Tafel voor {l.Places}";
-                listoptions.Add(new Option(label, DiningTableSelect, l.ID));
+                SelectedItem.ListProducts.Remove(Product);
             }
-
-            new vMenu(listoptions);
+            Console.WriteLine($"Artikel verwijderd");
+            FieldListProducts();
         }
-        public void ViewUserSelect()
-        {
-            List<Option> listoptions = new List<Option>();
-
-            foreach (var l in ctlU.GetUsers())
-            {
-                var label = $"{l.Username}";
-                listoptions.Add(new Option(label, UserSelect, l.ID));
-            }
-
-            new vMenu(listoptions);
-        }
-
-        public void DiningTableSelect(int aId)
-        {
-            ctl.currentitem.DiningTable = ctlDT.GetID(aId);
-        }
-
-        public void UserSelect(int aId)
-        {
-            ctl.currentitem.User = ctlU.FindById(aId);
-            Console.WriteLine($"Geselecteerd: {ctl.currentitem.User.Username}");
-        }
-
         public void ProductSelect(int aId)
         {
-            Product Product = ctlP.GetID(aId);
+            Product Product = ctlMain.products.GetID(aId);
             Console.WriteLine($"Geselecteerd: {Product.Name}");
-            ctl.currentitem.ListProducts.Add(Product);
-            //Console.WriteLine($"Gebruiker: {ctl.currentitem.ListProducts.Count}");
+            SelectedItem.ListProducts.Add(Product);
         }
+
         public void BackToMain()
         {
             vMain main = new vMain();
             main.Navigation();
+        }
+    }
+    internal class vAdminReservation: vReservation
+    {
+        public vAdminReservation()
+        {
+            options = new List<Option>
+            {
+                new Option("Nieuwe reservering", this.Add),
+                new Option("Alle reserveringen", this.View),
+                new Option("Verwijder alle reserveringen", DeleteAll),
+                new Option("Terug", this.BackToMain),
+                new Option("Exit", () => Environment.Exit(0)),
+            };
+        }
+        public override void Add()
+        {
+            SelectedItem = new Reservations();
+            SelectedItem.ID = ctlMain.reservation.IncrementID();
+            SelectedItem.CreateDateTime = DateTime.Now;
+            SelectedItem.Status = "Actief";
+            SelectedItem.ListProducts = new List<Product>();
+            FieldPersons();
+            FieldDueDate();
+            FieldComment();
+            FieldUserSelect();
+            FieldListProducts();
+        }
+        public override void View()
+        {
+            Console.WriteLine("Reserveringen.");
+            List<Option> listoptions = new List<Option>();
+
+            listoptions.Add(new Option("Terug", Navigation));
+
+            if (ctlMain.reservation.reservations != null)
+            {
+                string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen";
+                Console.WriteLine(header);
+                foreach (var l in ctlMain.reservation.reservations)
+                {
+                    string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
+                    string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
+                    listoptions.Add(new Option(label, EditItem, l.ID));
+                }
+                new vMenu(listoptions);
+            } else
+            {
+                Console.WriteLine("Geen");
+            }
+        }
+        public override void Edit()
+        {
+            Console.WriteLine("Reservering aanpassen.");
+            List<Option> listoptions = new List<Option>()
+            {
+                new Option("Terug", Navigation),
+                new Option("Aantal personen: "+SelectedItem.NumberGuests, FieldPersons),
+                new Option("Reseringsdatum: "+SelectedItem.DueDateTime.ToString("dd/MM/yyyy"), FieldDueDate),
+                new Option("Producten", FieldListProducts),
+                new Option("Contactpersoon: "+(SelectedItem.User != null ? SelectedItem.User.FirstName: ""), FieldUserSelect),
+                new Option("Opmerking: "+SelectedItem.Comment, FieldComment),
+                new Option("Opslaan? ", SaveConfirm),
+                new Option("Opzeggen? ", FieldComment),
+                new Option("Verwijderen? ", Delete),
+            };
+            new vMenu(listoptions);
+        }
+        public void DeleteAll()
+        {
+            ctlMain.reservation.DeleteAll();
+            Navigation();
+        }
+        public void Delete()
+        {
+            ctlMain.reservation.DeleteByItem(SelectedItem);
+            SelectedItem = null;
+            View();
+        }
+        public void FieldUserSelect()
+        {
+            List<Option> listoptions = new List<Option>();
+
+            foreach (var l in ctlMain.users.users)
+            {
+                var label = $"{l.Username}";
+                listoptions.Add(new Option(label, UserSelect, l.ID));
+            }
+            new vMenu(listoptions);
+        }
+        public void UserSelect(int aId)
+        {
+            SelectedItem.User = ctlMain.users.FindById(aId);
+            Console.WriteLine($"Geselecteerd: {SelectedItem.User.Username}");
         }
     }
 }

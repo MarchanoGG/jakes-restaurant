@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Linq;
 using reservation;
+using JakesRestaurant.views;
 
 namespace controllers
 {
@@ -12,16 +13,9 @@ namespace controllers
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "reservation.json");
 
         public List<Reservations> reservations;
-        public ctlDiningTable ctlDT { get; set; }
-        public Authentication.ctlUsers ctlU { get; set; }
-        public TctlProducts ctlP { get; set; }
-
         public Reservations currentitem { get; set; }
         public ctlReservation()
 		{
-            this.ctlDT = new ctlDiningTable();
-            this.ctlU = new Authentication.ctlUsers();
-            this.ctlP = new TctlProducts();
             Load();
         }
 
@@ -44,19 +38,12 @@ namespace controllers
             }
             
         }
-        public List<Reservations> GetList()
-        {
-            if (reservations != null)
-                return reservations;
-            else
-                return null;
-        }
 
         public void Write()
         {
             string json = JsonSerializer.Serialize(reservations);
             File.WriteAllText(path, json);
-            Console.WriteLine("write done");
+            Console.WriteLine("Gegevens opgeslagen");
         }
 
         public void UpdateList(Reservations p)
@@ -66,19 +53,23 @@ namespace controllers
             if (index != -1)
             {
                 reservations[index] = p;
-                DiningTable dt = ctlDT.GetID(p.DiningTable.ID);
+                DiningTable dt = ctlMain.diningtable.GetID(p.DiningTable.ID);
                 dt.Status = "Bezet";
-                ctlDT.UpdateList(dt);
+                ctlMain.diningtable.UpdateList(dt);
             }
             else
             {
                 reservations.Add(p);
             }
-
             Write();
-
         }
-        public void DeleteById(Reservations p)
+        public void DeleteAll()
+        {
+            reservations = new List<Reservations>();
+            Write();
+            Load();
+        }
+        public void DeleteByItem(Reservations p)
         {
             int index = reservations.FindIndex(s => s.ID == p.ID);
 
@@ -90,7 +81,7 @@ namespace controllers
             Write();
         }
 
-        public Reservations GetID(int id)
+        public Reservations FindById(int id)
         {
             return reservations.Find(i => i.ID == id);
         }
@@ -103,13 +94,13 @@ namespace controllers
                 return 1;
         }
 
-        public DiningTable FindByPersons(int persons)
+        public DiningTable FindByPerson(int persons)
         {
             DiningTable result = null;
 
-            foreach (var item in ctlDT.diningTables)
+            foreach (var item in ctlMain.diningtable.diningTables)
             {
-                if (persons < item.Places && item.Status == "Vrij")
+                if (persons <= item.Places && item.Status == "Vrij")
                 {
                     result = item;
                     break;

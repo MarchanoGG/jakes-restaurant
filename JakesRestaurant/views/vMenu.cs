@@ -59,10 +59,7 @@ namespace JakesRestaurant.views
                         else
                             options[index].VoidSelected();
 
-                        Console.ReadKey();
-                        index = 0;
                     }
-                    WriteMenu(options, options[index]);
                 }
             }
             while (keyinfo.Key != ConsoleKey.X);
