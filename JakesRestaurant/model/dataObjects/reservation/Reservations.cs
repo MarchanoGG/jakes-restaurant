@@ -16,9 +16,6 @@ namespace reservation
         [JsonPropertyName("id")]
         public int ID { get; set; }
 
-        //[JsonPropertyName("userid")]
-        //public int UserId { get; set; }
-
         [JsonPropertyName("user")]
         public User User { get; set; }
 
@@ -36,5 +33,8 @@ namespace reservation
 
         [JsonPropertyName("duedatetime")]
         public DateTime DueDateTime { get; set; }
+        
+        [JsonPropertyName("comment")]
+        public string Comment { get; set; }
     }
 }

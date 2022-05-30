@@ -20,8 +20,7 @@ namespace JakesRestaurant.views
             {
                 new Option("Voeg toe", this.Add),
                 new Option("Alle reserveringen", this.View),
-                new Option("Delete", this.ViewDelete),
-                new Option("Back to menu", this.BackToMain),
+                new Option("Terug", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
         }
@@ -31,13 +30,17 @@ namespace JakesRestaurant.views
         }
         public void Add()
         {
-            ctlMain.reservation.currentitem = new Reservations();
-            ctlMain.reservation.currentitem.ListProducts = new List<Product>();
-            Reservations p = ctlMain.reservation.currentitem;
-            Form();
-            p.ID = ctlMain.reservation.IncrementID();
-            p.CreateDateTime = DateTime.Now;
-            ctlMain.reservation.UpdateList(p);
+            SelectedItem = new Reservations();
+            SelectedItem.ListProducts = new List<Product>();
+            FieldPersons();
+            FieldDueDate();
+            FieldProductsSelect();
+            FieldUserSelect();
+            FieldComment();
+            SelectedItem.ID = ctlMain.reservation.IncrementID();
+            SelectedItem.CreateDateTime = DateTime.Now;
+            ctlMain.reservation.UpdateList(SelectedItem);
+            SelectedItem = null;
             Navigation();
         }
         public void View()
@@ -66,64 +69,55 @@ namespace JakesRestaurant.views
         public void EditItem(int aID)
         {
             SelectedItem = ctlMain.reservation.GetID(aID);
-            List<Option> listoptions = new List<Option>();
-            listoptions = new List<Option>
+            List<Option> listoptions = new List<Option>()
             {
-                new Option("Aanpassen", Edit, aID),
-                new Option("Verwijderen", Delete, aID),
+                new Option("Aanpassen", Edit),
+                new Option("Verwijderen", Delete),
             };
-        }
-        public void ViewDelete()
-        {
-            List<Option> listoptions = new List<Option>();
-
-            listoptions.Add(new Option("Terug", Navigation));
-
-            foreach (var l in ctlMain.reservation.reservations)
-            {
-                string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
-                string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt}";
-                listoptions.Add(new Option(label, Delete, l.ID));
-            }
             new vMenu(listoptions);
-            Navigation();
         }
-        public void Edit(int aID)
+        public void Edit()
         {
-            // Get from parameter
-            Form();
-            // If success than update product
+            Console.WriteLine("Reserveringen.");
+            List<Option> listoptions = new List<Option>()
+            {
+                new Option("Terug", Navigation),
+                new Option("Aantal personen: "+SelectedItem.NumberGuests, FieldPersons),
+                new Option("Reseringsdatum: "+SelectedItem.DueDateTime.ToString("dd/MM/yyyy"), FieldDueDate),
+                new Option("Producten", FieldProductsSelect),
+                new Option("Contactpersoon: "+SelectedItem.User.FirstName, FieldUserSelect),
+                new Option("Opmerking: "+SelectedItem.Comment, FieldComment),
+            };
+            new vMenu(listoptions);
             ctlMain.reservation.UpdateList(SelectedItem);
-
-            // Go back to View navigation
+            SelectedItem = null;
             View();
         }
-        public void Delete(int aID)
+        public void Delete()
         {
-            // Get from parameter
-            Reservations p = ctlMain.reservation.GetID(aID);
-
-            // If success than update product
-            ctlMain.reservation.DeleteById(p);
-
-            // Go back to View navigation
+            ctlMain.reservation.DeleteByItem(SelectedItem);
+            SelectedItem = null;
+            View();
         }
-        public void Form()
+        public void FieldPersons()
         {
-            Reservations p = SelectedItem;
             Console.WriteLine("Aantal personen:");
-            while (p.DiningTable == null)
+            while (SelectedItem.DiningTable == null)
             {
                 int persons = int.Parse(Console.ReadLine());
-                p.DiningTable = ctlMain.reservation.FindByPersons(persons);
-                if (p.DiningTable == null)
+                SelectedItem.NumberGuests = persons;
+                SelectedItem.DiningTable = ctlMain.reservation.FindByPerson(persons);
+                if (SelectedItem.DiningTable == null)
                 {
                     Console.WriteLine("Geen tafel/zitplek beschikbaar");
                     Navigation();
                 }
             }
-
-            Console.WriteLine("Boeking datum:");
+            ctlMain.reservation.UpdateList(SelectedItem);
+        }
+        public void FieldDueDate()
+        {
+            Console.WriteLine("Reseringsdatum:");
             string line = Console.ReadLine();
             DateTime dt;
             while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
@@ -131,12 +125,16 @@ namespace JakesRestaurant.views
                 Console.WriteLine("Invalid date, please retry");
                 line = Console.ReadLine();
             }
-            p.DueDateTime = dt;
-
-            ViewProductsSelect();
-            ViewUserSelect();
+            SelectedItem.DueDateTime = dt;
+            ctlMain.reservation.UpdateList(SelectedItem);
         }
-        public void ViewProductsSelect()
+        public void FieldComment()
+        {
+            Console.WriteLine("Opmerking (Optioneel):");
+            SelectedItem.Comment = Console.ReadLine();
+            ctlMain.reservation.UpdateList(SelectedItem);
+        }
+        public void FieldProductsSelect()
         {
             List<Option> listoptions = new List<Option>();
 
@@ -145,22 +143,9 @@ namespace JakesRestaurant.views
                 var label = $"ID:{l.ID}; Naam gerecht:{l.Name}; Prijs: {l.Price}";
                 listoptions.Add(new Option(label, ProductSelect, l.ID));
             }
-
             new vMenu(listoptions);
         }
-        public void ViewDiningTableSelect()
-        {
-            List<Option> listoptions = new List<Option>();
-
-            foreach (var l in ctlMain.diningtable.GetList())
-            {
-                var label = $"Tafel voor {l.Places}";
-                listoptions.Add(new Option(label, DiningTableSelect, l.ID));
-            }
-
-            new vMenu(listoptions);
-        }
-        public void ViewUserSelect()
+        public void FieldUserSelect()
         {
             List<Option> listoptions = new List<Option>();
 
@@ -169,27 +154,21 @@ namespace JakesRestaurant.views
                 var label = $"{l.Username}";
                 listoptions.Add(new Option(label, UserSelect, l.ID));
             }
-
             new vMenu(listoptions);
         }
-
-        public void DiningTableSelect(int aId)
-        {
-            ctlMain.reservation.currentitem.DiningTable = ctlMain.diningtable.GetID(aId);
-        }
-
         public void UserSelect(int aId)
         {
-            ctlMain.reservation.currentitem.User = ctlMain.users.FindById(aId);
-            Console.WriteLine($"Geselecteerd: {ctlMain.reservation.currentitem.User.Username}");
+            SelectedItem.User = ctlMain.users.FindById(aId);
+            Console.WriteLine($"Geselecteerd: {SelectedItem.User.Username}");
+            ctlMain.reservation.UpdateList(SelectedItem);
         }
 
         public void ProductSelect(int aId)
         {
             Product Product = ctlMain.products.GetID(aId);
             Console.WriteLine($"Geselecteerd: {Product.Name}");
-            ctlMain.reservation.currentitem.ListProducts.Add(Product);
-            //Console.WriteLine($"Gebruiker: {ctl.currentitem.ListProducts.Count}");
+            SelectedItem.ListProducts.Add(Product);
+            ctlMain.reservation.UpdateList(SelectedItem);
         }
         public void BackToMain()
         {

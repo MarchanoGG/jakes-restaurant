@@ -44,7 +44,7 @@ namespace controllers
         {
             string json = JsonSerializer.Serialize(reservations);
             File.WriteAllText(path, json);
-            Console.WriteLine("write done");
+            Console.WriteLine("Gegevens opgeslagen");
         }
 
         public void UpdateList(Reservations p)
@@ -62,11 +62,9 @@ namespace controllers
             {
                 reservations.Add(p);
             }
-
             Write();
-
         }
-        public void DeleteById(Reservations p)
+        public void DeleteByItem(Reservations p)
         {
             int index = reservations.FindIndex(s => s.ID == p.ID);
 
@@ -91,7 +89,7 @@ namespace controllers
                 return 1;
         }
 
-        public DiningTable FindByPersons(int persons)
+        public DiningTable FindByPerson(int persons)
         {
             DiningTable result = null;
 
