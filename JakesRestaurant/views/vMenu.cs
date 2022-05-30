@@ -9,19 +9,21 @@ namespace JakesRestaurant.views
     internal class vMenu
     {
         public List<Option> options { get; set; }
+        public string title { get; set; }
         protected int origRow { get; set; }
         protected int origCol { get; set; }
-        public vMenu(List<Option> options)
+        public vMenu(List<Option> options, string title = "")
         {
             // Set the default index of the selected item to be the first
             int index = 0;
             origRow = 0;
             origCol = 0;
             this.options = options;
+            this.title = title;
 
             // Write the menu out
             WriteMenu(options, options[index]);
-            
+
 
             // Store key info in here
             ConsoleKeyInfo keyinfo;
@@ -50,10 +52,14 @@ namespace JakesRestaurant.views
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-                    options[index].Selected();
-                    Console.ReadKey();
-                    index = 0;
-                    WriteMenu(options, options[index]);
+                    if (options[index].ActionIsSet)
+                    {
+                        if (options[index].ID != 0)
+                            options[index].Selected(options[index].ID);
+                        else
+                            options[index].VoidSelected();
+
+                    }
                 }
             }
             while (keyinfo.Key != ConsoleKey.X);
@@ -77,7 +83,11 @@ namespace JakesRestaurant.views
         public void WriteMenu(List<Option> options, Option selectedOption)
         {
             Console.Clear();
-
+            if (title.Length > 0)
+            {
+                Console.WriteLine(title);
+                ++this.origRow;
+            }
             foreach (Option option in options)
             {
                 if (option == selectedOption)
@@ -96,19 +106,36 @@ namespace JakesRestaurant.views
     public class Option
     {
         public string Name { get; }
-        public Action Selected { get; }
-        public object V { get; }
+        public bool ActionIsSet { get; }
+        public Action VoidSelected { get; }
+        public Action<int> Selected { get; }
+        public int ID { get; set; }
+
+        public Option(string name)
+        {
+            Name = name;
+            ActionIsSet = false;
+        }
 
         public Option(string name, Action selected)
         {
             Name = name;
-            Selected = selected;
+            VoidSelected = selected;
+            ActionIsSet = true;
         }
 
-        public Option(string name, object v)
+        public Option(string name, Action<int> selected, int id = 0)
         {
             Name = name;
-            V = v;
+            Selected = selected;
+            ID = id;
+            ActionIsSet = true;
         }
+
+        //public Option(string name, object v)
+        //{
+        //    Name = name;
+        //    V = v;
+        //}
     }
 }
