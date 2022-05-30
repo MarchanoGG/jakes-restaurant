@@ -64,6 +64,12 @@ namespace controllers
             }
             Write();
         }
+        public void DeleteAll()
+        {
+            reservations = new List<Reservations>();
+            Write();
+            Load();
+        }
         public void DeleteByItem(Reservations p)
         {
             int index = reservations.FindIndex(s => s.ID == p.ID);
@@ -76,7 +82,7 @@ namespace controllers
             Write();
         }
 
-        public Reservations GetID(int id)
+        public Reservations FindById(int id)
         {
             return reservations.Find(i => i.ID == id);
         }
@@ -95,7 +101,7 @@ namespace controllers
 
             foreach (var item in ctlMain.diningtable.diningTables)
             {
-                if (persons < item.Places && item.Status == "Vrij")
+                if (persons <= item.Places && item.Status == "Vrij")
                 {
                     result = item;
                     break;

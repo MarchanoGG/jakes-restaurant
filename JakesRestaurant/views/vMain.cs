@@ -23,18 +23,20 @@ namespace JakesRestaurant.views
             vProducts = new vProducts();
             vusers = new vUsers();
             vDiningtable = new vDiningtable();
-            vReservation = new vReservation();
             loginView = new vLogin();
             openingTimesView = new vOpeningTimes();
 
             if (Program.MyUser.HasPrivilege() == true)
             {
+                vReservation = new vAdminReservation();
                 options = new List<Option>
                 {
                     new Option("Openingstijden", openingTimesView.Navigation),
                     new Option("Thema's", loginView.CheckRes),
                     new Option("Producten", vProducts.Navigation),
                     new Option("Gebruikers", loginView.UsersList),
+                    new Option("Tafels", vDiningtable.Navigation),
+                    new Option("Reserveringen", vReservation.Navigation),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
                     new Option("Terug naar login", loginView.BackToLogin),
                     new Option("Afsluiten", () => Environment.Exit(0)),
@@ -42,11 +44,11 @@ namespace JakesRestaurant.views
             }
             else
             {
+                vReservation = new vReservation();
                 options = new List<Option>
                 {
                     new Option("Openingstijden", openingTimesView.Navigation),
                     new Option("Producten", vProducts.Navigation),
-                    new Option("Reserveer een tafel", vDiningtable.Navigation),
                     new Option("Bekijk uw reserveringen", vReservation.Navigation),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
                     new Option("Terug naar login", loginView.BackToLogin),

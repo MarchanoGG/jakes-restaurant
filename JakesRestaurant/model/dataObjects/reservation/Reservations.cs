@@ -36,5 +36,11 @@ namespace reservation
         
         [JsonPropertyName("comment")]
         public string Comment { get; set; }
+        
+        [JsonPropertyName("totalcosts")]
+        public double totalCosts { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
     }
 }
