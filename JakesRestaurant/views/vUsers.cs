@@ -47,7 +47,7 @@ namespace JakesRestaurant.views
         public void Edit(int aID)
         {
             // Get from parameter
-            User p = ctlU.FindById(aID);
+            doUser p = ctlU.FindById(aID);
 
             //Form(ref p);
 

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using controllers;
+using Authentication;
 
 namespace JakesRestaurant.views
 {
     internal class vLogin
     {
         static Authentication.ctlLogin ctlAuth = new Authentication.ctlLogin();
-        static Authentication.ctlUsers ctlUsers = new Authentication.ctlUsers();
+        static ctlUsers ctlUsers = new ctlUsers();
 
         public static List<Option> options;
         public vMenu menu { get; set; }
@@ -22,7 +24,7 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options, title);
+            this.menu = new vMenu(options);
         }
         public void Login()
         {

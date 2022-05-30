@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Authentication;
 
-namespace Authentication
+namespace controllers
 {
     class ctlUsers
     {
         static string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "auth.json");
-        public List<User> users;
+        public List<doUser> users;
         public ctlUsers()
         {
             Load();
         }
-        public User FindById(int id)
+        public doUser FindById(int id)
         {
             return users.Find(i => i.ID == id);
         }
@@ -32,11 +33,11 @@ namespace Authentication
             string json = File.ReadAllText(path);
             if (json != "")
             {
-                users = JsonSerializer.Deserialize<List<User>>(json);
+                users = JsonSerializer.Deserialize<List<doUser>>(json);
             }
             else
             {
-                users = new List<User>();
+                users = new List<doUser>();
             }
 
         }
@@ -167,7 +168,7 @@ namespace Authentication
         {
             File.WriteAllText(filePath, JsonSerializer.Serialize(aList));
         }
-        public void UpdateList(User p)
+        public void UpdateList(doUser p)
         {
             int index = users.FindIndex(s => s.ID == p.ID);
 
