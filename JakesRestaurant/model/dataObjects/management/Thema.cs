@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace management
 {
-    public class Thema
+    public class Theme
     {
         [JsonPropertyName("id")]
         public int ID { get; set; }

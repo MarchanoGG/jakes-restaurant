@@ -64,21 +64,6 @@ namespace controllers
             }
         }
 
-        public doUser FindById(int aID)
-        {
-            doUser res = null;
-
-            foreach (doUser user in GetUsers())
-            {
-                if (user.ID == aID)
-                {
-                    res = user;
-                }
-            }
-
-            return res;
-        }
-
         public List<doUser> GetUsers()
         {
             List<doUser> existingUsers = ReadList<doUser>(path);

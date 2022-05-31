@@ -181,11 +181,11 @@ namespace JakesRestaurant.views
         {
             List<Option> listoptions = new List<Option>();
             listoptions.Add(new Option("Terug", FieldListProducts));
-            foreach (var l in ctlMain.products.GetProducts())
-            {
-                var label = $"Naam gerecht:{l.Name}; Prijs: {l.Price}";
-                listoptions.Add(new Option(label, ProductSelect, l.ID));
-            }
+          //  foreach (var l in ctlMain.products.GetProducts())
+          //  {
+           //     var label = $"Naam gerecht:{l.Name}; Prijs: {l.Price}";
+          //      listoptions.Add(new Option(label, ProductSelect, l.ID));
+          //  }
             new vMenu(listoptions);
         }
         public void FieldListProductsRemove(int aId)
@@ -200,7 +200,7 @@ namespace JakesRestaurant.views
         }
         public void ProductSelect(int aId)
         {
-            Product Product = ctlMain.products.GetID(aId);
+            Product Product = ctlMain.products.GetByID(aId);
             Console.WriteLine($"Geselecteerd: {Product.Name}");
             SelectedItem.ListProducts.Add(Product);
         }
