@@ -63,7 +63,17 @@ namespace JakesRestaurant.views
         }
         public void Create()
         {
-            if (ctlUsers.CreateCredentials(InsertCredentials("gebruikersnaam"), InsertCredentials("wachtwoord")))
+            string Username = InsertCredentials("gebruikersnaam");
+            string NewPassword = InsertCredentials("wachtwoord");
+            string ConfirmNewPassword = InsertCredentials("wachtwoord opnieuw");
+
+            while (NewPassword != ConfirmNewPassword)
+            {
+                NewPassword = InsertCredentials("wachtwoord");
+                ConfirmNewPassword = InsertCredentials("wachtwoord opnieuw");
+            }
+
+            if (ctlUsers.CreateCredentials(Username, NewPassword))
             {
                 Console.WriteLine("Gebruiker is aangemaakt");
                 Console.ReadLine();
@@ -202,7 +212,6 @@ namespace JakesRestaurant.views
 
         private static string InsertCredentials(string aCredential)
         {
-            Console.WriteLine("\n\r");
             Console.WriteLine("Voer " + aCredential + " in:");
 
             string credentials = "";
@@ -244,6 +253,8 @@ namespace JakesRestaurant.views
                     }
                 }
             } while (key != ConsoleKey.Enter);
+
+            Console.WriteLine("\r\n");
 
             return credentials;
         }
