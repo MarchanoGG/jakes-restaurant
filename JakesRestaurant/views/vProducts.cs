@@ -66,32 +66,48 @@ namespace JakesRestaurant.views
             ingredients = Console.ReadLine().Split(';').ToList();
             d_currentProduct.Ingredients = ingredients;
 
-            Console.WriteLine("Zit er alcohol in?");
-
+            Console.WriteLine("Alcoholisch gerecht?");
             Console.WriteLine("1) Ja");
             Console.WriteLine("2) Nee");
 
-
-            int choice = int.Parse(Console.ReadLine());
-
             while (true)
             {
-                if (choice == 1)
+                if (int.TryParse(Console.ReadLine(), out int res))
                 {
-                    d_currentProduct.Alcohol = true;
-                    return;
-                }
-                else if (choice == 2)
-                {
-                    d_currentProduct.Alcohol = false;
-                    return;
+                    if (res == 1)
+                        break;
+                    if (res == 2)
+                        break;
                 }
             }
-            
+
+            options = new List<Option>();
+
+            foreach (var el in d_themeCtrl.GetThemes())
+            {
+                options.Add(new Option(el.Name, SetThemeID, el.ID));
+            }
+
+            Navigation();
+
+
+
             d_currentProduct.ID = d_prodCtrl.IncrementID();
             d_prodCtrl.UpdateList(d_currentProduct);
 
             DefaultMenu();
+        }
+        public void OptionYes()
+        {
+            d_currentProduct.Alcohol = true;
+        }
+        public void OptionNo()
+        {
+            d_currentProduct.Alcohol = false;
+        }
+        public void SetThemeID(int aThemeID)
+        {
+            d_currentProduct.ThemeID = aThemeID;
         }
 
         public void View()

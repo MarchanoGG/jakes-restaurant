@@ -12,8 +12,12 @@ namespace JakesRestaurant.views
         public static List<Option> options;
         public vMenu menu { get; set; }
 
+        private static Theme d_currentTheme { get; set; }
+        private TctlThemes d_themeCtrl;
+
         public vThemes()
         {
+            d_themeCtrl = new TctlThemes();
             DefaultMenu();
         }
 
@@ -31,9 +35,22 @@ namespace JakesRestaurant.views
             this.menu = new vMenu(options);
         }
 
-        static public void AddTheme()
+        public void AddTheme()
         {
+            d_currentTheme = new Theme();
+            Console.WriteLine("Thema naam:");
+            d_currentTheme.Name = Console.ReadLine();
 
+            Console.WriteLine("Start datum:");
+            d_currentTheme.StartDate = DateTime.Parse(Console.ReadLine());
+
+            Console.WriteLine("Eind datum:");
+            d_currentTheme.EndDate = DateTime.Parse(Console.ReadLine());
+
+            d_currentTheme.ID = d_themeCtrl.IncrementID();
+            d_themeCtrl.UpdateList(d_currentTheme);
+
+            Navigation();
         }
     }
 }

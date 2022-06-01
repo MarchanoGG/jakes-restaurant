@@ -18,7 +18,7 @@ namespace management
         [JsonPropertyName("endDate")]
         public DateTime EndDate { get; set; }
 
-        [JsonPropertyName("products")]
-        public List<Product> Products { get; set; }
+     //   [JsonPropertyName("products")]
+    //    public List<Product> Products { get; set; }
     }
 }
