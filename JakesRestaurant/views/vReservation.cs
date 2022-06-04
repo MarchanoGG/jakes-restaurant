@@ -110,12 +110,13 @@ namespace JakesRestaurant.views
         public void SaveConfirm()
         {
             CheckSelectedItem();
-            List<Option> listoptions = new List<Option>()
-            {
-                new Option("Ja", SaveItem),
-                new Option("Nee", Navigation),
-            };
-            new vMenu(listoptions);
+            SaveItem();
+            //List<Option> listoptions = new List<Option>()
+            //{
+            //    new Option("Ja", SaveItem),
+            //    new Option("Nee", Navigation),
+            //};
+            //new vMenu(listoptions);
         }
         public void SaveItem()
         {
@@ -137,6 +138,7 @@ namespace JakesRestaurant.views
                     Navigation();
                 }
             }
+            Edit();
         }
         public void FieldDueDate()
         {
@@ -149,6 +151,7 @@ namespace JakesRestaurant.views
                 line = Console.ReadLine();
             }
             SelectedItem.DueDateTime = dt;
+            Edit();
         }
         public void FieldStatus()
         {
@@ -159,17 +162,19 @@ namespace JakesRestaurant.views
                 new Option("Nee", Edit),
             };
             new vMenu(listoptions);
-            SelectedItem.Comment = Console.ReadLine();
+            Edit();
         }
         public void ItemCancel()
         {
             SelectedItem.Status = "Geannuleerd";
             SaveConfirm();
+            Edit();
         }
         public void FieldComment()
         {
             Console.WriteLine("Opmerking (Optioneel):");
             SelectedItem.Comment = Console.ReadLine();
+            Edit();
         }
         public void FieldListProducts()
         {
@@ -180,7 +185,8 @@ namespace JakesRestaurant.views
                 listoptions.Add(new Option(label, FieldListProductsRemove, l.ID));
             }
             listoptions.Add(new Option("Voeg een artikel toe", FieldListProductsAdd));
-            listoptions.Add(new Option("Opslaan?", SaveConfirm));
+            listoptions.Add(new Option("Opslaan", SaveConfirm));
+            listoptions.Add(new Option("Terug", Edit));
             new vMenu(listoptions);
         }
         public void FieldListProductsAdd()

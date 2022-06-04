@@ -39,7 +39,7 @@ namespace JakesRestaurant.views
                         WriteAt(" ", 0, index);
                         WriteAt(">", 0, ++index);
                     }
-                }
+                } else
                 if (keyinfo.Key == ConsoleKey.UpArrow)
                 {
                     if (index - 1 >= 0)
@@ -47,12 +47,16 @@ namespace JakesRestaurant.views
                         WriteAt(" ", 0, index);
                         WriteAt(">", 0, --index);
                     }
-                }
+                } else
                 // Handle different action for the option
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
                     options[index].Call();
+                }
+                else
+                {
+
                 }
             }
             while (keyinfo.Key != ConsoleKey.X);
@@ -105,7 +109,10 @@ namespace JakesRestaurant.views
         public int ID { get; } = 0;
         public OptionDelegateObj Callback { get; }
         public dynamic AnyObject { get; }
-
+        public string FormatLabel
+        {
+            get { return $"  {this.Name}: "; }
+        }
         public Option()
         {
         }
@@ -154,14 +161,5 @@ namespace JakesRestaurant.views
         //}
     }
     public delegate void OptionDelegateObj(dynamic obj);
-
-    public class Table
-    {
-
-    }
-    //public class Text: Option
-    //{
-
-    //}
 
 }
