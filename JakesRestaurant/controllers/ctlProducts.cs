@@ -84,6 +84,12 @@ namespace controllers
 
         }
 
+        public void Delete(int aID)
+        {
+            d_products.Remove(d_products.Find(s => s.ID == aID));
+            Write();
+        }
+
         public Product GetByID(int id)
         {
             return d_products.Find(i => i.ID == id);
