@@ -111,7 +111,7 @@ namespace JakesRestaurant.views
                 options.Add(new Option(d_currentTheme.StartDate.ToString(), FieldStartDate));
                 options.Add(new Option(d_currentTheme.EndDate.ToString(), FieldEndDate));
 
-                Console.WriteLine();
+                options.Add(new Option("Verwijder", this.Delete));
 
 
                 Navigation();
@@ -181,6 +181,11 @@ namespace JakesRestaurant.views
             Edit(d_currentTheme.ID);
         }
 
+        public void Delete()
+        {
+            d_themeCtrl.Delete(d_currentTheme.ID);
+            ViewThemes();
+        }
 
     }
 }

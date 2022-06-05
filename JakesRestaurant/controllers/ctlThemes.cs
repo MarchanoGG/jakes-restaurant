@@ -70,6 +70,12 @@ namespace controllers
 
         }
 
+        public void Delete(int aID)
+        {
+            d_themes.Remove(d_themes.Find(s => s.ID == aID));
+            Write();
+        }
+
         public Theme GetByID(int id)
         {
             return d_themes.Find(i => i.ID == id);
