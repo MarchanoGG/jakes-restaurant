@@ -1,16 +1,17 @@
-﻿using System;
+﻿using management;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Linq;
-using management;
+using System.Text.Json;
 
 namespace controllers
 {
-	internal class TctlProducts
-	{
+    internal class TctlProducts
+    {
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "products.json");
 
+        private TctlThemes d_themeCtrl;
         private List<Product> d_products;
 
         public List<Product> GetProducts()
@@ -18,8 +19,9 @@ namespace controllers
             return d_products;
         }
 
-		public TctlProducts()
-		{
+        public TctlProducts()
+        {
+            d_themeCtrl = new TctlThemes();
             Load();
         }
 
@@ -41,22 +43,22 @@ namespace controllers
             {
                 d_products = new List<Product>();
             }
-            
+
         }
 
         public List<Product> GetProductsByThemeID(int aThemeID)
         {
             List<Product> tmpProducts = new List<Product>();
-            
-                foreach(var el in d_products)
-                {
 
-                    if (d_products.Find(s => s.ThemeID == aThemeID) != null)
-                    {
-                        tmpProducts.Add(el);
-                    }
+            foreach (var el in d_products)
+            {
+
+                if (d_products.Find(s => s.ThemeID == aThemeID) != null)
+                {
+                    tmpProducts.Add(el);
                 }
-                return tmpProducts;
+            }
+            return tmpProducts;
         }
 
         public void Write()
@@ -69,7 +71,7 @@ namespace controllers
         public void UpdateList(Product Product)
         {
             int index = d_products.FindIndex(s => s.ID == Product.ID);
-               
+
 
             if (index != -1)
             {
@@ -95,12 +97,37 @@ namespace controllers
             return d_products.Find(i => i.ID == id);
         }
 
-        public int IncrementID() 
+        public int IncrementID()
         {
-            if (d_products.Any())           
-               return d_products.Last().ID + 1;           
+            if (d_products.Any())
+                return d_products.Last().ID + 1;
             else
                 return 1;
         }
-    }
+
+        public List<Product> GetFromDate(DateTime aBegin, DateTime aEnd)
+        { 
+            List<Product> products = new List<Product>();
+                
+
+            foreach(var el in d_products)
+            {
+                Theme t = d_themeCtrl.GetByID(el.ID);
+
+                if (t != null)
+                {
+                    DateTime startDate = t.StartDate;
+                    DateTime endDate = t.EndDate;
+
+                    if (startDate.CompareTo(aBegin) >= 0 && endDate.CompareTo(aEnd) <= 0)
+                    {
+                        products.Add(el);
+                    }
+                }
+            }
+
+            return products;
+
+        }
+    } 
 }

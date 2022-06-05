@@ -124,11 +124,15 @@ namespace JakesRestaurant.views
                 if (int.TryParse(Console.ReadLine(), out int res))
                 {
                     if (res == 1)
+                    {
                         d_currentProduct.Alcohol = true;
-                    break;
+                        break;
+                    }
                     if (res == 2)
+                    {
                         d_currentProduct.Alcohol = false;
-                    break;
+                        break;
+                    }
 
                     Console.WriteLine("Graag een optie selecteren");
                 }
