@@ -45,5 +45,15 @@ namespace reservation
 
         [JsonPropertyName("reservecode")]
         public string ReserveCode { get; set; }
+        [JsonIgnore]
+        public string DueDateTimeStr
+        {
+            get { return DueDateTime.ToString("dd/MM/yyyy"); }
+        }
+        [JsonIgnore]
+        public string CreateDateTimeStr
+        {
+            get { return CreateDateTime.ToString("dd/MM/yyyy"); }
+        }
     }
 }

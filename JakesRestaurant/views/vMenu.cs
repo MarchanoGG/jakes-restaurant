@@ -69,7 +69,7 @@ namespace JakesRestaurant.views
             {
                 Console.SetCursorPosition(origCol + x, origRow + y);
                 Console.Write(s);
-                Console.SetCursorPosition(0, options.Count);
+                Console.SetCursorPosition(0, origRow + options.Count);
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -79,13 +79,12 @@ namespace JakesRestaurant.views
         }
         public void WriteMenu(List<Option> options, Option selectedOption)
         {
-            Console.Clear();
-            origRow = Console.CursorTop;
             if (title.Length > 0)
             {
+                Console.Clear();
                 Console.WriteLine(title);
-                ++origRow;
             }
+            origRow = Console.CursorTop;
             foreach (Option option in options)
             {
                 if (option == selectedOption)
@@ -98,6 +97,12 @@ namespace JakesRestaurant.views
                 }
                 Console.WriteLine(option.Name);
             }
+        }
+        public static string EqualWidthCol(string a, int b)
+        {
+            if (a is null) a = "";
+            string spaces = new string(' ', b - a.Length);
+            return $"{a}{spaces} - ";
         }
     }
     public class Option
@@ -161,5 +166,4 @@ namespace JakesRestaurant.views
         //}
     }
     public delegate void OptionDelegateObj(dynamic obj);
-
 }
