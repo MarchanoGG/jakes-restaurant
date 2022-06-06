@@ -50,7 +50,7 @@ namespace JakesRestaurant.views
             //    options.Add(new Option(obj.Summary()));
             //}
             itemlist.Add(new Option("Terug", () => mainmenu.Navigation()));
-            new vMenu(itemlist, "Openingstijden");
+            new vMenu(itemlist);
         }
 
         private void UpdateTimes()
@@ -78,7 +78,6 @@ namespace JakesRestaurant.views
 
             if (this.chosenTime != null)
             {
-                itemlist.Add(new Option("Openingstijden aanpassen van " + this.chosenTime.Summary()));
                 itemlist.Add(new Option("Geopend:                    " + this.chosenTime.Opened, this.InsertValue, 1));
                 itemlist.Add(new Option("Openingstijd (uren):        " + this.chosenTime.StartingHours, this.InsertValue, 2));
                 itemlist.Add(new Option("Openingstijd (minuten):     " + this.chosenTime.StartingMinutes, this.InsertValue, 3));
@@ -87,7 +86,7 @@ namespace JakesRestaurant.views
             }
 
             itemlist.Add(new Option("Terug", this.UpdateTimes));
-            new vMenu(itemlist, "Openingstijd.");
+            new vMenu(itemlist, "Openingstijden aanpassen van " + chosenTime.Summary());
         }
 
         private void InsertValue(int idx)

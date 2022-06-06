@@ -52,9 +52,17 @@ namespace controllers
         {
             string json = JsonSerializer.Serialize(diningTables);
             File.WriteAllText(path, json);
-            Console.WriteLine("write done");
+            Console.WriteLine("Aangepast.");
         }
-
+        public void DeleteByItem(DiningTable p)
+        {
+            int index = diningTables.FindIndex(s => s.ID == p.ID);
+            if (index != -1)
+            {
+                diningTables.Remove(p);
+            }
+            Write();
+        }
         public void UpdateList(DiningTable p)
         {
             int index = diningTables.FindIndex(s => s.ID == p.ID);

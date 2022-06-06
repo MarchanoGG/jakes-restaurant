@@ -20,7 +20,7 @@ namespace JakesRestaurant.views
             {
                 new Option("Maak een reservering", Add),
                 new Option("Mijn reserveringen", View),
-                new Option("Exit", () => Environment.Exit(0)),
+                new Option("Afsluiten", () => Environment.Exit(0)),
             };
         }
         public virtual void Navigation()
@@ -278,7 +278,7 @@ namespace JakesRestaurant.views
                 new Option("Alle reserveringen", this.View),
                 new Option("Verwijder alle reserveringen", DeleteAll),
                 new Option("Terug", this.BackToMain),
-                new Option("Exit", () => Environment.Exit(0)),
+                new Option("Afsluiten", () => Environment.Exit(0)),
             };
         }
         public override void Navigation()

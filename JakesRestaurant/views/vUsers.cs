@@ -21,7 +21,7 @@ namespace JakesRestaurant.views
                 new Option("Toevoegen", this.Add),
                 new Option("View", this.View),
                 new Option("Back to menu", this.BackToMain),
-                new Option("Exit", () => Environment.Exit(0)),
+                new Option("Afsluiten", () => Environment.Exit(0)),
             };
         }
         public void Navigation()
