@@ -26,7 +26,7 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options, "Users");
+            this.menu = new vMenu(options, "Gebruikers");
         }
         public void View()
         {

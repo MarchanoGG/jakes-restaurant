@@ -23,7 +23,7 @@ namespace JakesRestaurant.views
                 new Option("Exit", () => Environment.Exit(0)),
             };
         }
-        public void Navigation()
+        public virtual void Navigation()
         {
             //new vMenu(options, "Reserveringen");
             BackToMain();
@@ -51,19 +51,19 @@ namespace JakesRestaurant.views
             Console.WriteLine("Reserveringen.");
             List<Option> listoptions = new List<Option>();
 
-            listoptions.Add(new Option("Terug", Navigation));
-
             if (ctlMain.reservation.reservations != null)
             {
                 string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen - #Code";
-                Console.WriteLine(header);
                 foreach (var l in ctlMain.reservation.reservations)
                 {
                     string duedt = l.DueDateTime.ToString("dd/MM/yyyy");
                     string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt} - {l.ListProducts.Count} - {l.ReserveCode}";
                     listoptions.Add(new Option(label, EditItem, l.ID));
                 }
-                new vMenu(listoptions);
+
+                listoptions.Add(new Option("Terug", Navigation));
+
+                new vMenu(listoptions, header);
             }
             else
             {
@@ -77,16 +77,14 @@ namespace JakesRestaurant.views
         }
         public virtual void Edit()
         {
-            Console.WriteLine("Reserveringen.");
+            Console.WriteLine("Reservering aanpassen");
             List<Option> listoptions = new List<Option>()
             {
-                new Option("Terug", Navigation),
                 new Option("Aantal personen: "+SelectedItem.NumberGuests, FieldPersons),
-                new Option("Reseringsdatum: "+SelectedItem.DueDateTime.ToString("dd/MM/yyyy"), FieldDueDate),
+                new Option("Reserveringsdatum (dd/MM/yyyy): "+SelectedItem.DueDateTime.ToString("dd/MM/yyyy"), FieldDueDate),
                 new Option("Producten", FieldListProducts),
                 new Option("Opmerking: "+SelectedItem.Comment, FieldComment),
-                new Option("Opzeggen? ", FieldComment),
-                new Option("Opslaan? ", SaveConfirm),
+                new Option("Terug", Navigation),
             };
             new vMenu(listoptions);
         }
@@ -140,25 +138,24 @@ namespace JakesRestaurant.views
         }
         public void FieldDueDate()
         {
-            Console.WriteLine("Reseringsdatum:");
+            Console.WriteLine("Reserveringsdatum (dd/MM/yyyy):");
             string line = Console.ReadLine();
             DateTime dt;
             while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
             {
-                Console.WriteLine("Invalid date, please retry");
+                Console.WriteLine("Onjuiste datum, probeer het opnieuw (dd/MM/yyyy):");
                 line = Console.ReadLine();
             }
             SelectedItem.DueDateTime = dt;
         }
         public void FieldStatus()
         {
-            Console.WriteLine("Reservering annuleren?");
             List<Option> listoptions = new List<Option>()
             {
                 new Option("Ja", ItemCancel),
                 new Option("Nee", Edit),
             };
-            new vMenu(listoptions);
+            new vMenu(listoptions, "Wilt u deze reserviering annuleren?");
             SelectedItem.Comment = Console.ReadLine();
         }
         public void ItemCancel()
@@ -180,18 +177,18 @@ namespace JakesRestaurant.views
                 listoptions.Add(new Option(label, FieldListProductsRemove, l.ID));
             }
             listoptions.Add(new Option("Voeg een artikel toe", FieldListProductsAdd));
-            listoptions.Add(new Option("Opslaan?", SaveConfirm));
+            listoptions.Add(new Option("Opslaan", SaveItem));
             new vMenu(listoptions);
         }
         public void FieldListProductsAdd()
         {
             List<Option> listoptions = new List<Option>();
-            listoptions.Add(new Option("Terug", FieldListProducts));
             foreach (var l in ctlMain.products.GetProducts())
             {
                 var label = $"Naam gerecht:{l.Name}; Prijs: {l.Price}";
                 listoptions.Add(new Option(label, ProductSelect, l.ID));
             }
+            listoptions.Add(new Option("Terug", FieldListProducts));
             new vMenu(listoptions);
         }
         public void FieldListProductsRemove(int aId)
@@ -226,10 +223,20 @@ namespace JakesRestaurant.views
             {
                 new Option("Nieuwe reservering", this.Add),
                 new Option("Alle reserveringen", this.View),
-                new Option("Verwijder alle reserveringen", DeleteAll),
                 new Option("Terug", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
+        }
+        public override void Navigation()
+        {
+            options = new List<Option>
+            {
+                new Option("Nieuwe reservering", this.Add),
+                new Option("Alle reserveringen", this.View),
+                new Option("Terug", this.BackToMain),
+                new Option("Exit", () => Environment.Exit(0)),
+            };
+            new vMenu(options, "Reserveringen");
         }
         public override void Add()
         {
@@ -249,8 +256,6 @@ namespace JakesRestaurant.views
             Console.WriteLine("Reserveringen.");
             List<Option> listoptions = new List<Option>();
 
-            listoptions.Add(new Option("Terug", Navigation));
-
             if (ctlMain.reservation.reservations != null)
             {
                 string header = $" + - ID - Gast - Tafel - Datum - Aantal Artikelen - #Code";
@@ -261,7 +266,9 @@ namespace JakesRestaurant.views
                     string label = $" - {l.ID} - {l.User.Username} - {l.DiningTable.Places} - {duedt} - {l.ReserveCode}";
                     listoptions.Add(new Option(label, EditItem, l.ID));
                 }
-                new vMenu(listoptions);
+
+                listoptions.Add(new Option("Terug", Navigation));
+                new vMenu(listoptions, header);
             } else
             {
                 Console.WriteLine("Geen");
@@ -272,15 +279,13 @@ namespace JakesRestaurant.views
             Console.WriteLine("Reservering aanpassen.");
             List<Option> listoptions = new List<Option>()
             {
-                new Option("Terug", Navigation),
                 new Option("Aantal personen: "+SelectedItem.NumberGuests, FieldPersons),
                 new Option("Reseringsdatum: "+SelectedItem.DueDateTime.ToString("dd/MM/yyyy"), FieldDueDate),
                 new Option("Producten", FieldListProducts),
                 new Option("Contactpersoon: "+(SelectedItem.User != null ? SelectedItem.User.FirstName: ""), FieldUserSelect),
                 new Option("Opmerking: "+SelectedItem.Comment, FieldComment),
-                new Option("Opslaan? ", SaveConfirm),
-                new Option("Opzeggen? ", FieldComment),
-                new Option("Verwijderen? ", Delete),
+                new Option("Reservering opzeggen", ItemCancel),
+                new Option("Terug", Navigation),
             };
             new vMenu(listoptions);
         }

@@ -51,14 +51,13 @@ namespace JakesRestaurant.views
                 // Handle different action for the option
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
-                    Console.Clear();
                     if (options[index].ActionIsSet)
                     {
+                        Console.Clear();
                         if (options[index].ID != 0)
                             options[index].Selected(options[index].ID);
                         else
                             options[index].VoidSelected();
-
                     }
                 }
             }

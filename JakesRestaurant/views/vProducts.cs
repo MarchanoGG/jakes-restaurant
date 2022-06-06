@@ -8,32 +8,30 @@ namespace JakesRestaurant.views
 {
     internal class vProducts
     {
-        private TctlProducts d_prodCtrl;
+        private TctlProducts d_prodCtrl = new TctlProducts();
 
         public static List<Option> options;
         public vMenu menu { get; set; }
         public List<vMenu> breadcrumbs { get; set; }
         public vProducts()
         {
-            d_prodCtrl = new TctlProducts();
-            DefaultMenu();
-        }
-        void DefaultMenu()
-        {
-            Console.WriteLine("Products");
-            options = new List<Option>
-            {
-                new Option("Voeg toe", this.Add),
-                new Option("Lijst", this.View),
-                new Option("Back to menu", this.BackToMain),
-                new Option("Exit", () => Environment.Exit(0)),
-            };
-
-            //Navigation();
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            if (Program.MyUser.HasPrivilege() == true)
+            {
+                options = new List<Option>
+                {
+                    new Option("Lijst van producten", this.View),
+                    new Option("Voeg nieuw product toe", this.Add),
+                    new Option("Terug", this.BackToMain),
+                };
+                this.menu = new vMenu(options, "Products");
+            }
+            else
+            {
+                this.View();
+            }
         }
         public void Add()
         {
@@ -47,12 +45,19 @@ namespace JakesRestaurant.views
         public void View()
         {
             List<Option> rows = new List<Option>();
-
-            rows.Add(new Option("Terug", Navigation));
          
             foreach (var l in d_prodCtrl.GetProducts())
             {
                 rows.Add(new Option(l.Name, Edit));
+            }
+
+            if (Program.MyUser.HasPrivilege() == true)
+            {
+                rows.Add(new Option("Terug", Navigation));
+            }
+            else
+            {
+                rows.Add(new Option("Terug", this.BackToMain));
             }
 
             new vMenu(rows);
