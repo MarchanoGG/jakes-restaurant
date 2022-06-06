@@ -83,7 +83,7 @@ namespace JakesRestaurant.views
         }
         public virtual void Edit()
         {
-            Console.WriteLine("Reserveringen aanpassen");
+            Console.WriteLine("Reservering aanpassen");
             List<Option> listoptions = new List<Option>()
             {
                 new Option("Terug", Navigation),
@@ -165,13 +165,12 @@ namespace JakesRestaurant.views
         }
         public void FieldStatus()
         {
-            Console.WriteLine("Reservering annuleren?");
             List<Option> listoptions = new List<Option>()
             {
                 new Option("Ja", ItemCancel),
                 new Option("Nee", Edit),
             };
-            new vMenu(listoptions);
+            new vMenu(listoptions, "Wilt u deze reserviering annuleren?");
         }
         public void ItemCancel() 
         {
@@ -233,7 +232,7 @@ namespace JakesRestaurant.views
         }
         public void ProductSelect(int aId)
         {
-            Product Product = ctlMain.products.GetID(aId);
+            Product Product = ctlMain.products.GetByID(aId);
             Console.WriteLine($"Geselecteerd: {Product.Name}");
             SelectedItem.ListProducts.Add(Product);
             FieldListProducts();

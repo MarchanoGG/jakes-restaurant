@@ -81,14 +81,17 @@ namespace controllers
         }
         public void DeleteById(DiningTable p)
         {
-            int index = diningTables.FindIndex(s => s.ID == p.ID);
-
-            if (index != -1)
+            if (p != null)
             {
-                diningTables.Remove(p);
-            }
+                int index = diningTables.FindIndex(s => s.ID == p.ID);
 
-            Write();
+                if (index != -1)
+                {
+                    diningTables.Remove(p);
+                }
+
+                Write();
+            }
         }
 
         public DiningTable GetID(int id)

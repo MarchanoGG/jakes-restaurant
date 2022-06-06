@@ -63,6 +63,7 @@ namespace controllers
                 return hash;
             }
         }
+
         public List<doUser> GetUsers()
         {
             List<doUser> existingUsers = ReadList<doUser>(path);
