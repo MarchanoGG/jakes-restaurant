@@ -10,81 +10,114 @@ namespace JakesRestaurant.views
 {
     internal class vDiningtable
     {
+        public DiningTable table { get; set; }
         public ctlDiningTable ctl { get; set; }
         public static List<Option> options;
         public vMenu menu { get; set; }
         public vDiningtable()
         {
-            ctl = new ctlDiningTable();
-            Console.WriteLine("Zit plaatsen");
-            options = new List<Option>
-            {
-                new Option("Voeg toe", this.Add),
-                new Option("Lijst", this.View),
-                new Option("Delete", this.ViewDelete),
-                new Option("Back to menu", this.BackToMain),
-                new Option("Exit", () => Environment.Exit(0)),
-            };
         }
 
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            ctl = new ctlDiningTable();
+
+            if (Program.MyUser.HasPrivilege() == true)
+            {
+                vMain mainmenu = new vMain();
+
+                options = new List<Option>
+                {
+                    new Option("Lijst weergeven", this.View),
+                    new Option("Nieuwe tafel toevoegen", this.Add),
+                    new Option("Bestaande tafel verwijderen", this.ViewDelete),
+                    new Option("Terug", () => mainmenu.Navigation())
+                };
+            }
+            else
+            {
+                this.View();
+            }
+
+            this.menu = new vMenu(options, "Zitplaatsen");
         }
 
         public void Add()
         {
-            DiningTable p = new DiningTable();
-            FillFromInput(ref p);
-            p.ID = ctl.IncrementID();
-            p.Status = "Vrij";
-            ctl.UpdateList(p);
+            this.table = new DiningTable();
+            this.table.ID = ctl.IncrementID();
+            this.table.Status = "Vrij";
+
+            Console.WriteLine("Aantal plaatsen:");
+            string Places = Console.ReadLine();
+
+            while (!int.TryParse(Places, out int i))
+            {
+                Places = Console.ReadLine();
+            }
+
+            this.table.Places = int.Parse(Places);
+
+            Console.WriteLine("\r\nOmschrijving:");
+
+            this.table.Description = Console.ReadLine();
+
+            ctl.UpdateList(this.table);
 
             Navigation();
         }
         public void View()
         {
+            vMain mainmenu = new vMain();
             List<Option> listoptions = new List<Option>();
-
-            listoptions.Add(new Option("Terug", Navigation));
 
             foreach (var l in ctl.GetList())
             {
-                var label = $"Tafel voor {l.Places}; Beschikbaarheid: {l.Status}";
-                listoptions.Add(new Option(label, Edit, l.ID));
+                listoptions.Add(new Option(l.Summary(), Edit, l.ID));
             }
 
-            this.menu = new vMenu(listoptions);
+            if (Program.MyUser.HasPrivilege() == true)
+            {
+                listoptions.Add(new Option("Terug", Navigation));
+            }
+            else
+            {
+                listoptions.Add(new Option("Terug", () => mainmenu.Navigation()));
+            }
+
+            this.menu = new vMenu(listoptions, "Lijst van de tafels");
         }
 
         public void ViewDelete()
         {
+            vMain mainmenu = new vMain();
             List<Option> listoptions = new List<Option>();
-
-            listoptions.Add(new Option("Terug", Navigation));
 
             foreach (var l in ctl.GetList())
             {
-                var label = $"Tafel voor {l.Places}";
-                listoptions.Add(new Option(label, Delete, l.ID));
+                listoptions.Add(new Option("Verwijder: " + l.Description, Delete, l.ID));
             }
 
-            this.menu = new vMenu(listoptions);
+            listoptions.Add(new Option("Terug", Navigation));
+
+            this.menu = new vMenu(listoptions, "Tafels verwijderen");
             Navigation();
         }
 
         public void Edit(int aID)
         {
-            // Get from parameter
-            DiningTable p = ctl.GetID(aID);
+            vMain mainmenu = new vMain();
 
-            FillFromInput(ref p);
+            this.table = ctl.GetID(aID);
 
-            // If success than update product
-            ctl.UpdateList(p);
+            options = new List<Option>
+            {
+                new Option("Aantal plaatsen:    " + this.table.Places, this.FillFromInput, 1),
+                new Option("Omschrijving:       " + this.table.Description, this.FillFromInput, 2),
+                new Option("Terug", View),
+            };
 
-            // Go back to View navigation
-            View();
+            this.menu = new vMenu(options, "Tafel aanpassen");
         }
         public void Delete(int aID)
         {
@@ -95,15 +128,33 @@ namespace JakesRestaurant.views
             ctl.DeleteById(p);
 
             // Go back to View navigation
+            View();
         }
 
-        public void FillFromInput(ref DiningTable p)
+        public void FillFromInput(int aOption)
         {
-            Console.WriteLine("Plaatsen:");
-            p.Places = int.Parse(Console.ReadLine());
+            switch (aOption)
+            {
+                case 1:
+                    Console.WriteLine("Aantal plaatsen aanpassen:");
+                    string Places = Console.ReadLine();
 
-            Console.WriteLine("Omschrijving:");
-            p.Description = Console.ReadLine();
+                    while (!int.TryParse(Places, out int i))
+                    {
+                        Places = Console.ReadLine();
+                    }
+
+                    this.table.Places = int.Parse(Places);
+                    break;
+                case 2:
+                    Console.WriteLine("Omschrijving aanpassen:");
+                    this.table.Description = Console.ReadLine();
+                    break;
+                default:
+                    break;
+            }
+            ctl.UpdateList(this.table);
+            this.Edit(this.table.ID);
         }
 
         public void BackToMain()
