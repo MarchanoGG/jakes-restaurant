@@ -55,5 +55,12 @@ namespace reservation
         {
             get { return CreateDateTime.ToString("dd/MM/yyyy"); }
         }
+        [JsonIgnore]
+        public string ProductSummary
+        {
+            get {
+                return String.Join("; ", ListProducts.Select(m => m.Name).ToArray());
+            }
+        }
     }
 }

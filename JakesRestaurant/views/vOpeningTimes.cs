@@ -38,7 +38,7 @@ namespace JakesRestaurant.views
             this.menu = new vMenu(options);
         }
 
-        private void ShowTimes()
+        public void ShowTimes()
         {
             vMain mainmenu = new vMain();
 

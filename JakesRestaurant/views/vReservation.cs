@@ -7,6 +7,7 @@ using controllers;
 using reservation;
 using Authentication;
 using management;
+using Restaurant;
 
 namespace JakesRestaurant.views
 {
@@ -39,6 +40,7 @@ namespace JakesRestaurant.views
             FieldReserveCode();
             FieldPersons();
             FieldDueDate();
+            FieldDueTime();
             FieldComment();
             FieldListProducts();
         }
@@ -50,10 +52,10 @@ namespace JakesRestaurant.views
         {
             Console.WriteLine("Reserveringen.");
             List<Option> listoptions = new List<Option>();
-            string header = "";
+            string header = "  ";
             if (ctlMain.reservation.reservations != null)
             {
-   
+
                 header += vMenu.EqualWidthCol("ID", 3);
                 header += vMenu.EqualWidthCol("Tafel", 10);
                 header += vMenu.EqualWidthCol("Datum", 10);
@@ -83,15 +85,15 @@ namespace JakesRestaurant.views
         }
         public virtual void Edit()
         {
-            Console.WriteLine("Reserveringen.");
+            Console.WriteLine("Reserveringen aanpassen");
             List<Option> listoptions = new List<Option>()
             {
                 new Option("Terug", Navigation),
-                new Option("Aantal personen: "+SelectedItem.NumberGuests, FieldPersons),
-                new Option("Reseringsdatum: "+SelectedItem.DueDateTime.ToString("dd/MM/yyyy"), FieldDueDate),
-                new Option("Producten", FieldListProducts),
-                new Option("Opmerking: "+SelectedItem.Comment, FieldComment),
-                new Option("Annuleren? ", ItemCancel),
+                new Option("Aantal personen: "+SelectedItem.NumberGuests, InsertValue, 1),
+                new Option("Reseringsdatum: "+SelectedItem.DueDateTimeStr, InsertValue, 2),
+                new Option("Producten: "+SelectedItem.ProductSummary, InsertValue, 3),
+                new Option("Opmerking: "+SelectedItem.Comment, InsertValue, 4),
+                new Option("Annuleren? ", InsertValue, 5),
                 new Option("Opslaan? ", SaveConfirm),
             };
             new vMenu(listoptions);
@@ -103,7 +105,7 @@ namespace JakesRestaurant.views
                 IsValid = false;
                 Console.WriteLine("Aantal personen is niet ingevuld");
             }
-            if(SelectedItem.DueDateTime < DateTime.Now) {
+            if (SelectedItem.DueDateTime < DateTime.Now) {
                 IsValid = false;
                 Console.WriteLine("Datum is in het verleden");
             }
@@ -117,12 +119,6 @@ namespace JakesRestaurant.views
         {
             CheckSelectedItem();
             SaveItem();
-            //List<Option> listoptions = new List<Option>()
-            //{
-            //    new Option("Ja", SaveItem),
-            //    new Option("Nee", Navigation),
-            //};
-            //new vMenu(listoptions);
         }
         public void SaveItem()
         {
@@ -144,20 +140,39 @@ namespace JakesRestaurant.views
                     Navigation();
                 }
             }
-            Edit();
         }
         public void FieldDueDate()
         {
-            Console.WriteLine("Reseringsdatum:");
+            FieldOpeningTimes();
+            Console.WriteLine("Reseringsdatum (Formaat dd/MM/yyyy):");
             string line = Console.ReadLine();
             DateTime dt;
             while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
             {
-                Console.WriteLine("Invalid date, please retry");
+                Console.WriteLine("Incorrecte datum formaat, probeer opnieuw");
                 line = Console.ReadLine();
             }
             SelectedItem.DueDateTime = dt;
-            Edit();
+        }
+        public void FieldOpeningTimes()
+        {
+            foreach (Restaurant.doOpeningTimes obj in ctlMain.openingtimes.GetOpeningTimes())
+            {
+                Console.WriteLine(obj.Summary());
+            }
+        }
+        public void FieldDueTime()
+        {
+            Console.WriteLine("Reseringstijd (Formaat HH:mm):");
+            string line = Console.ReadLine();
+            DateTime dt;
+            while (!DateTime.TryParseExact(line, "HH:mm", null, System.Globalization.DateTimeStyles.None, out dt))
+            {
+                Console.WriteLine("Incorrecte tijds formaat, probeer opnieuw");
+                line = Console.ReadLine();
+            }
+            Console.WriteLine(dt.ToString("dd/MM/yyyy HH:mm"));
+            SelectedItem.DueDateTime = dt;
         }
         public void FieldStatus()
         {
@@ -168,19 +183,27 @@ namespace JakesRestaurant.views
                 new Option("Nee", Edit),
             };
             new vMenu(listoptions);
-            Edit();
         }
-        public void ItemCancel()
+        public void ItemCancel() 
         {
-            SelectedItem.Status = "Geannuleerd";
-            SaveConfirm();
-            Edit();
+            TimeSpan diffDate = SelectedItem.DueDateTime - DateTime.Now;
+            if (diffDate.TotalHours < 24)
+            {
+                Console.WriteLine("Annulering kan alleen 24 uur van tevoren gedaan worden.");
+                Console.WriteLine("Maak contact met het restaurant.");
+                Console.ReadKey();
+            }
+            else
+            {
+                SelectedItem.Status = "Geannuleerd";
+                SaveConfirm();
+                Console.ReadKey();
+            }
         }
         public void FieldComment()
         {
             Console.WriteLine("Opmerking (Optioneel):");
             SelectedItem.Comment = Console.ReadLine();
-            Edit();
         }
         public void FieldListProducts()
         {
@@ -224,7 +247,30 @@ namespace JakesRestaurant.views
             SelectedItem.ListProducts.Add(Product);
             FieldListProducts();
         }
-
+        public virtual void InsertValue(int idx)
+        {
+            switch (idx)
+            {
+                case 1:
+                    FieldPersons();
+                    break;
+                case 2:
+                    FieldDueDate();
+                    break;
+                case 3:
+                    FieldListProducts();
+                    break;
+                case 4:
+                    FieldComment();
+                    break;
+                case 5:
+                    ItemCancel();
+                    break;
+                default:
+                    break;
+            }
+            Edit();
+        }
         public void BackToMain()
         {
             vMain main = new vMain();
@@ -238,8 +284,8 @@ namespace JakesRestaurant.views
             options = new List<Option>
             {
                 new Option("Nieuwe reservering", this.Add),
-                new Option("Alle reserveringen", this.View), 
-                //new Option("Verwijder alle reserveringen", DeleteAll),
+                new Option("Alle reserveringen", this.View),
+                new Option("Verwijder alle reserveringen", DeleteAll),
                 new Option("Terug", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
@@ -265,7 +311,7 @@ namespace JakesRestaurant.views
         {
             Console.WriteLine("Reserveringen.");
             List<Option> listoptions = new List<Option>();
-            string header = "";
+            string header = "  ";
             if (ctlMain.reservation.reservations != null)
             {
 
@@ -299,14 +345,14 @@ namespace JakesRestaurant.views
             List<Option> listoptions = new List<Option>()
             {
                 new Option("Terug", Navigation),
-                new Option("Aantal personen: "+SelectedItem.NumberGuests, FieldPersons),
-                new Option("Reseringsdatum: "+SelectedItem.DueDateTime.ToString("dd/MM/yyyy"), FieldDueDate),
-                new Option("Producten", FieldListProducts),
-                new Option("Contactpersoon: "+(SelectedItem.User != null ? SelectedItem.User.FirstName: ""), FieldUserSelect),
-                new Option("Opmerking: "+SelectedItem.Comment, FieldComment),
+                new Option("Contactpersoon: "+(SelectedItem.User != null ? SelectedItem.User.FirstName: ""), InsertValue, 0),
+                new Option("Aantal personen: "+SelectedItem.NumberGuests, InsertValue, 1),
+                new Option("Reseringsdatum: "+SelectedItem.DueDateTimeStr, InsertValue, 2),
+                new Option("Producten: "+SelectedItem.ProductSummary, InsertValue, 3),
+                new Option("Opmerking: "+SelectedItem.Comment, InsertValue, 4),
+                new Option("Reservering annuleren? ", InsertValue, 5),
+                new Option("Reservering verwijderen? ", InsertValue, 6),
                 new Option("Opslaan? ", SaveConfirm),
-                new Option("Annuleren? ", ItemCancel),
-                new Option("Verwijderen? ", Delete),
             };
             new vMenu(listoptions);
         }
@@ -337,6 +383,36 @@ namespace JakesRestaurant.views
             SelectedItem.User = ctlMain.users.FindById(aId);
             Console.WriteLine($"Geselecteerd: {SelectedItem.User.Username}");
             FieldListProducts();
+        }
+        public override void InsertValue(int idx)
+        {
+            switch (idx)
+            {
+                case 0:
+                    FieldUserSelect();
+                    break;
+                case 1:
+                    FieldPersons();
+                    break;
+                case 2:
+                    FieldDueDate();
+                    break;
+                case 3:
+                    FieldListProducts();
+                    break;
+                case 4:
+                    FieldComment();
+                    break;
+                case 5:
+                    ItemCancel();
+                    break;
+                case 6:
+                    Delete();
+                    break;
+                default:
+                    break;
+            }
+            Edit();
         }
     }
 }
