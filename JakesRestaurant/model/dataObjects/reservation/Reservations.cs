@@ -53,7 +53,7 @@ namespace reservation
         [JsonIgnore]
         public string CreateDateTimeStr
         {
-            get { return CreateDateTime.ToString("dd/MM/yyyy"); }
+            get { return CreateDateTime.ToString("dd/MM/yyyy HH:mm"); }
         }
         [JsonIgnore]
         public string ProductSummary

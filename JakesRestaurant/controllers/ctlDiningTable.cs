@@ -95,5 +95,37 @@ namespace controllers
             else
                 return 1;
         }
+        public List<DiningTable> GetTablesByDate(DateTime dt)
+        {
+            List<DiningTable> itemlist = new List<DiningTable>();
+            foreach (var r in ctlMain.reservation.reservations)
+            {
+                itemlist.Add(r.DiningTable);
+            }
+            foreach (DiningTable table in diningTables)
+            {
+                table.Status = "Bezet";
+                if (!itemlist.Contains(table))
+                {
+                    table.Status = "Vrij";
+                    itemlist.Add(table);
+                }
+            }
+            return itemlist;
+        }
+        public DiningTable FindByPersonByDate(int persons, DateTime dt)
+        {
+            DiningTable result = null;
+
+            foreach (var item in GetTablesByDate(dt))
+            {
+                if (persons <= item.Places && item.Status == "Vrij")
+                {
+                    result = item;
+                    break;
+                }
+            }
+            return result;
+        }
     }
 }

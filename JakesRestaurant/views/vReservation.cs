@@ -37,8 +37,8 @@ namespace JakesRestaurant.views
             SelectedItem.ListProducts = new List<Product>();
             SelectedItem.User = Program.MyUser;
             FieldReserveCode();
-            FieldPersons();
             FieldDueDateTime();
+            FieldPersons();
             FieldComment();
             FieldListProducts();
         }
@@ -126,21 +126,24 @@ namespace JakesRestaurant.views
         }
         public void FieldPersons()
         {
-            Console.WriteLine("Aantal personen:");
+            Console.Clear();
             while (SelectedItem.DiningTable == null)
             {
+                Console.WriteLine("Aantal personen:");
                 int persons = int.Parse(Console.ReadLine());
                 SelectedItem.NumberGuests = persons;
-                SelectedItem.DiningTable = ctlMain.reservation.FindByPerson(persons);
+                SelectedItem.DiningTable = ctlMain.diningtable.FindByPersonByDate(persons, SelectedItem.DueDateTime);
+                SelectedItem.DiningTable.Status = "Bezet";
                 if (SelectedItem.DiningTable == null)
                 {
                     Console.WriteLine("Geen tafel/zitplek beschikbaar");
-                    Navigation();
+                    //Navigation();
                 }
             }
         }
         public void FieldDueDateTime()
         {
+            Console.Clear();
             FieldOpeningTimes();
             Console.WriteLine("Reseringsdatum (Formaat dd/MM/yyyy HH:mm):");
             string line = Console.ReadLine();
@@ -188,11 +191,13 @@ namespace JakesRestaurant.views
         }
         public void FieldComment()
         {
+            Console.Clear();
             Console.WriteLine("Opmerking (Optioneel):");
             SelectedItem.Comment = Console.ReadLine();
         }
         public void FieldListProducts()
         {
+            Console.Clear();
             List<Option> listoptions = new List<Option>();
             Console.WriteLine("Verwijder uit reservering:");
             foreach (var l in SelectedItem.ListProducts)
@@ -288,10 +293,11 @@ namespace JakesRestaurant.views
             SelectedItem.Status = "Actief";
             SelectedItem.ListProducts = new List<Product>();
             FieldReserveCode();
-            FieldPersons();
             FieldDueDateTime();
+            FieldPersons();
             FieldComment();
             FieldUserSelect();
+            FieldListProducts();
         }
         public override void View()
         {
@@ -311,7 +317,7 @@ namespace JakesRestaurant.views
                 {
                     string label = "";
                     label += vMenu.EqualWidthCol(r.ID.ToString(), 3);
-                    label += vMenu.EqualWidthCol(r.User.Username, 20);
+                    label += vMenu.EqualWidthCol(r.User != null ? r.User.Username : "", 20);
                     label += vMenu.EqualWidthCol(r.DiningTable.Places.ToString(), 10);
                     label += vMenu.EqualWidthCol(r.DueDateTimeStr, 10);
                     label += vMenu.EqualWidthCol(r.ReserveCode, 5);
@@ -355,8 +361,8 @@ namespace JakesRestaurant.views
         }
         public void FieldUserSelect()
         {
+            Console.Clear();
             List<Option> listoptions = new List<Option>();
-
             foreach (var l in ctlMain.users.users)
             {
                 var label = $"{l.Username}";

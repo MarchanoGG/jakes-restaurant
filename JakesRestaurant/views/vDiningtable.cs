@@ -16,20 +16,19 @@ namespace JakesRestaurant.views
         public vDiningtable()
         {
             ctl = new ctlDiningTable();
-            Console.WriteLine("Zit plaatsen");
             options = new List<Option>
             {
                 new Option("Voeg toe", this.Add),
                 new Option("Lijst", this.View),
-                new Option("Delete", this.ViewDelete),
-                new Option("Back to menu", this.BackToMain),
+                new Option("Verwijderen", this.ViewDelete),
+                new Option("Terug", this.BackToMain),
                 new Option("Exit", () => Environment.Exit(0)),
             };
         }
 
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Zit plaatsen instellingen.");
         }
 
         public void Add()
@@ -50,7 +49,7 @@ namespace JakesRestaurant.views
 
             foreach (var l in ctl.GetList())
             {
-                var label = $"Tafel voor {l.Places}; Beschikbaarheid: {l.Status}";
+                var label = $"Tafel met {l.Places} zit plaatsen. Omschrijving: {l.Description}";
                 listoptions.Add(new Option(label, Edit, l.ID));
             }
 
