@@ -1,69 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
+using controllers;
 
 namespace JakesRestaurant.views
 {
     class vOpeningTimes
     {
-        private Restaurant.ctlOpeningTimes controller = new Restaurant.ctlOpeningTimes();
-        private Restaurant.doOpeningTimes chosenTime = null;
+        private ctlOpeningTimes controller = ctlMain.openingtimes;
+        private doOpeningTimes chosenTime = null;
 
-        public static List<Option> options;
-        public vMenu menu { get; set; }
-        public List<vMenu> breadcrumbs { get; set; }
         public vOpeningTimes()
         {
         }
 
         public void Navigation()
         {
+            List<Option> options = new List<Option>();
             vMain mainmenu = new vMain();
             if (Program.MyUser.HasPrivilege() == true)
             {
-                UpdateTimes();
+                options = new List<Option>
+                {
+                    new Option("Openingstijden bekijken", ShowTimes),
+                    new Option("Openingstijden aanpassen", UpdateTimes),
+                    new Option("Terug", () => mainmenu.Navigation())
+                };
             }
             else
             {
-                ShowTimes();
+                options = new List<Option>
+                {
+                    new Option("Openingstijden bekijken", ShowTimes),
+                    new Option("Terug", () => mainmenu.Navigation())
+                };
             }
+            new vMenu(options, "Openingstijden");
         }
 
-        private void ShowTimes()
+        public void ShowTimes()
         {
             vMain mainmenu = new vMain();
-
-            options = new List<Option> { };
-
-            foreach (Restaurant.doOpeningTimes obj in controller.GetOpeningTimes())
+            List<Option> itemlist = new List<Option>();
+            foreach (doOpeningTimes obj in ctlMain.openingtimes.GetOpeningTimes())
             {
-                options.Add(new Option(obj.Summary()));
+                Console.WriteLine(obj.Summary());
             }
-
-            options.Add(new Option("Terug", () => mainmenu.Navigation()));
-            this.menu = new vMenu(options, "Openingstijden");
+            //foreach (doOpeningTimes obj in controller.GetOpeningTimes())
+            //{
+            //    options.Add(new Option(obj.Summary()));
+            //}
+            itemlist.Add(new Option("Terug", () => mainmenu.Navigation()));
+            new vMenu(itemlist);
         }
 
         private void UpdateTimes()
         {
             vMain mainmenu = new vMain();
-
-            options = new List<Option> { };
-
-            foreach (Restaurant.doOpeningTimes obj in controller.GetOpeningTimes())
+            List<Option> itemlist = new List<Option>();
+            foreach (doOpeningTimes obj in controller.GetOpeningTimes())
             {
-                options.Add(new Option(obj.Summary(), UpdateTime, obj.ID));
+                itemlist.Add(new Option(obj.Summary(), UpdateTime, obj.ID));
             }
 
-            options.Add(new Option("Terug", () => mainmenu.Navigation()));
-            this.menu = new vMenu(options, "Openingstijden");
+            itemlist.Add(new Option("Terug", () => mainmenu.Navigation()));
+            new vMenu(itemlist, "Openingstijden aanpassen");
         }
 
         public void UpdateTime(int ID) {
             vMain mainmenu = new vMain();
-
-            options = new List<Option> { };
-
-            foreach (Restaurant.doOpeningTimes obj in controller.GetOpeningTimes())
+            List<Option> itemlist = new List<Option>();
+            foreach (doOpeningTimes obj in controller.GetOpeningTimes())
             {
                 if (obj.ID == ID) {
                     this.chosenTime = obj;
@@ -72,16 +78,15 @@ namespace JakesRestaurant.views
 
             if (this.chosenTime != null)
             {
-                options.Add(new Option("Openingstijden aanpassen van " + this.chosenTime.Summary()));
-                options.Add(new Option("Geopend:                    " + this.chosenTime.Opened, this.InsertValue, 1));
-                options.Add(new Option("Openingstijd (uren):        " + this.chosenTime.StartingHours, this.InsertValue, 2));
-                options.Add(new Option("Openingstijd (minuten):     " + this.chosenTime.StartingMinutes, this.InsertValue, 3));
-                options.Add(new Option("Sluitingstijd: (uren):      " + this.chosenTime.ClosingHours, this.InsertValue, 4));
-                options.Add(new Option("Sluitingstijd: (minuten):   " + this.chosenTime.ClosingMinutes, this.InsertValue, 5));
+                itemlist.Add(new Option("Geopend:                    " + this.chosenTime.Opened, this.InsertValue, 1));
+                itemlist.Add(new Option("Openingstijd (uren):        " + this.chosenTime.StartingHours, this.InsertValue, 2));
+                itemlist.Add(new Option("Openingstijd (minuten):     " + this.chosenTime.StartingMinutes, this.InsertValue, 3));
+                itemlist.Add(new Option("Sluitingstijd: (uren):      " + this.chosenTime.ClosingHours, this.InsertValue, 4));
+                itemlist.Add(new Option("Sluitingstijd: (minuten):   " + this.chosenTime.ClosingMinutes, this.InsertValue, 5));
             }
 
-            options.Add(new Option("Terug", this.UpdateTimes));
-            this.menu = new vMenu(options, "Wijzig de openingstijden van " + this.chosenTime.Summary());
+            itemlist.Add(new Option("Terug", this.UpdateTimes));
+            new vMenu(itemlist, "Openingstijden aanpassen van " + chosenTime.Summary());
         }
 
         private void InsertValue(int idx)

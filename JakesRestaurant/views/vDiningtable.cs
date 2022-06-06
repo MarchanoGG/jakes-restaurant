@@ -10,153 +10,94 @@ namespace JakesRestaurant.views
 {
     internal class vDiningtable
     {
-        public DiningTable table { get; set; }
-        public ctlDiningTable ctl { get; set; }
-        public static List<Option> options;
+        public ctlDiningTable ctl { get; set; } = new ctlDiningTable();
+        public static List<Option> options = new List<Option> { };
         public vMenu menu { get; set; }
+        public DiningTable SelectedItem { get; set; }
         public vDiningtable()
         {
         }
-
         public void Navigation()
         {
-            ctl = new ctlDiningTable();
-
-            if (Program.MyUser.HasPrivilege() == true)
+            Console.Clear();
+            options = new List<Option> { };
+            foreach (var l in ctlMain.diningtable.GetList())
             {
-                vMain mainmenu = new vMain();
-
-                options = new List<Option>
-                {
-                    new Option("Lijst weergeven", this.View),
-                    new Option("Nieuwe tafel toevoegen", this.Add),
-                    new Option("Bestaande tafel verwijderen", this.ViewDelete),
-                    new Option("Terug", () => mainmenu.Navigation())
-                };
+                var label = $"Tafel met {l.Places} zit plaatsen. Omschrijving: {l.Description}";
+                options.Add(new Option(label, EditItem, l.ID));
             }
-            else
-            {
-                this.View();
-            }
-
-            this.menu = new vMenu(options, "Zitplaatsen");
+            options.Add(new Option("Voeg toe", Add));
+            options.Add(new Option("Terug", BackToMain));
+            options.Add(new Option("Afsluiten", () => Environment.Exit(0)));
+            new vMenu(options, "Zit plaatsen instellingen.");
         }
-
         public void Add()
         {
-            this.table = new DiningTable();
-            this.table.ID = ctl.IncrementID();
-            this.table.Status = "Vrij";
-
-            Console.WriteLine("Aantal plaatsen:");
-            string Places = Console.ReadLine();
-
-            while (!int.TryParse(Places, out int i))
-            {
-                Places = Console.ReadLine();
-            }
-
-            this.table.Places = int.Parse(Places);
-
-            Console.WriteLine("\r\nOmschrijving:");
-
-            this.table.Description = Console.ReadLine();
-
-            ctl.UpdateList(this.table);
-
+            Console.Clear();
+            SelectedItem = new DiningTable();
+            SelectedItem.ID = ctlMain.diningtable.IncrementID();
+            SelectedItem.Status = "Vrij";
+            FieldPlaces();
+            FieldDescription();
+            ctlMain.diningtable.UpdateList(SelectedItem);
             Navigation();
         }
-        public void View()
+        public void EditItem(int aID)
         {
-            vMain mainmenu = new vMain();
-            List<Option> listoptions = new List<Option>();
-
-            foreach (var l in ctl.GetList())
-            {
-                listoptions.Add(new Option(l.Summary(), Edit, l.ID));
-            }
-
-            if (Program.MyUser.HasPrivilege() == true)
-            {
-                listoptions.Add(new Option("Terug", Navigation));
-            }
-            else
-            {
-                listoptions.Add(new Option("Terug", () => mainmenu.Navigation()));
-            }
-
-            this.menu = new vMenu(listoptions, "Lijst van de tafels");
+            SelectedItem = ctlMain.diningtable.GetID(aID);
+            Edit();
         }
-
-        public void ViewDelete()
+        public void Edit()
         {
-            vMain mainmenu = new vMain();
-            List<Option> listoptions = new List<Option>();
-
-            foreach (var l in ctl.GetList())
+            Console.Clear();
+            Console.WriteLine("Reserveringen aanpassen");
+            List<Option> listoptions = new List<Option>
             {
-                listoptions.Add(new Option("Verwijder: " + l.Description, Delete, l.ID));
-            }
-
-            listoptions.Add(new Option("Terug", Navigation));
-
-            this.menu = new vMenu(listoptions, "Tafels verwijderen");
-            Navigation();
-        }
-
-        public void Edit(int aID)
-        {
-            vMain mainmenu = new vMain();
-
-            this.table = ctl.GetID(aID);
-
-            options = new List<Option>
-            {
-                new Option("Aantal plaatsen:    " + this.table.Places, this.FillFromInput, 1),
-                new Option("Omschrijving:       " + this.table.Description, this.FillFromInput, 2),
-                new Option("Terug", View),
+                new Option("Terug", Navigation),
+                new Option("Zit plaatsen: "+SelectedItem.Places, InsertValue, 1),
+                new Option("Omschrijving: "+SelectedItem.Description, InsertValue, 2),
+                new Option("Verwijderen? ", Delete, SelectedItem.ID),
+                new Option("Opslaan? ", SaveItem),
             };
-
-            this.menu = new vMenu(options, "Tafel aanpassen");
+            new vMenu(listoptions);
         }
-        public void Delete(int aID)
+        public void FieldPlaces()
         {
-            // Get from parameter
-            DiningTable p = ctl.GetID(aID);
-
-            // If success than update product
-            ctl.DeleteById(p);
-
-            // Go back to View navigation
-            View();
+            Console.WriteLine("Plaatsen:");
+            SelectedItem.Places = int.Parse(Console.ReadLine());
         }
-
-        public void FillFromInput(int aOption)
+        public void FieldDescription()
         {
-            switch (aOption)
+            Console.WriteLine("Omschrijving:");
+            SelectedItem.Description = Console.ReadLine();
+        }
+        public void SaveItem()
+        {
+            ctlMain.diningtable.UpdateList(SelectedItem);
+            SelectedItem = null;
+            Navigation();
+        }
+        public void InsertValue(int idx)
+        {
+            switch (idx)
             {
                 case 1:
-                    Console.WriteLine("Aantal plaatsen aanpassen:");
-                    string Places = Console.ReadLine();
-
-                    while (!int.TryParse(Places, out int i))
-                    {
-                        Places = Console.ReadLine();
-                    }
-
-                    this.table.Places = int.Parse(Places);
+                    FieldPlaces();
                     break;
                 case 2:
-                    Console.WriteLine("Omschrijving aanpassen:");
-                    this.table.Description = Console.ReadLine();
+                    FieldDescription();
                     break;
                 default:
                     break;
             }
-            ctl.UpdateList(this.table);
-            this.Edit(this.table.ID);
+            Edit();
         }
-
+        public void Delete(int aID)
+        {
+            ctlMain.diningtable.DeleteByItem(SelectedItem);
+            SelectedItem = null;
+            Navigation();
+        }
         public void BackToMain()
         {
             vMain main = new vMain();

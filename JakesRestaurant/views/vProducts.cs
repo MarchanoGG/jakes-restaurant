@@ -36,11 +36,11 @@ namespace JakesRestaurant.views
             options.Add(new Option("Lijst", this.View));
             options.Add(new Option("Exit", () => Environment.Exit(0)));
 
-            Navigation();
+            //Navigation();
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Products.");
         }
 
 

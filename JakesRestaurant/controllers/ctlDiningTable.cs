@@ -52,8 +52,17 @@ namespace controllers
         {
             string json = JsonSerializer.Serialize(diningTables);
             File.WriteAllText(path, json);
+            Console.WriteLine("Aangepast.");
         }
-
+        public void DeleteByItem(DiningTable p)
+        {
+            int index = diningTables.FindIndex(s => s.ID == p.ID);
+            if (index != -1)
+            {
+                diningTables.Remove(p);
+            }
+            Write();
+        }
         public void UpdateList(DiningTable p)
         {
             int index = diningTables.FindIndex(s => s.ID == p.ID);
@@ -96,6 +105,38 @@ namespace controllers
                return diningTables.Last().ID + 1;           
             else
                 return 1;
+        }
+        public List<DiningTable> GetTablesByDate(DateTime dt)
+        {
+            List<DiningTable> itemlist = new List<DiningTable>();
+            foreach (var r in ctlMain.reservation.reservations)
+            {
+                itemlist.Add(r.DiningTable);
+            }
+            foreach (DiningTable table in diningTables)
+            {
+                table.Status = "Bezet";
+                if (!itemlist.Contains(table))
+                {
+                    table.Status = "Vrij";
+                    itemlist.Add(table);
+                }
+            }
+            return itemlist;
+        }
+        public DiningTable FindByPersonByDate(int persons, DateTime dt)
+        {
+            DiningTable result = null;
+
+            foreach (var item in GetTablesByDate(dt))
+            {
+                if (persons <= item.Places && item.Status == "Vrij")
+                {
+                    result = item;
+                    break;
+                }
+            }
+            return result;
         }
     }
 }
