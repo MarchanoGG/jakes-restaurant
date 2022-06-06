@@ -203,7 +203,7 @@ namespace JakesRestaurant.views
         }
         public void ProductSelect(int aId)
         {
-            Product Product = ctlMain.products.GetID(aId);
+            Product Product = ctlMain.products.GetByID(aId);
             Console.WriteLine($"Geselecteerd: {Product.Name}");
             SelectedItem.ListProducts.Add(Product);
             FieldListProducts();
