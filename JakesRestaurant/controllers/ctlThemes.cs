@@ -7,7 +7,7 @@ using management;
 
 namespace controllers
 {
-    internal class TctlThemes
+    public class TctlThemes
     {
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "themes.json");
 
@@ -70,10 +70,15 @@ namespace controllers
 
         }
 
-        public void Delete(int aID)
+        public bool Delete(int aID)
         {
-            d_themes.Remove(d_themes.Find(s => s.ID == aID));
-            Write();
+            if (d_themes.Find(s => s.ID == aID) != null)
+            {
+                d_themes.Remove(d_themes.Find(s => s.ID == aID));
+                Write();
+                return true;
+            }
+                return false;
         }
 
         public Theme GetByID(int id)

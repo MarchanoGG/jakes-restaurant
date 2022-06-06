@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace controllers
 {
-    internal class TctlProducts
+    public class TctlProducts
     {
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "products.json");
 
@@ -72,7 +72,6 @@ namespace controllers
         {
             int index = d_products.FindIndex(s => s.ID == Product.ID);
 
-
             if (index != -1)
             {
                 d_products[index] = Product;
@@ -83,13 +82,19 @@ namespace controllers
             }
 
             Write();
-
         }
 
-        public void Delete(int aID)
+        public bool Delete(int aID)
         {
-            d_products.Remove(d_products.Find(s => s.ID == aID));
-            Write();
+            if (d_products.Find(s => s.ID == aID) != null)
+            {
+                d_products.Remove(d_products.Find(s => s.ID == aID));
+                Write();
+                return true;
+            }
+
+            return false;
+
         }
 
         public Product GetByID(int id)
@@ -106,11 +111,11 @@ namespace controllers
         }
 
         public List<Product> GetFromDate(DateTime aBegin, DateTime aEnd)
-        { 
+        {
             List<Product> products = new List<Product>();
-                
 
-            foreach(var el in d_products)
+
+            foreach (var el in d_products)
             {
                 Theme t = d_themeCtrl.GetByID(el.ID);
 
@@ -129,5 +134,5 @@ namespace controllers
             return products;
 
         }
-    } 
+    }
 }
