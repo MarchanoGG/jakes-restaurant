@@ -138,8 +138,13 @@ namespace JakesRestaurant.views
 
         private static string InsertCredentials(string aCredential)
         {
-            Console.WriteLine("\n\r");
-            Console.WriteLine("Voer " + aCredential + " in:");
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine("[ Voer " + aCredential + " in ]");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
 
             string credentials = "";
             ConsoleKey key;
