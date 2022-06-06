@@ -7,7 +7,6 @@ using controllers;
 using reservation;
 using Authentication;
 using management;
-using Restaurant;
 
 namespace JakesRestaurant.views
 {
@@ -39,8 +38,7 @@ namespace JakesRestaurant.views
             SelectedItem.User = Program.MyUser;
             FieldReserveCode();
             FieldPersons();
-            FieldDueDate();
-            FieldDueTime();
+            FieldDueDateTime();
             FieldComment();
             FieldListProducts();
         }
@@ -141,13 +139,14 @@ namespace JakesRestaurant.views
                 }
             }
         }
-        public void FieldDueDate()
+        public void FieldDueDateTime()
         {
             FieldOpeningTimes();
-            Console.WriteLine("Reseringsdatum (Formaat dd/MM/yyyy):");
+            Console.WriteLine("Reseringsdatum (Formaat dd/MM/yyyy HH:mm):");
             string line = Console.ReadLine();
             DateTime dt;
-            while (!DateTime.TryParseExact(line, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out dt))
+            while (!DateTime.TryParseExact(line, "dd/MM/yyyy HH:mm", null, System.Globalization.DateTimeStyles.None, out dt)
+                )
             {
                 Console.WriteLine("Incorrecte datum formaat, probeer opnieuw");
                 line = Console.ReadLine();
@@ -156,23 +155,10 @@ namespace JakesRestaurant.views
         }
         public void FieldOpeningTimes()
         {
-            foreach (Restaurant.doOpeningTimes obj in ctlMain.openingtimes.GetOpeningTimes())
+            foreach (doOpeningTimes obj in ctlMain.openingtimes.GetOpeningTimes())
             {
                 Console.WriteLine(obj.Summary());
             }
-        }
-        public void FieldDueTime()
-        {
-            Console.WriteLine("Reseringstijd (Formaat HH:mm):");
-            string line = Console.ReadLine();
-            DateTime dt;
-            while (!DateTime.TryParseExact(line, "HH:mm", null, System.Globalization.DateTimeStyles.None, out dt))
-            {
-                Console.WriteLine("Incorrecte tijds formaat, probeer opnieuw");
-                line = Console.ReadLine();
-            }
-            Console.WriteLine(dt.ToString("dd/MM/yyyy HH:mm"));
-            SelectedItem.DueDateTime = dt;
         }
         public void FieldStatus()
         {
@@ -255,7 +241,7 @@ namespace JakesRestaurant.views
                     FieldPersons();
                     break;
                 case 2:
-                    FieldDueDate();
+                    FieldDueDateTime();
                     break;
                 case 3:
                     FieldListProducts();
@@ -303,7 +289,7 @@ namespace JakesRestaurant.views
             SelectedItem.ListProducts = new List<Product>();
             FieldReserveCode();
             FieldPersons();
-            FieldDueDate();
+            FieldDueDateTime();
             FieldComment();
             FieldUserSelect();
         }
@@ -395,7 +381,7 @@ namespace JakesRestaurant.views
                     FieldPersons();
                     break;
                 case 2:
-                    FieldDueDate();
+                    FieldDueDateTime();
                     break;
                 case 3:
                     FieldListProducts();

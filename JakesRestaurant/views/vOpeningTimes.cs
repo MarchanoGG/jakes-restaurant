@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using controllers;
 
 namespace JakesRestaurant.views
 {
     class vOpeningTimes
     {
-        private Restaurant.ctlOpeningTimes controller = new Restaurant.ctlOpeningTimes();
-        private Restaurant.doOpeningTimes chosenTime = null;
+        private ctlOpeningTimes controller = ctlMain.openingtimes;
+        private doOpeningTimes chosenTime = null;
 
         public static List<Option> options;
         public vMenu menu { get; set; }
@@ -44,7 +45,7 @@ namespace JakesRestaurant.views
 
             options = new List<Option> { };
 
-            foreach (Restaurant.doOpeningTimes obj in controller.GetOpeningTimes())
+            foreach (doOpeningTimes obj in controller.GetOpeningTimes())
             {
                 options.Add(new Option(obj.Summary()));
             }
@@ -59,7 +60,7 @@ namespace JakesRestaurant.views
 
             options = new List<Option> { };
 
-            foreach (Restaurant.doOpeningTimes obj in controller.GetOpeningTimes())
+            foreach (doOpeningTimes obj in controller.GetOpeningTimes())
             {
                 options.Add(new Option(obj.Summary(), UpdateTime, obj.ID));
             }
@@ -73,7 +74,7 @@ namespace JakesRestaurant.views
 
             options = new List<Option> { };
 
-            foreach (Restaurant.doOpeningTimes obj in controller.GetOpeningTimes())
+            foreach (doOpeningTimes obj in controller.GetOpeningTimes())
             {
                 if (obj.ID == ID) {
                     this.chosenTime = obj;

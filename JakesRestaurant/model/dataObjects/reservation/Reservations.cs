@@ -48,7 +48,7 @@ namespace reservation
         [JsonIgnore]
         public string DueDateTimeStr
         {
-            get { return DueDateTime.ToString("dd/MM/yyyy"); }
+            get { return DueDateTime.ToString("dd/MM/yyyy HH:mm"); }
         }
         [JsonIgnore]
         public string CreateDateTimeStr

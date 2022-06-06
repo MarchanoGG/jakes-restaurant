@@ -98,9 +98,10 @@ namespace JakesRestaurant.views
                 Console.WriteLine(option.Name);
             }
         }
-        public static string EqualWidthCol(string a, int b)
+        public static string EqualWidthCol(string a = "", int b = 10)
         {
             if (a is null) a = "";
+            if (b < a.Length) b = a.Length;
             string spaces = new string(' ', b - a.Length);
             return $"{a}{spaces} - ";
         }

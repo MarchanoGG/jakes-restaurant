@@ -126,5 +126,11 @@ namespace controllers
             }
             return result;
         }
+        //public Reservations AvailableByDate(DateTime dt)
+        //{
+        //    DateTime baseDate = new DateTime(dt.Year, dt.Month, dt.Day);
+
+        //    return
+        //}
     }
 }
