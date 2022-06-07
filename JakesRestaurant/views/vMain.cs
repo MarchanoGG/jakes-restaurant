@@ -50,6 +50,8 @@ namespace JakesRestaurant.views
                 vReservation = new vReservation();
                 options = new List<Option>
                 {
+                    new Option("Bekijk thema's", openingTimesView.ShowTimes),
+                    new Option("Bekijk openingstijden", vThemes.ViewThemes),
                     new Option("Maak een reservering", vReservation.Add),
                     new Option("Mijn reserveringen", vReservation.View),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
