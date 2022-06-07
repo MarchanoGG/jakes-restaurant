@@ -11,6 +11,9 @@ namespace management
         [JsonPropertyName("themeId")]
         public int ThemeID { get; set; }
 
+        [JsonPropertyName("theme")]
+        public Theme Theme { get; set; }
+
         [JsonPropertyName("name")]
         public string Name { get; set; }
 

@@ -10,20 +10,15 @@ namespace controllers
     public class TctlThemes
     {
         string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\", "themes.json");
-
-
         private List<Theme> d_themes;
-
         public List<Theme> GetThemes()
         {
             return d_themes;
         }
-
         public TctlThemes()
         {
             Load();
         }
-
         public void Load()
         {
             if (!File.Exists(path))
@@ -32,7 +27,6 @@ namespace controllers
                 var myFile = File.Create(path);
                 myFile.Close();
             }
-
             string json = File.ReadAllText(path);
             if (json != "")
             {
@@ -42,34 +36,25 @@ namespace controllers
             {
                 d_themes = new List<Theme>();
             }
-
         }
-
         public void Write()
         {
             string json = JsonSerializer.Serialize(d_themes);
             File.WriteAllText(path, json);
-            Console.WriteLine("write done");
         }
-
-        public void UpdateList(Theme Theme)
+        public void UpdateList(Theme p)
         {
-            int index = d_themes.FindIndex(s => s.ID == Theme.ID);
-
-
+            int index = d_themes.FindIndex(s => s.ID == p.ID);
             if (index != -1)
             {
-                d_themes[index] = Theme;
+                d_themes[index] = p;
             }
             else
             {
-                d_themes.Add(Theme);
+                d_themes.Add(p);
             }
-
             Write();
-
         }
-
         public bool Delete(int aID)
         {
             if (d_themes.Find(s => s.ID == aID) != null)
@@ -80,12 +65,10 @@ namespace controllers
             }
                 return false;
         }
-
         public Theme GetByID(int id)
         {
             return d_themes.Find(i => i.ID == id);
         }
-
         public int IncrementID()
         {
             if (d_themes.Any())

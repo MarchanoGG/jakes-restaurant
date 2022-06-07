@@ -12,6 +12,7 @@ namespace JakesRestaurant.views
         public static List<Option> options;
         public vMenu menu { get; set; }
         public vProducts vProducts { get; set; }
+        public vThemes vThemes { get; set; }
         public vUsers vusers { get; set; }
         public vDiningtable vDiningtable { get; set; }
         public vReservation vReservation { get; set; }
@@ -22,6 +23,7 @@ namespace JakesRestaurant.views
         public vMain()
         {
             vProducts = new vProducts();
+            vThemes = new vThemes();
             vusers = new vUsers();
             vDiningtable = new vDiningtable();
             loginView = new vLogin();
@@ -33,7 +35,7 @@ namespace JakesRestaurant.views
                 options = new List<Option>
                 {
                     new Option("Openingstijden", openingTimesView.Navigation),
-                    new Option("Thema's", loginView.CheckRes),
+                    new Option("Thema's", vThemes.Navigation),
                     new Option("Producten", vProducts.Navigation),
                     new Option("Gebruikers", loginView.UsersList),
                     new Option("Tafels", vDiningtable.Navigation),

@@ -9,143 +9,112 @@ namespace JakesRestaurant.views
 {
     internal class vThemes
     {
-        public static List<Option> options;
-        public vMenu menu { get; set; }
-
+        public List<Option> options;
         private static Theme d_currentTheme { get; set; }
-        private TctlThemes d_themeCtrl;
-
         public vThemes()
         {
-            d_themeCtrl = new TctlThemes();
-            d_currentTheme = new Theme();
-            DefaultMenu();
         }
-
         void DefaultMenu()
         {
             options = new List<Option>();
             options.Add(new Option("Voeg thema toe", AddTheme));
             options.Add(new Option("Lijst van themas", ViewThemes));
+            options.Add(new Option("Terug", BackToMain));
             options.Add(new Option("Exit", () => Environment.Exit(0)));
-
-            Navigation();
         }
-
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            DefaultMenu();
+            new vMenu(options, "Thema instellingen");
         }
-
         public void AddTheme()
         {
             d_currentTheme = new Theme();
-
-            Console.WriteLine("Thema naam:");
-            d_currentTheme.Name = Console.ReadLine();
-
-            Console.WriteLine("Start datum:");
-            DateTime startDate;
-
-            while (true)
-            {
-                if (DateTime.TryParse(Console.ReadLine(), out startDate))
-                {
-                    d_currentTheme.StartDate = startDate;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Probeer opnieuw!");
-                }
-            }
-
-
-            Console.WriteLine("Eind datum:");
-            DateTime endDate;
-
-            while (true)
-            {
-                if (DateTime.TryParse(Console.ReadLine(), out endDate))
-                {
-                    d_currentTheme.EndDate = endDate;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Probeer opnieuw!");
-                }
-            }
-
-            d_currentTheme.ID = d_themeCtrl.IncrementID();
-            d_themeCtrl.UpdateList(d_currentTheme);
-
+            d_currentTheme.ID = ctlMain.themes.IncrementID();
+            FieldName();
+            FieldStartDate();
+            FieldEndDate();
+            ctlMain.themes.UpdateList(d_currentTheme);
             Navigation();
         }
-
         public void ViewThemes()
         {
-            List<Theme> themes = new List<Theme>();
-            themes = d_themeCtrl.GetThemes();
-
-            options = new List<Option>();
-            options.Add(new Option("Terug", DefaultMenu));
-
-            foreach (var el in themes)
+            Console.WriteLine("Thema's");
+            List<Option> listoptions = new List<Option>();
+            string header = "  ";
+            if (ctlMain.themes.GetThemes() != null)
             {
-                options.Add(new Option($"ID: " + el.ID + " - " + el.Name, Edit, el.ID));
-            }
 
-            Navigation();
-        }
-
-        public void Edit(int aID)
-        {
-            d_currentTheme = d_themeCtrl.GetByID(aID);
-
-            if (d_currentTheme != null)
-            {
-                options = new List<Option>();
-                options.Add(new Option("Terug", ViewThemes));
-                options.Add(new Option(d_currentTheme.Name, FieldName));
-                options.Add(new Option(d_currentTheme.StartDate.ToString(), FieldStartDate));
-                options.Add(new Option(d_currentTheme.EndDate.ToString(), FieldEndDate));
-
-                options.Add(new Option("Verwijder", this.Delete));
-
-
-                Navigation();
+                header += vMenu.EqualWidthCol("ID", 3);
+                header += vMenu.EqualWidthCol("Naam", 10);
+                header += vMenu.EqualWidthCol("Start", 10);
+                header += vMenu.EqualWidthCol("Eind", 10);
+                Console.WriteLine(header);
+                foreach (var r in ctlMain.themes.GetThemes())
+                {
+                    string label = "";
+                    label += vMenu.EqualWidthCol(r.ID.ToString(), 3);
+                    label += vMenu.EqualWidthCol(r.Name, 10);
+                    label += vMenu.EqualWidthCol(r.StartDateStr, 10);
+                    label += vMenu.EqualWidthCol(r.EndDateStr, 10);
+                    listoptions.Add(new Option(label, EditItem, r.ID));
+                }
             }
             else
             {
-
+                Console.WriteLine("Geen");
+            }
+            listoptions.Add(new Option("Terug", Navigation));
+            new vMenu(listoptions);
+        }
+        public virtual void EditItem(int aID)
+        {
+            d_currentTheme = ctlMain.themes.GetByID(aID);
+            Edit();
+        }
+        public void SaveItem()
+        {
+            ctlMain.themes.UpdateList(d_currentTheme);
+            d_currentTheme = null;
+            ViewThemes();
+        }
+        public void Edit()
+        {
+            List <Option> itemlist= new List<Option>();
+            if (d_currentTheme != null)
+            {
+                itemlist = new List<Option>();
+                itemlist.Add(new Option("Terug", ViewThemes));
+                itemlist.Add(new Option($"Naam: {d_currentTheme.Name}", InsertValue, 1));
+                itemlist.Add(new Option($"Start datum: {d_currentTheme.StartDateStr}", InsertValue, 2));
+                itemlist.Add(new Option($"Eind datum: {d_currentTheme.EndDateStr}", InsertValue, 3));
+                itemlist.Add(new Option("Verwijderen?", Delete));
+                itemlist.Add(new Option("Opslaan?", SaveItem));
+                new vMenu(itemlist, $"Thema: {d_currentTheme.Name}");
+            }
+            else
+            {
                 Console.WriteLine("Kan thema niet vinden!");
                 ViewThemes();
             }
         }
-
-
         private void FieldName()
         {
             if (d_currentTheme != null)
             {
                 Console.WriteLine("Naam:");
                 d_currentTheme.Name = Console.ReadLine();
-
-                d_themeCtrl.UpdateList(d_currentTheme);
-
-                Edit(d_currentTheme.ID);
+                ctlMain.themes.UpdateList(d_currentTheme);
             }
         }
-
         private void FieldStartDate()
         {
-            Console.WriteLine("Start datum:");
+            Console.WriteLine("Start datum (Formaat dd/MM/yyyy):");
             DateTime startDate;
 
             while (true)
             {
-                if (DateTime.TryParse(Console.ReadLine(), out startDate))
+                if (DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out startDate))
                 {
                     d_currentTheme.StartDate = startDate;
                     break;
@@ -155,18 +124,15 @@ namespace JakesRestaurant.views
                     Console.WriteLine("Probeer opnieuw!");
                 }
             }
-            d_themeCtrl.UpdateList(d_currentTheme);
-
-            Edit(d_currentTheme.ID);
         }
         private void FieldEndDate()
         {
-            Console.WriteLine("Eind datum:");
+            Console.WriteLine("Eind datum (Formaat dd/MM/yyyy):");
             DateTime endDate;
 
             while (true)
             {
-                if (DateTime.TryParse(Console.ReadLine(), out endDate))
+                if (DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out endDate))
                 {
                     d_currentTheme.EndDate = endDate;
                     break;
@@ -176,16 +142,34 @@ namespace JakesRestaurant.views
                     Console.WriteLine("Probeer opnieuw!");
                 }
             }
-            d_themeCtrl.UpdateList(d_currentTheme);
-
-            Edit(d_currentTheme.ID);
         }
-
         public void Delete()
         {
-            d_themeCtrl.Delete(d_currentTheme.ID);
+            ctlMain.themes.Delete(d_currentTheme.ID);
             ViewThemes();
         }
-
+        public void InsertValue(int idx)
+        {
+            switch (idx)
+            {
+                case 1:
+                    FieldName();
+                    break;
+                case 2:
+                    FieldStartDate();
+                    break;
+                case 3:
+                    FieldEndDate();
+                    break;
+                default:
+                    break;
+            }
+            Edit();
+        }
+        public void BackToMain()
+        {
+            vMain main = new vMain();
+            main.Navigation();
+        }
     }
 }
