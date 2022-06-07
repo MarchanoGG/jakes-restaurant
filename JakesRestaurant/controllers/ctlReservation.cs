@@ -126,5 +126,16 @@ namespace controllers
             }
             return result;
         }
+        public List<Reservations> FilterByDate(DateTime dt)
+        {
+            string fdt = dt.ToString("dd/MM/yyyy");
+            return reservations.Where(x => x.DueDateTime.ToString("dd/MM/yyyy") == fdt).ToList();
+        } 
+        //public Reservations AvailableByDate(DateTime dt)
+        //{
+        //    DateTime baseDate = new DateTime(dt.Year, dt.Month, dt.Day);
+
+        //    return
+        //}
     }
 }

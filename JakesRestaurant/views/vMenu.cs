@@ -10,12 +10,13 @@ namespace JakesRestaurant.views
     {
         public List<Option> options { get; set; }
         public string title { get; set; }
-        protected int origRow { get; set; }
-        protected int origCol { get; set; }
+        protected static int index { get; set; }
+        protected static int origRow { get; set; }
+        protected static int origCol { get; set; }
         public vMenu(List<Option> options, string title = "")
         {
             // Set the default index of the selected item to be the first
-            int index = 0;
+            index = 0;
             origRow = 0;
             origCol = 0;
             this.options = options;
@@ -23,7 +24,6 @@ namespace JakesRestaurant.views
 
             // Write the menu out
             WriteMenu(options, options[index]);
-
 
             // Store key info in here
             ConsoleKeyInfo keyinfo;
@@ -39,7 +39,7 @@ namespace JakesRestaurant.views
                         WriteAt(" ", 0, index);
                         WriteAt(">", 0, ++index);
                     }
-                }
+                } else
                 if (keyinfo.Key == ConsoleKey.UpArrow)
                 {
                     if (index - 1 >= 0)
@@ -47,23 +47,21 @@ namespace JakesRestaurant.views
                         WriteAt(" ", 0, index);
                         WriteAt(">", 0, --index);
                     }
-                }
+                } else
                 // Handle different action for the option
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
-                    if (options[index].ActionIsSet)
-                    {
-                        Console.Clear();
-                        if (options[index].ID != 0)
-                            options[index].Selected(options[index].ID);
-                        else
-                            options[index].VoidSelected();
-                    }
+                    Console.Clear();
+                    options[index].Call();
+                }
+                else
+                {
+
                 }
             }
             while (keyinfo.Key != ConsoleKey.X);
 
-            Console.ReadKey();
+            //Console.ReadKey();
         }
         protected void WriteAt(string s, int x, int y)
         {
@@ -71,7 +69,7 @@ namespace JakesRestaurant.views
             {
                 Console.SetCursorPosition(origCol + x, origRow + y);
                 Console.Write(s);
-                Console.SetCursorPosition(0, options.Count);
+                Console.SetCursorPosition(0, origRow + options.Count);
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -81,12 +79,12 @@ namespace JakesRestaurant.views
         }
         public void WriteMenu(List<Option> options, Option selectedOption)
         {
-            Console.Clear();
             if (title.Length > 0)
             {
+                Console.Clear();
                 Console.WriteLine(title);
-                ++this.origRow;
             }
+            origRow = Console.CursorTop;
             foreach (Option option in options)
             {
                 if (option == selectedOption)
@@ -97,19 +95,33 @@ namespace JakesRestaurant.views
                 {
                     Console.Write("  ");
                 }
-
                 Console.WriteLine(option.Name);
             }
+        }
+        public static string EqualWidthCol(string a = "", int b = 10)
+        {
+            if (a is null) a = "";
+            if (b < a.Length) b = a.Length;
+            string spaces = new string(' ', b - a.Length);
+            return $"{a}{spaces} - ";
         }
     }
     public class Option
     {
         public string Name { get; }
-        public bool ActionIsSet { get; }
+        public bool ActionIsSet { get; } = false;
         public Action VoidSelected { get; }
         public Action<int> Selected { get; }
-        public int ID { get; set; }
-
+        public int ID { get; } = 0;
+        public OptionDelegateObj Callback { get; }
+        public dynamic AnyObject { get; }
+        public string FormatLabel
+        {
+            get { return $"  {this.Name}: "; }
+        }
+        public Option()
+        {
+        }
         public Option(string name)
         {
             Name = name;
@@ -130,6 +142,23 @@ namespace JakesRestaurant.views
             ID = id;
             ActionIsSet = true;
         }
+        public Option(string name, OptionDelegateObj selected, dynamic obj)
+        {
+            Name = name;
+            Callback = selected;
+            ActionIsSet = true;
+            AnyObject = obj;
+        }
+        public void Call()
+        {
+            if (ActionIsSet == true)
+                if (Callback != null && AnyObject != null)
+                    Callback(AnyObject);
+                else if (Selected != null && ID != 0)
+                    Selected(ID);
+                else if (VoidSelected != null)
+                    VoidSelected();
+        }
 
         //public Option(string name, object v)
         //{
@@ -137,4 +166,5 @@ namespace JakesRestaurant.views
         //    V = v;
         //}
     }
+    public delegate void OptionDelegateObj(dynamic obj);
 }

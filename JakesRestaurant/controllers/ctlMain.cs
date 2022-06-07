@@ -12,12 +12,14 @@ namespace controllers
         public static ctlReservation reservation { get; set; }
         public static ctlUsers users { get; set; }
         public static TctlProducts products { get; set; }
+        public static ctlOpeningTimes openingtimes { get; set; }
         public ctlMain()
         {
             diningtable = new ctlDiningTable();
             reservation = new ctlReservation();
             users = new ctlUsers();
             products = new TctlProducts();
+            openingtimes = new ctlOpeningTimes();
         }
     }
 }

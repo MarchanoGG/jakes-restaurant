@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Restaurant
+namespace controllers
 {
     class doOpeningTimes
     {
@@ -13,6 +13,9 @@ namespace Restaurant
 
         [JsonPropertyName("day")]
         public string Day { get; set; }
+
+        [JsonPropertyName("dayofweek")]
+        public DayOfWeek Dayofweek { get; set; }
 
         [JsonPropertyName("opened")]
         public bool Opened { get; set; }
