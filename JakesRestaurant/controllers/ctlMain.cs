@@ -12,7 +12,7 @@ namespace controllers
         public static ctlReservation reservation { get; set; }
         public static ctlUsers users { get; set; }
         public static TctlProducts products { get; set; }
-        public static TctlThemes TctlThemes { get; set; }
+        public static TctlThemes themes { get; set; }
         public static ctlOpeningTimes openingtimes { get; set; }
         public ctlMain()
         {
@@ -20,7 +20,7 @@ namespace controllers
             reservation = new ctlReservation();
             users = new ctlUsers();
             products = new TctlProducts();
-            TctlThemes = new TctlThemes();
+            themes = new TctlThemes();
             openingtimes = new ctlOpeningTimes();
         }
     }

@@ -373,7 +373,6 @@ namespace JakesRestaurant.views
         {
             SelectedItem.User = ctlMain.users.FindById(aId);
             Console.WriteLine($"Geselecteerd: {SelectedItem.User.Username}");
-            FieldListProducts();
         }
         public override void InsertValue(int idx)
         {

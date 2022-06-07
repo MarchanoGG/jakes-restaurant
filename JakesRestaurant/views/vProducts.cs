@@ -8,8 +8,6 @@ namespace JakesRestaurant.views
 {
     internal class vProducts
     {
-        private TctlProducts d_prodCtrl;
-        private TctlThemes d_themeCtrl;
 
         public static List<Option> options;
         public vMenu menu { get; set; }
@@ -17,53 +15,40 @@ namespace JakesRestaurant.views
         public static Product d_currentProduct { get; set; }
         public vProducts()
         {
-            d_prodCtrl = new TctlProducts();
-            d_themeCtrl = new TctlThemes();
 
-            d_currentProduct = new Product();
         }
         public void DefaultMenu()
         {
-            Console.WriteLine("Products");
             options = new List<Option>();
-
-            if (d_themeCtrl.GetThemes() != null)
+            if (ctlMain.themes.GetThemes() != null)
                 options.Add(new Option("Voeg producten toe", this.AddProduct));
             else
                 options.Add(new Option("Voeg eerst een thema toe!"));
-
             options.Add(new Option("Lijst", this.View));
             options.Add(new Option("Exit", () => Environment.Exit(0)));
-
-            //Navigation();
         }
         public void Navigation()
         {
             DefaultMenu();
             new vMenu(options, "Products.");
         }
-
-
         public void AddProduct()
         {
             d_currentProduct = null;
             d_currentProduct = new Product();
-
+            d_currentProduct.ID = ctlMain.products.IncrementID();
             SetName();
             SetPrice();
             SetAllergens();
             SetIngredients();
-            SetAlcohol();    
-            SetTheme();         
-
-
-            d_currentProduct.ID = d_prodCtrl.IncrementID();
+            SetAlcohol();
+            FieldThemeSelect();
             Save();
             Navigation();
         }
-
         private void SetName(String name = "")
         {
+            Console.Clear();
             Console.WriteLine("Naam:");
             String output = Console.ReadLine();
             if (output.Trim() == "")
@@ -71,10 +56,9 @@ namespace JakesRestaurant.views
             else
             d_currentProduct.Name = output;
         }
-
         private void SetAllergens(List<string> aVal = null)
         {
-         
+            Console.Clear();
             Console.WriteLine("Allergiën: (Gebruik ; na ieder item)");
             String output = Console.ReadLine();
             if (output.Trim() == "")
@@ -94,6 +78,7 @@ namespace JakesRestaurant.views
         }
         private void SetPrice()
         {
+            Console.Clear();
             Console.WriteLine("Prijs:");
             while (true)
             {
@@ -113,7 +98,6 @@ namespace JakesRestaurant.views
             Console.WriteLine("Alcoholisch gerecht?");
             Console.WriteLine("1) Ja");
             Console.WriteLine("2) Nee");
-
             while (true)
             {
                 if (int.TryParse(Console.ReadLine(), out int res))
@@ -128,66 +112,81 @@ namespace JakesRestaurant.views
                         d_currentProduct.Alcohol = false;
                         break;
                     }
-
                     Console.WriteLine("Graag een optie selecteren");
                 }
             }
         }
-        private void SetTheme()
+        //private void SetTheme()
+        //{
+        //    Console.WriteLine("Selecteer thema");
+
+        //    foreach (var el in ctlMain.themes.GetThemes())
+        //    {
+        //        Console.WriteLine($"ID: " + el.ID + " - " + el.Name);
+        //    }
+
+        //    while (true)
+        //    {
+        //        if (int.TryParse(Console.ReadLine(), out int res))
+        //        {
+        //            if (ctlMain.themes.GetByID(res) != null)
+        //            {
+        //                d_currentProduct.ThemeID = res;
+        //                break;
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine("Selecteer een geldige thema!");
+        //            }
+        //        }
+        //    }
+        //}
+        public void FieldThemeSelect()
         {
-            Console.WriteLine("Selecteer thema");
-
-            foreach (var el in d_themeCtrl.GetThemes())
+            Console.Clear();
+            List<Option> listoptions = new List<Option>();
+            foreach (var l in ctlMain.themes.GetThemes())
             {
-                Console.WriteLine($"ID: " + el.ID + " - " + el.Name);
+                string label = $"ID:  {l.ID}  -  {l.Name}";
+                listoptions.Add(new Option(label, ThemeSelect, l.ID));
             }
-
-            while (true)
-            {
-                if (int.TryParse(Console.ReadLine(), out int res))
-                {
-                    if (d_themeCtrl.GetByID(res) != null)
-                    {
-                        d_currentProduct.ThemeID = res;
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Selecteer een geldige thema!");
-                    }
-                }
-            }
+            new vMenu(listoptions);
+        }
+        public void ThemeSelect(int aId)
+        {
+            d_currentProduct.Theme = ctlMain.themes.GetByID(aId);
+            Console.WriteLine($"Geselecteerd: {d_currentProduct.Name}");
         }
         public void View()
         {
-            options = new List<Option>();
+            List<Option> itemlist = new List<Option>();
 
-            options.Add(new Option("Terug", DefaultMenu));
+            itemlist.Add(new Option("Terug", Navigation));
 
-            foreach (var l in d_prodCtrl.GetProducts())
+            foreach (var l in ctlMain.products.GetProducts())
             {
-                options.Add(new Option(l.Name, Edit, l.ID));
+                itemlist.Add(new Option(l.Name, EditItem, l.ID));
             }
-            Navigation();
+            new vMenu(itemlist);
         }
-        public void Edit(int aID)
+        public void EditItem(int aID)
         {
-            d_currentProduct = d_prodCtrl.GetByID(aID);
-
-            options = new List<Option>();
-            options.Add(new Option("Terug", this.DefaultMenu));
-
+            d_currentProduct = ctlMain.products.GetByID(aID);
+            Edit();
+        }
+        public void Edit()
+        {
+            List<Option> itemlist = new List<Option>();
+            itemlist.Add(new Option("Terug", Navigation));
             if (d_currentProduct != null)
             {
-                Theme obj = d_themeCtrl.GetByID(d_currentProduct.ThemeID);
+                Theme obj = ctlMain.themes.GetByID(d_currentProduct.ThemeID);
                 String tName = "Niet geselecteerd";
                 if (obj != null)
                     tName = obj.Name;
 
-
                 String aL = "";
                 String iL = "";
-
 
                 if (d_currentProduct.Allergens != null)
                 {
@@ -205,64 +204,54 @@ namespace JakesRestaurant.views
                         iL += " ";
                     }
                 }
-                
-
-                options.Add(new Option($"Naam: " + d_currentProduct.Name, FieldName));
-                options.Add(new Option($"Prijs: " + d_currentProduct.Price.ToString(), FieldPrice));
-                options.Add(new Option($"Thema : " + tName, FieldTheme)); ;
-                options.Add(new Option($"Alocoholisch: " + d_currentProduct.Alcohol, FieldAlcohol));
-                options.Add(new Option($"Allergien lijst: " + aL, FieldAllergen));
-                options.Add(new Option($"Ingredienten lijst: " + iL, FieldIngredients));
+                itemlist.Add(new Option($"Naam: " + d_currentProduct.Name, FieldName));
+                itemlist.Add(new Option($"Prijs: " + d_currentProduct.Price.ToString(), FieldPrice));
+                itemlist.Add(new Option($"Thema : " + tName, FieldThemeSelect));
+                itemlist.Add(new Option($"Alocoholisch: " + d_currentProduct.Alcohol, FieldAlcohol));
+                itemlist.Add(new Option($"Allergien lijst: " + aL, FieldAllergen));
+                itemlist.Add(new Option($"Ingredienten lijst: " + iL, FieldIngredients));
             }
-
-
-            options.Add(new Option("Verwijder", this.Delete));
-
+            itemlist.Add(new Option("Verwijder", this.Delete));
             Navigation();
         }
         private void Save()
         {
-            d_prodCtrl.UpdateList(d_currentProduct);
+            ctlMain.products.UpdateList(d_currentProduct);
+            d_currentProduct = null;
+            View();
         }
         public void FieldName()
         {
             SetName(d_currentProduct.Name);
-            Save();
-            Edit(d_currentProduct.ID);
         }
         public void FieldPrice()
         {
             SetPrice();
             Save();
-            Edit(d_currentProduct.ID);
         }
-        public void FieldTheme()
-        {
-            SetTheme();
-            Save();
-            Edit(d_currentProduct.ID);
-        }
+        //public void FieldTheme()
+        //{
+        //    SetTheme();
+        //    Save();
+        //}
         public void FieldAlcohol()
         {
             SetAlcohol();
             Save();
-            Edit(d_currentProduct.ID);
         }
         public void FieldAllergen()
         {
             SetAllergens(d_currentProduct.Allergens);
             Save();
-            Edit(d_currentProduct.ID);
         }
         public void FieldIngredients()
         {
             SetIngredients(d_currentProduct.Ingredients);
             Save();
-            Edit(d_currentProduct.ID);
         }
         public void Delete()
         {
-            d_prodCtrl.Delete(d_currentProduct.ID);
+            ctlMain.products.Delete(d_currentProduct.ID);
             View();
         }
     }

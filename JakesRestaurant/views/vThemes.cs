@@ -13,7 +13,6 @@ namespace JakesRestaurant.views
         private static Theme d_currentTheme { get; set; }
         public vThemes()
         {
-            //d_currentTheme = new Theme();
         }
         void DefaultMenu()
         {
@@ -31,30 +30,19 @@ namespace JakesRestaurant.views
         public void AddTheme()
         {
             d_currentTheme = new Theme();
-            d_currentTheme.ID = ctlMain.TctlThemes.IncrementID();
+            d_currentTheme.ID = ctlMain.themes.IncrementID();
             FieldName();
             FieldStartDate();
             FieldEndDate();
-            ctlMain.TctlThemes.UpdateList(d_currentTheme);
+            ctlMain.themes.UpdateList(d_currentTheme);
             Navigation();
         }
         public void ViewThemes()
         {
-            //List<Theme> themes = new List<Theme>();
-            //themes = ctlMain.TctlThemes.GetThemes();
-
-            //List<Option> itemlist = new List<Option>();
-            //itemlist.Add(new Option("Terug", Navigation));
-            //foreach (var el in themes)
-            //{
-            //    itemlist.Add(new Option($"ID: " + el.ID + " - " + el.Name, EditItem, el.ID));
-            //}
-            //new vMenu(itemlist);
-
             Console.WriteLine("Reserveringen.");
             List<Option> listoptions = new List<Option>();
             string header = "  ";
-            if (ctlMain.TctlThemes.GetThemes() != null)
+            if (ctlMain.themes.GetThemes() != null)
             {
 
                 header += vMenu.EqualWidthCol("ID", 3);
@@ -62,7 +50,7 @@ namespace JakesRestaurant.views
                 header += vMenu.EqualWidthCol("Start", 10);
                 header += vMenu.EqualWidthCol("Eind", 10);
                 Console.WriteLine(header);
-                foreach (var r in ctlMain.TctlThemes.GetThemes())
+                foreach (var r in ctlMain.themes.GetThemes())
                 {
                     string label = "";
                     label += vMenu.EqualWidthCol(r.ID.ToString(), 3);
@@ -81,12 +69,12 @@ namespace JakesRestaurant.views
         }
         public virtual void EditItem(int aID)
         {
-            d_currentTheme = ctlMain.TctlThemes.GetByID(aID);
+            d_currentTheme = ctlMain.themes.GetByID(aID);
             Edit();
         }
         public void SaveItem()
         {
-            ctlMain.TctlThemes.UpdateList(d_currentTheme);
+            ctlMain.themes.UpdateList(d_currentTheme);
             d_currentTheme = null;
             ViewThemes();
         }
@@ -116,7 +104,7 @@ namespace JakesRestaurant.views
             {
                 Console.WriteLine("Naam:");
                 d_currentTheme.Name = Console.ReadLine();
-                ctlMain.TctlThemes.UpdateList(d_currentTheme);
+                ctlMain.themes.UpdateList(d_currentTheme);
             }
         }
         private void FieldStartDate()
@@ -157,7 +145,7 @@ namespace JakesRestaurant.views
         }
         public void Delete()
         {
-            ctlMain.TctlThemes.Delete(d_currentTheme.ID);
+            ctlMain.themes.Delete(d_currentTheme.ID);
             ViewThemes();
         }
         public void InsertValue(int idx)
