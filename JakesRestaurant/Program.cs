@@ -14,14 +14,7 @@ namespace JakesRestaurant
             ctlInitialise initialise = new ctlInitialise();
             ctlMain ctlMain = new ctlMain();
             vLogin loginView = new vLogin();
-
-           // vThemes themeView = new vThemes();
-           
-                vProducts pV = new vProducts();
-      
-
-            //loginView.Navigation();
-
+            loginView.Navigation();
         }
     }
 }

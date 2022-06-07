@@ -18,7 +18,6 @@ namespace controllers
 		{
             Load();
         }
-
         public void Load()
         {
             if (!File.Exists(path))
@@ -38,24 +37,18 @@ namespace controllers
             }
             
         }
-
         public void Write()
         {
             string json = JsonSerializer.Serialize(reservations);
             File.WriteAllText(path, json);
             Console.WriteLine("Gegevens opgeslagen");
         }
-
         public void UpdateList(Reservations p)
         {
             int index = reservations.FindIndex(s => s.ID == p.ID);
-
             if (index != -1)
             {
                 reservations[index] = p;
-                DiningTable dt = ctlMain.diningtable.GetID(p.DiningTable.ID);
-                dt.Status = "Bezet";
-                ctlMain.diningtable.UpdateList(dt);
             }
             else
             {
@@ -80,7 +73,6 @@ namespace controllers
 
             Write();
         }
-
         public Reservations FindById(int id)
         {
             return reservations.Find(i => i.ID == id);
@@ -98,12 +90,10 @@ namespace controllers
             while (FindByCode(code) != null);
             return code;
         }
-
         public Reservations FindByCode(string code)
         {
             return reservations.Find(i => i.ReserveCode == code);
         } 
-
         public int IncrementID()
         {
             if (reservations.Any())           
@@ -111,7 +101,6 @@ namespace controllers
             else
                 return 1;
         }
-
         public DiningTable FindByPerson(int persons)
         {
             DiningTable result = null;

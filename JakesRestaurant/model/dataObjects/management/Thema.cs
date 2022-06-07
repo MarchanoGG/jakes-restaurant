@@ -18,7 +18,18 @@ namespace management
         [JsonPropertyName("endDate")]
         public DateTime EndDate { get; set; }
 
-     //   [JsonPropertyName("products")]
-    //    public List<Product> Products { get; set; }
+        [JsonIgnore]
+        public string StartDateStr
+        {
+            get { return StartDate.ToString("dd/MM/yyyy"); }
+        }
+
+        [JsonIgnore]
+        public string EndDateStr
+        {
+            get { return EndDate.ToString("dd/MM/yyyy"); }
+        }
+        //   [JsonPropertyName("products")]
+        //    public List<Product> Products { get; set; }
     }
 }

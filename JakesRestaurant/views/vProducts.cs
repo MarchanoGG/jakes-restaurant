@@ -21,9 +21,8 @@ namespace JakesRestaurant.views
             d_themeCtrl = new TctlThemes();
 
             d_currentProduct = new Product();
-            DefaultMenu();
         }
-        public void Navigation()
+        public void DefaultMenu()
         {
             Console.WriteLine("Products");
             options = new List<Option>();
@@ -40,7 +39,8 @@ namespace JakesRestaurant.views
         }
         public void Navigation()
         {
-            this.menu = new vMenu(options, "Products.");
+            DefaultMenu();
+            new vMenu(options, "Products.");
         }
 
 
@@ -58,9 +58,8 @@ namespace JakesRestaurant.views
 
 
             d_currentProduct.ID = d_prodCtrl.IncrementID();
-
             Save();
-            DefaultMenu();
+            Navigation();
         }
 
         private void SetName(String name = "")
@@ -83,7 +82,6 @@ namespace JakesRestaurant.views
             else
                 d_currentProduct.Allergens = output.Split(';').ToList();
         }
-
         private void SetIngredients(List<string> aVal = null)
         {
             Console.WriteLine("Ingrediënten: (Gebruik ; na ieder item)");
@@ -94,9 +92,7 @@ namespace JakesRestaurant.views
             else
                 d_currentProduct.Ingredients = output.Split(';').ToList();
         }
-
-
-            private void SetPrice()
+        private void SetPrice()
         {
             Console.WriteLine("Prijs:");
             while (true)
@@ -112,7 +108,6 @@ namespace JakesRestaurant.views
                 }
             }
         }
-
         private void SetAlcohol()
         {
             Console.WriteLine("Alcoholisch gerecht?");
@@ -138,7 +133,6 @@ namespace JakesRestaurant.views
                 }
             }
         }
-
         private void SetTheme()
         {
             Console.WriteLine("Selecteer thema");
@@ -164,7 +158,6 @@ namespace JakesRestaurant.views
                 }
             }
         }
-
         public void View()
         {
             options = new List<Option>();
@@ -177,7 +170,6 @@ namespace JakesRestaurant.views
             }
             Navigation();
         }
-
         public void Edit(int aID)
         {
             d_currentProduct = d_prodCtrl.GetByID(aID);
@@ -228,12 +220,10 @@ namespace JakesRestaurant.views
 
             Navigation();
         }
-
         private void Save()
         {
             d_prodCtrl.UpdateList(d_currentProduct);
         }
-
         public void FieldName()
         {
             SetName(d_currentProduct.Name);
@@ -258,21 +248,18 @@ namespace JakesRestaurant.views
             Save();
             Edit(d_currentProduct.ID);
         }
-
         public void FieldAllergen()
         {
             SetAllergens(d_currentProduct.Allergens);
             Save();
             Edit(d_currentProduct.ID);
         }
-
         public void FieldIngredients()
         {
             SetIngredients(d_currentProduct.Ingredients);
             Save();
             Edit(d_currentProduct.ID);
         }
-
         public void Delete()
         {
             d_prodCtrl.Delete(d_currentProduct.ID);
