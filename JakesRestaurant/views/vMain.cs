@@ -15,6 +15,7 @@ namespace JakesRestaurant.views
         public vUsers vusers { get; set; }
         public vDiningtable vDiningtable { get; set; }
         public vReservation vReservation { get; set; }
+        public vAdminReservation vAdminReservation { get; set; }
         public vLogin loginView { get; set; }
         public vOpeningTimes openingTimesView { get; set; }
         public List<vMenu> breadcrumbs{ get; set; }
@@ -28,19 +29,15 @@ namespace JakesRestaurant.views
 
             if (Program.MyUser.HasPrivilege() == true)
             {
-                vReservation = new vAdminReservation();
+                vAdminReservation = new vAdminReservation();
                 options = new List<Option>
                 {
-                    new Option("Jake's restaurant"),
-                    new Option("Thema: <To be implemented>"),
-                    new Option("Locatie: Wijnhaven 107, 3011 WN in Rotterdam"),
-                    new Option(""),
                     new Option("Openingstijden", openingTimesView.Navigation),
                     new Option("Thema's", loginView.CheckRes),
                     new Option("Producten", vProducts.Navigation),
                     new Option("Gebruikers", loginView.UsersList),
                     new Option("Tafels", vDiningtable.Navigation),
-                    new Option("Reserveringen", vReservation.Navigation),
+                    new Option("Reserveringen", vAdminReservation.Navigation),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
                     new Option("Terug naar login", loginView.BackToLogin),
                     new Option("Afsluiten", () => Environment.Exit(0)),
@@ -51,13 +48,10 @@ namespace JakesRestaurant.views
                 vReservation = new vReservation();
                 options = new List<Option>
                 {
-                    new Option("Jake's restaurant"),
-                    new Option("Thema: <To be implemented>"),
-                    new Option("Locatie: Wijnhaven 107, 3011 WN in Rotterdam"),
-                    new Option(""),
                     new Option("Openingstijden", openingTimesView.Navigation),
-                    new Option("Producten", vProducts.Navigation),
-                    new Option("Bekijk uw reserveringen", vReservation.Navigation),
+                    new Option("Producten", vProducts.View),
+                    new Option("Maak een reservering", vReservation.Add),
+                    new Option("Mijn reserveringen", vReservation.View),
                     new Option("Pas profiel aan", loginView.UpdateProfile),
                     new Option("Terug naar login", loginView.BackToLogin),
                     new Option("Afsluiten", () => Environment.Exit(0)),
@@ -67,7 +61,7 @@ namespace JakesRestaurant.views
 
         public void Navigation()
         {
-            this.menu = new vMenu(options);
+            this.menu = new vMenu(options, "Jake's restaurant | Thema: <To be implemented> | Locatie: Wijnhaven 107, 3011 WN in Rotterdam");
             //breadcrumbs.Add(menu);
             //productscontroller.breadcrumbs = breadcrumbs;
             //userscontroller.test = new List<string>();

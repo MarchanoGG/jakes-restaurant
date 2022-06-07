@@ -22,5 +22,7 @@ namespace reservation
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
+
+        public string Summary() =>  $"{Description} is {Status}, hier is plek voor: {Places}.";
     }
 }

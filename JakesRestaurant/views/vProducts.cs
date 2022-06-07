@@ -23,7 +23,7 @@ namespace JakesRestaurant.views
             d_currentProduct = new Product();
             DefaultMenu();
         }
-        void DefaultMenu()
+        public void Navigation()
         {
             Console.WriteLine("Products");
             options = new List<Option>();
