@@ -21,10 +21,11 @@ namespace JakesRestaurant.views
         {
             options = new List<Option>();
             if (ctlMain.themes.GetThemes() != null)
-                options.Add(new Option("Voeg producten toe", this.AddProduct));
+                options.Add(new Option("Voeg producten toe", AddProduct));
             else
                 options.Add(new Option("Voeg eerst een thema toe!"));
-            options.Add(new Option("Lijst", this.View));
+            options.Add(new Option("Lijst", View));
+            options.Add(new Option("Terug", BackToMain));
             options.Add(new Option("Exit", () => Environment.Exit(0)));
         }
         public void Navigation()
@@ -44,7 +45,6 @@ namespace JakesRestaurant.views
             SetAlcohol();
             FieldThemeSelect();
             Save();
-            Navigation();
         }
         private void SetName(String name = "")
         {
@@ -69,7 +69,6 @@ namespace JakesRestaurant.views
         private void SetIngredients(List<string> aVal = null)
         {
             Console.WriteLine("Ingrediënten: (Gebruik ; na ieder item)");
-
             String output = Console.ReadLine();
             if (output.Trim() == "")
                 d_currentProduct.Ingredients = aVal;
@@ -145,17 +144,37 @@ namespace JakesRestaurant.views
         {
             Console.Clear();
             List<Option> listoptions = new List<Option>();
-            foreach (var l in ctlMain.themes.GetThemes())
+            string header = "  ";
+            if (ctlMain.themes.GetThemes() != null)
             {
-                string label = $"ID:  {l.ID}  -  {l.Name}";
-                listoptions.Add(new Option(label, ThemeSelect, l.ID));
+                header += vMenu.EqualWidthCol("ID", 3);
+                header += vMenu.EqualWidthCol("Naam", 10);
+                header += vMenu.EqualWidthCol("Start", 10);
+                header += vMenu.EqualWidthCol("Eind", 10);
+                Console.WriteLine(header);
+                foreach (var r in ctlMain.themes.GetThemes())
+                {
+                    string label = "";
+                    label += vMenu.EqualWidthCol(r.ID.ToString(), 3);
+                    label += vMenu.EqualWidthCol(r.Name, 10);
+                    label += vMenu.EqualWidthCol(r.StartDateStr, 10);
+                    label += vMenu.EqualWidthCol(r.EndDateStr, 10);
+                    listoptions.Add(new Option(label, ThemeSelect, r.ID));
+                }
             }
-            new vMenu(listoptions);
+            else
+            {
+                Console.WriteLine("Geen");
+            }
+            listoptions.Add(new Option("Opslaan", Save));
+            listoptions.Add(new Option("Terug", Edit));
+            new vMenu(listoptions, "Selecteer een Thema.");
         }
         public void ThemeSelect(int aId)
         {
             d_currentProduct.Theme = ctlMain.themes.GetByID(aId);
-            Console.WriteLine($"Geselecteerd: {d_currentProduct.Name}");
+            Console.WriteLine($"Geselecteerd: {d_currentProduct.Theme.Name}");
+            Save();
         }
         public void View()
         {
@@ -204,15 +223,16 @@ namespace JakesRestaurant.views
                         iL += " ";
                     }
                 }
-                itemlist.Add(new Option($"Naam: " + d_currentProduct.Name, FieldName));
-                itemlist.Add(new Option($"Prijs: " + d_currentProduct.Price.ToString(), FieldPrice));
-                itemlist.Add(new Option($"Thema : " + tName, FieldThemeSelect));
-                itemlist.Add(new Option($"Alocoholisch: " + d_currentProduct.Alcohol, FieldAlcohol));
-                itemlist.Add(new Option($"Allergien lijst: " + aL, FieldAllergen));
-                itemlist.Add(new Option($"Ingredienten lijst: " + iL, FieldIngredients));
+                itemlist.Add(new Option($"Naam: " + d_currentProduct.Name, InsertValue, 1));
+                itemlist.Add(new Option($"Prijs: " + d_currentProduct.Price.ToString(), InsertValue, 2));
+                itemlist.Add(new Option($"Alocoholisch: " + d_currentProduct.Alcohol, InsertValue, 4));
+                itemlist.Add(new Option($"Allergien lijst: " + aL, InsertValue, 5));
+                itemlist.Add(new Option($"Ingredienten lijst: " + iL, InsertValue, 6));
+                itemlist.Add(new Option($"Thema: " + tName, InsertValue, 3));
             }
-            itemlist.Add(new Option("Verwijder", this.Delete));
-            Navigation();
+            itemlist.Add(new Option("Verwijderen?", Delete));
+            itemlist.Add(new Option("Opslaan?", Save));
+            new vMenu(itemlist);
         }
         private void Save()
         {
@@ -227,7 +247,6 @@ namespace JakesRestaurant.views
         public void FieldPrice()
         {
             SetPrice();
-            Save();
         }
         //public void FieldTheme()
         //{
@@ -237,23 +256,51 @@ namespace JakesRestaurant.views
         public void FieldAlcohol()
         {
             SetAlcohol();
-            Save();
         }
         public void FieldAllergen()
         {
             SetAllergens(d_currentProduct.Allergens);
-            Save();
         }
         public void FieldIngredients()
         {
             SetIngredients(d_currentProduct.Ingredients);
-            Save();
         }
         public void Delete()
         {
             ctlMain.products.Delete(d_currentProduct.ID);
             View();
         }
+        public void BackToMain()
+        {
+            vMain main = new vMain();
+            main.Navigation();
+        }
+        public void InsertValue(int idx)
+        {
+            switch (idx)
+            {
+                case 1:
+                    FieldName();
+                    break;
+                case 2:
+                    FieldPrice();
+                    break;
+                case 3:
+                    FieldThemeSelect();
+                    break;
+                case 4:
+                    FieldAlcohol();
+                    break;
+                case 5:
+                    FieldAllergen();
+                    break;
+                case 6:
+                    FieldIngredients();
+                    break;
+                default:
+                    break;
+            }
+            Edit();
+        }
     }
-
 }

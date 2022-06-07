@@ -39,7 +39,7 @@ namespace JakesRestaurant.views
         }
         public void ViewThemes()
         {
-            Console.WriteLine("Reserveringen.");
+            Console.WriteLine("Thema's");
             List<Option> listoptions = new List<Option>();
             string header = "  ";
             if (ctlMain.themes.GetThemes() != null)
