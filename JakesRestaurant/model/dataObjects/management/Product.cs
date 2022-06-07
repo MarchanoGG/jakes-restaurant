@@ -3,10 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace management
 {
-    class Product
+   public class Product
     {
         [JsonPropertyName("id")]
         public int ID { get; set; }
+
+        [JsonPropertyName("themeId")]
+        public int ThemeID { get; set; }
 
         [JsonPropertyName("name")]
         public string Name { get; set; }

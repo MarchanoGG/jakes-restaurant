@@ -13,11 +13,11 @@
     <None Update="data\auth.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	  <None Update="data\diningtable.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="data\reservation.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+	<None Update="data\diningtable.json">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Update="data\reservation.json">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
   </ItemGroup>
 </Project>
