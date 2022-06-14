@@ -45,6 +45,9 @@ namespace reservation
 
         [JsonPropertyName("reservecode")]
         public string ReserveCode { get; set; }
+
+        [JsonPropertyName("theme")]
+        public Theme Theme { get; set; }
         [JsonIgnore]
         public string DueDateTimeStr
         {
