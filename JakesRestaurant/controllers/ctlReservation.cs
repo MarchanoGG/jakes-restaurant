@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Linq;
 using reservation;
 using JakesRestaurant.views;
+using management;
 
 namespace controllers
 {
@@ -115,16 +116,20 @@ namespace controllers
             }
             return result;
         }
-        public List<Reservations> FilterByDate(DateTime dt)
+        public bool IsAvailableByDate(DateTime dt)
         {
+            bool res = false;
             string fdt = dt.ToString("dd/MM/yyyy");
-            return reservations.Where(x => x.DueDateTime.ToString("dd/MM/yyyy") == fdt).ToList();
-        } 
-        //public Reservations AvailableByDate(DateTime dt)
-        //{
-        //    DateTime baseDate = new DateTime(dt.Year, dt.Month, dt.Day);
-
-        //    return
-        //}
+            doOpeningTimes optime = ctlMain.openingtimes.listItems.Where(x => x.Dayofweek == dt.DayOfWeek).First();
+            if (optime != null)
+                res = optime.Opened;
+            return res;
+        }
+        public Theme GetThemeByDate(DateTime dt)
+        {
+            IEnumerable<Theme> themes = ctlMain.themes.GetThemes().Where(x => x.StartDate <= dt && dt < x.EndDate);
+            Theme result = themes.First();
+            return result;
+        }
     }
 }
