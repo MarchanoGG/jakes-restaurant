@@ -16,6 +16,30 @@ namespace controllers
             return listItems;
         }
 
+        public ctlOpeningTimes()
+        {
+            Load();
+        }
+        public void Load()
+        {
+            if (!File.Exists(path))
+            {
+                // Create products from json 
+                var myFile = File.Create(path);
+                myFile.Close();
+            }
+
+            string json = File.ReadAllText(path);
+            if (json != "")
+            {
+                listItems = JsonSerializer.Deserialize<List<doOpeningTimes>>(json);
+            }
+            else
+            {
+                listItems = new List<doOpeningTimes>();
+            }
+        }
+
         public bool UpdateTime(doOpeningTimes aTime)
         {
             bool res = false;

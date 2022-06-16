@@ -15,8 +15,8 @@ namespace JakesRestaurant.views
         public static Product d_currentProduct { get; set; }
         public vProducts()
         {
-
         }
+
         public void DefaultMenu()
         {
             options = new List<Option>();
@@ -55,6 +55,7 @@ namespace JakesRestaurant.views
                 d_currentProduct.Name = name;
             else
             d_currentProduct.Name = output;
+            Console.Clear();
         }
         private void SetAllergens(List<string> aVal = null)
         {
@@ -65,6 +66,9 @@ namespace JakesRestaurant.views
                 d_currentProduct.Allergens = aVal;
             else
                 d_currentProduct.Allergens = output.Split(';').ToList();
+
+
+            Console.Clear();
         }
         private void SetIngredients(List<string> aVal = null)
         {
@@ -74,6 +78,9 @@ namespace JakesRestaurant.views
                 d_currentProduct.Ingredients = aVal;
             else
                 d_currentProduct.Ingredients = output.Split(';').ToList();
+
+
+            Console.Clear();
         }
         private void SetPrice()
         {
@@ -91,6 +98,8 @@ namespace JakesRestaurant.views
                     Console.WriteLine("Invoer niet correct!");
                 }
             }
+
+            Console.Clear();
         }
         private void SetAlcohol()
         {
@@ -114,6 +123,8 @@ namespace JakesRestaurant.views
                     Console.WriteLine("Graag een optie selecteren");
                 }
             }
+
+            Console.Clear();
         }
         //private void SetTheme()
         //{
@@ -166,14 +177,16 @@ namespace JakesRestaurant.views
             {
                 Console.WriteLine("Geen");
             }
-            listoptions.Add(new Option("Opslaan", Save));
+
             listoptions.Add(new Option("Terug", Edit));
             new vMenu(listoptions, "Selecteer een Thema.");
-        }
+          
+            }
         public void ThemeSelect(int aId)
         {
             d_currentProduct.Theme = ctlMain.themes.GetByID(aId);
-            Console.WriteLine($"Geselecteerd: {d_currentProduct.Theme.Name}");
+            d_currentProduct.ThemeID = ctlMain.themes.GetByID(aId).ID;
+            //Console.WriteLine($"Geselecteerd: {d_currentProduct.Theme.Name}");
             Save();
         }
         public void View()
@@ -231,7 +244,6 @@ namespace JakesRestaurant.views
                 itemlist.Add(new Option($"Thema: " + tName, InsertValue, 3));
             }
             itemlist.Add(new Option("Verwijderen?", Delete));
-            itemlist.Add(new Option("Opslaan?", Save));
             new vMenu(itemlist);
         }
         private void Save()
@@ -253,6 +265,7 @@ namespace JakesRestaurant.views
         //    SetTheme();
         //    Save();
         //}
+
         public void FieldAlcohol()
         {
             SetAlcohol();

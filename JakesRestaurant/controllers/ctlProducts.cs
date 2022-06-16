@@ -65,7 +65,7 @@ namespace controllers
         {
             string json = JsonSerializer.Serialize(d_products);
             File.WriteAllText(path, json);
-            Console.WriteLine("write done");
+            //Console.WriteLine("write done");
         }
 
         public void UpdateList(Product Product)

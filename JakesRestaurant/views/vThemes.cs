@@ -89,7 +89,6 @@ namespace JakesRestaurant.views
                 itemlist.Add(new Option($"Start datum: {d_currentTheme.StartDateStr}", InsertValue, 2));
                 itemlist.Add(new Option($"Eind datum: {d_currentTheme.EndDateStr}", InsertValue, 3));
                 itemlist.Add(new Option("Verwijderen?", Delete));
-                itemlist.Add(new Option("Opslaan?", SaveItem));
                 new vMenu(itemlist, $"Thema: {d_currentTheme.Name}");
             }
             else
